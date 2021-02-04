@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 
     # Project apps
     'user_app',
+    'paypal',
 ]
 
 MIDDLEWARE = [
@@ -185,3 +186,9 @@ STATIC_URL = '/static/'
 
 # Remove appending slash on urls
 APPEND_SLASH = False
+
+
+# Paypal
+PAYPAL_TEST = config("PAYPAL_TEST", True)
+PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID", "")
+PAYPAL_SECRET_KEY = config("PAYPAL_SECRET_KEY", "")
