@@ -7,7 +7,6 @@ from user_app.serializers import UserSerializer, UserBasicSerializer
 from user_app.models import User
 from django.http import Http404
 from rest_framework import status
-import datetime 
 
 from user_app.permissions import IsAdminUser
 
@@ -50,7 +49,5 @@ class UserView(views.APIView):
     
     def delete(self, request, pk, *args, **kwargs):
         user = self.get_object(pk)
-        user.is_deleted = True
-        user.deleted_at = datetime.datetime.now()
-        user.save()
+        user.soft_delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

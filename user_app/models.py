@@ -7,6 +7,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 
 from .manager import UserManager
+import datetime 
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -32,6 +33,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.deleted_at = datetime.datetime.now()
+        self.save()
 
 
 class UserProfile(models.Model):
