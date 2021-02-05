@@ -31,18 +31,36 @@ def create_order(request):
     create_order = OrdersCreateRequest()
     # billing
     create_order.request_body({
-        "intent": "CAPTURE",
+        "intent": 'CAPTURE',
+        "payer": {
+            "name": {
+                "given_name": "PayPal",
+                "surname": "Customer"
+            },
+            "address": {
+                "address_line_1": '123 ABC Street',
+                "address_line_2": 'Apt 2',
+                "city": 'San Jose',
+                "state": 'CA',
+                "postal_code": '95121',
+                "country_code": 'US'
+            },
+            "email_address": "customer@domain.com",
+            "phone": {
+            "phone_type": "MOBILE",
+            "phone_number": {
+                "national_number": "14082508100"
+            }
+            }
+        },
         "purchase_units": [{
             "amount": {
-                "currency_code": "USD",
-                "value": "5.00",
-            }
+                "value": '5.00',
+                "currency_code": 'USD'
+            },
         }]
     })
     # try:
     response = client.execute(create_order)
-    print("---  Response ---")
-    print(response.result._dict)
-    print(response.status_code)
     return Response(response.result._dict)
         
