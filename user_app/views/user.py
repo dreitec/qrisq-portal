@@ -1,7 +1,7 @@
 from rest_framework import views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 
 from user_app.serializers import UserSerializer, UserBasicSerializer
 
@@ -24,7 +24,11 @@ class AccountProfileView(views.APIView):
         serializer.save()
         return Response(serializer.data)
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(mixins.RetrieveModelMixin,
+                mixins.UpdateModelMixin,
+                mixins.DestroyModelMixin,
+                mixins.ListModelMixin,
+                viewsets.GenericViewSet):
     queryset = User.objects.filter(is_deleted=False)
     serializer_class = UserBasicSerializer 
     permission_classes = [IsAdminUser,]
