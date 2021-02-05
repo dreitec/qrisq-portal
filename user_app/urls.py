@@ -1,10 +1,15 @@
-from django.urls import path
-
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from user_app.views import LoginView, LogoutView, RefreshTokenView, \
     ChangePasswordView, ResetPasswordView, ForgotPasswordView, \
-    SignupView, AccountProfileView, UserView
+    SignupView, AccountProfileView, UserViewSet
+
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet, basename="User")
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('auth/login', LoginView.as_view(), name="login"),
     path('auth/logout', LogoutView.as_view(), name="logout"),
     path('auth/refresh', RefreshTokenView.as_view(), name="refresh-token"),
@@ -15,5 +20,4 @@ urlpatterns = [
     path('signup', SignupView.as_view(), name="signup"),
 
     path('account-profile', AccountProfileView.as_view(), name='account-profile'),
-    path('user/<pk>', UserView.as_view(), name='user-view')
 ]

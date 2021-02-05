@@ -1,6 +1,7 @@
 from rest_framework import views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import viewsets
 
 from user_app.serializers import UserSerializer, UserBasicSerializer
 
@@ -23,31 +24,12 @@ class AccountProfileView(views.APIView):
         serializer.save()
         return Response(serializer.data)
 
-class UserView(views.APIView):
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(is_deleted=False)
     serializer_class = UserBasicSerializer 
     permission_classes = [IsAdminUser,]
 
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
-        serializer = self.serializer_class(user)
-        return Response(serializer.data)
-
-    def put(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
-        serializer = self.serializer_class(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    
-    def delete(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
         user.soft_delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data='delete success')
