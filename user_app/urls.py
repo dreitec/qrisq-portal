@@ -2,7 +2,7 @@ from django.urls import path
 
 from user_app.views import LoginView, LogoutView, RefreshTokenView, \
     ChangePasswordView, ResetPasswordView, ForgotPasswordView, \
-    SignupView, AccountProfileView
+    SignupView, AccountProfileView, UserView
 
 urlpatterns = [
     path('auth/login', LoginView.as_view(), name="login"),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('signup', SignupView.as_view(), name="signup"),
 
     path('account-profile', AccountProfileView.as_view(), name='account-profile'),
+    path('user/<pk>', UserView.as_view(), name='user-view')
 ]

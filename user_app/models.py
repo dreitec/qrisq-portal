@@ -10,23 +10,28 @@ from .manager import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(_('username'), unique=True, max_length=30, blank=True)
     email = models.EmailField(_('email'), unique=True)
-    full_name = models.CharField(_('full_name'), max_length=60, blank=True)
+    first_name = models.CharField(_('first_name'), max_length=60, blank=True)
+    last_name = models.CharField(_('last_name'), max_length=60, blank=True)
     date_joined = models.DateTimeField(_('date_joined'), auto_now_add=True)
     is_active = models.BooleanField(_('is_active'), default=False)
+    is_admin = models.BooleanField(_('is_admin'), default=False)
+    is_deleted = models.BooleanField(_('is_deleted'), default=False)
+    deleted_at = models.DateTimeField(_('deleted_at'), default=None, null=True)
+    created_at = models.DateTimeField(_('created_at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated_at'), auto_now=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email',]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
     def __str__(self):
-        return self.username
+        return self.email
 
 
 class UserProfile(models.Model):

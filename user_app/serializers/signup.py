@@ -5,8 +5,8 @@ from user_app.models import User
 
 
 class SignupSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=30)
-    full_name = serializers.CharField(max_length=60, required=False)
+    first_name = serializers.CharField(max_length=30, required=False)
+    last_name = serializers.CharField(max_length=30, required=False)
     email = serializers.EmailField()
     password = serializers.CharField(max_length=255)
     confirm_password = serializers.CharField(max_length=255)
@@ -15,9 +15,6 @@ class SignupSerializer(serializers.Serializer):
         error = {}
         if not data['password'] == data['confirm_password']:
             error['password_confirmation'] = "Passwords didn't match."
-        
-        if User.objects.filter(username=data['username']).exists():
-            error['username'] = "User with this username exists."
         
         if User.objects.filter(email=data['email']).exists():
             error['email'] = "User with this email exists."
@@ -28,8 +25,7 @@ class SignupSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         email = validated_data.pop('email')
-        return User.objects.create_user(username=validated_data.pop('username'),
-                                        email=email,
+        return User.objects.create_user(email=email,
                                         password=validated_data.pop('password'),
                                         **validated_data)
 

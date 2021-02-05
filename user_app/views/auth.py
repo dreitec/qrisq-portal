@@ -18,7 +18,7 @@ class LoginView(TokenObtainPairView):
     serializer_class = LoginTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        if not User.objects.filter(username=request.data['username']).exists():
+        if not User.objects.filter(email=request.data['email']).exists():
             return Response({'msg': "No active account found with the given credentials"},
                             status=HTTP_401_UNAUTHORIZED)
         try:
