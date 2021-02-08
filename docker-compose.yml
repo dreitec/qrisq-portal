@@ -1,0 +1,32 @@
+version: '3.9'
+
+volumes:
+  dbdata:
+
+services:
+  api:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/qrisq
+    env_file: .env
+    container_name: qrisq_api
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: postgis/postgis
+    environment:
+      - POSTGRES_DB=qrisq_db
+      - POSTGRES_USER=qrisq
+      - POSTGRES_PASSWORD=p@ssw0rd
+    container_name: qrisq_db
+    hostname: qrisq_psql
+    ports:
+      - 5430:5432
+    volumes:
+      - dbdata:/var/lib/postgresql 

@@ -1,0 +1,6 @@
+.git
+*.pyc
+*.md
+db.sqlite3
+.dbdata
+venv/
