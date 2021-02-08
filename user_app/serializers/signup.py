@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from user_app.models import User
-# from user_app.utils import mail_sender
+from user_app.utils import mail_sender
 
 
 class SignupSerializer(serializers.Serializer):
@@ -25,20 +25,26 @@ class SignupSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         email = validated_data.pop('email')
+        first_name = validated_data.get('first_name')
+        last_name = validated_data.get('last_name')
+        password = validated_data.get('password')
+
+        # send email confirmation to user
+        context = {
+            'email': email,
+            'full_name': first_name + ' ' + last_name,
+            'password': password
+        }
+        try:
+            mail_sender(
+                template='user_app/registration_confirmation.html',
+                context=context,
+                subject="User Registered",
+                recipient_list=[email]
+            )
+        except Exception as error:
+            pass
+
         return User.objects.create_user(email=email,
                                         password=validated_data.pop('password'),
                                         **validated_data)
-
-        # send email confirmation to user
-        # context = {
-        #     'email': email,
-        # }
-        # try:
-        #     mail_sender(
-        #         template='user_app/register_confirmation.html',
-        #         context=context,
-        #         subject="User Registered",
-        #         recipient_list=[email]
-        #     )
-        # except Exception as error:
-        #     pass
