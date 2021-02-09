@@ -3,13 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets, mixins
 
+from user_app.models import User
+from user_app.permissions import IsAdminUser
 from user_app.serializers import UserSerializer, UserBasicSerializer
 
-from user_app.models import User
-from django.http import Http404
-from rest_framework import status
-
-from user_app.permissions import IsAdminUser
 
 class AccountProfileView(views.APIView):
     serializer_class = UserSerializer 
@@ -24,16 +21,21 @@ class AccountProfileView(views.APIView):
         serializer.save()
         return Response(serializer.data)
 
+
 class UserViewSet(mixins.RetrieveModelMixin,
                 mixins.UpdateModelMixin,
                 mixins.DestroyModelMixin,
                 mixins.ListModelMixin,
                 viewsets.GenericViewSet):
     queryset = User.objects.filter(is_deleted=False)
-    serializer_class = UserBasicSerializer 
+    serializer_class = UserSerializer 
     permission_classes = [IsAdminUser,]
+
+    def list(self, request, *args, **kwargs):
+        self.serializer_class = UserBasicSerializer
+        return super().list(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()
         user.soft_delete()
-        return Response(data='delete success')
+        return Response({"message": "User Deleted Successfully"})
