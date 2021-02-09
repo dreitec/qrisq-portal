@@ -34,7 +34,7 @@ class SignupSerializer(serializers.Serializer):
             'email': email,
             'full_name': first_name + ' ' + last_name,
             'password': password,
-            'logo_url': 'localhost:8000/static/images/logo.png'
+            'logo_url': "https://qrisq.com/wp-content/uploads/2020/10/QRISQ-logo-3D-white.png"
         }
         try:
             mail_sender(
