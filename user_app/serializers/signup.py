@@ -33,7 +33,8 @@ class SignupSerializer(serializers.Serializer):
         context = {
             'email': email,
             'full_name': first_name + ' ' + last_name,
-            'password': password
+            'password': password,
+            'logo_url': 'localhost:8000/static/images/logo.png'
         }
         try:
             mail_sender(
