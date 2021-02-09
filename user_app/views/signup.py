@@ -22,6 +22,7 @@ class SignupView(APIView):
             transaction.savepoint_rollback(sid)
             return Response({
                 'msg': "Signup Failed.",
-                'error': str(error)}, status=status.HTTP_400_BAD_REQUEST)
+                'error': str(error)}, status=HTTP_400_BAD_REQUEST)
         
-        return Response({'msg': "User successfully created."}, status=status.HTTP_200_OK)
+        return Response({'msg': "User successfully created."}, status=HTTP_200_OK)
+
