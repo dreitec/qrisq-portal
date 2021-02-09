@@ -185,3 +185,10 @@ STATIC_URL = '/static/'
 
 # Remove appending slash on urls
 APPEND_SLASH = False
+
+# Email Settings
+FROM_EMAIL = config('FROM_EMAIL', default='')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = config('EMAIL_PORT', default='')
