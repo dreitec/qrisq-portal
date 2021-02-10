@@ -1,41 +1,28 @@
 from django.conf import settings
 
+import requests
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from paypalcheckoutsdk.core import SandboxEnvironment, LiveEnvironment, PayPalHttpClient
-from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
+from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest, OrdersGetRequest
+from paypalcheckoutsdk.payments import CapturesGetRequest, CapturesRefundRequest
 
-# from paypalhttp.http_client import HttpClient
-
-
-def _paypal_client():
-    '''
-    Method to select the paypal environment and return paypal client
-    '''
-    if settings.PAYPAL_TEST:
-        environment = SandboxEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
-    else:
-        environment = LiveEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
-    
-    return PayPalHttpClient(environment)
+from .utils import paypal_client, OrderApproveRequest
 
 
 @api_view(["POST"])
 def create_order(request):
-    client = _paypal_client()
+    client = paypal_client()
+    order = OrdersCreateRequest()
 
-    print("--- CLIENT ---")
-    print(client)
-
-    create_order = OrdersCreateRequest()
     # billing
-    create_order.request_body({
-        "intent": 'CAPTURE',
+    order.request_body({
+        "intent": 'Authorize',
         "payer": {
             "name": {
-                "given_name": "PayPal",
-                "surname": "Customer"
+                "given_name": "Sumedh",
+                "surname": "Shakya"
             },
             "address": {
                 "address_line_1": '123 ABC Street',
@@ -47,10 +34,10 @@ def create_order(request):
             },
             "email_address": "customer@domain.com",
             "phone": {
-            "phone_type": "MOBILE",
-            "phone_number": {
-                "national_number": "14082508100"
-            }
+                "phone_type": "MOBILE",
+                "phone_number": {
+                    "national_number": "14082508100"
+                }
             }
         },
         "purchase_units": [{
@@ -60,7 +47,49 @@ def create_order(request):
             },
         }]
     })
-    # try:
-    response = client.execute(create_order)
+    response = client.execute(order)
     return Response(response.result._dict)
-        
+
+
+@api_view(["GET"])
+def approve_order(request, order_id):
+    client = paypal_client()
+    approve = OrderApproveRequest(order_id)
+    try:
+        response = client.execute(approve)
+    except requests.HTTPError as error:
+        return Response(error.response)
+    return Response(response.result._dict)
+
+
+@api_view(["GET"])
+def capture_order(request, order_id):
+    client = paypal_client()
+    capture = OrdersCaptureRequest(order_id)
+    try:
+        response = client.execute(capture)
+    except requests.HTTPError as error:
+        return Response(error.response)
+    return Response(response.result._dict)
+
+
+@api_view(["GET"])
+def capture_detail(request, capture_id):
+    client = paypal_client()
+    capture = CapturesGetRequest(capture_id)
+    try:
+        response = client.execute(capture)
+    except requests.HTTPError as error:
+        return Response(error.response)
+    return Response(response.result._dict)
+
+
+@api_view(["POST"])
+def refund_payment(request):
+    client = paypal_client()
+    capture = CapturesRefundRequest()
+    try:
+        response = client.execute(capture)
+    except requests.HTTPError as error:
+        return Response(error.response)
+    return Response(response.result._dict)
