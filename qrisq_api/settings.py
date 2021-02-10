@@ -84,7 +84,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
@@ -95,6 +95,16 @@ DATABASES = {
         }
     }
 }
+
+
+# Email Settings
+# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+FROM_EMAIL = config('FROM_EMAIL', default='')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = config('EMAIL_PORT', default='')
+# EMAIL_USE_TLS = True
 
 
 # Rest Framework Configuration
@@ -185,10 +195,3 @@ STATIC_URL = '/static/'
 
 # Remove appending slash on urls
 APPEND_SLASH = False
-
-# Email Settings
-FROM_EMAIL = config('FROM_EMAIL', default='')
-EMAIL_HOST = config('EMAIL_HOST', default='')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-EMAIL_PORT = config('EMAIL_PORT', default='')
