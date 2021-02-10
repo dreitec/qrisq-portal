@@ -60,21 +60,20 @@ class ForgotPasswordView(CreateAPIView):
             uid, token = utils.generate_password_reset_token(user)
             context = {
                 'email': email,
-                'username': user.username,
-                'full_name': user.full_name,
-                'uid': uid,
-                'token': token
+                'full_name': user.first_name + ' ' + user.last_name,
+                'reset_link': uid + '/' + token,
+                'logo_url': "https://qrisq.com/wp-content/uploads/2020/10/QRISQ-logo-3D-white.png"
             }
-            # try:
-            #     utils.mail_sender(
-            #         template='user_app/reset_password.html',
-            #         context=context,
-            #         subject="Reset Password",
-            #         recipient_list=[email]
-            #     )
-            # except Exception as error:
-            #     return Response({"msg": "Server Error. Please try again in a while."},
-            #                     status=HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                utils.mail_sender(
+                    template='user_app/reset_password.html',
+                    context=context,
+                    subject="Reset Password",
+                    recipient_list=[email]
+                )
+            except Exception as error:
+                return Response({"msg": "Server Error. Please try again in a while."},
+                                status=HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"msg": "Password reset email has been sent. Please check your mail inbox."})
 
@@ -106,6 +105,21 @@ class ResetPasswordView(CreateAPIView):
         serializer = self.serializer_class(data=request.data, context={'user': user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        context = {
+            'full_name': user.first_name + ' ' + user.last_name,
+            'logo_url': "https://qrisq.com/wp-content/uploads/2020/10/QRISQ-logo-3D-white.png"
+        }
+        try:
+            utils.mail_sender(
+                template='user_app/reset_password_success.html',
+                context=context,
+                subject="Password Reset Successfully",
+                recipient_list=[user.email]
+            )
+        except Exception as error:
+            pass
+
         return Response({'msg': "Your password has reset successfully."})
 
 
@@ -127,18 +141,18 @@ class ChangePasswordView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # context = {
-        #     'full_name': user.full_name,
-        #     'username': user.username,
-        # }
-        # try:
-        #     mail_sender(
-        #         template='user_app/password_change.html',
-        #         context=context,
-        #         subject="Password Changed Successfully",
-        #         recipient_list=[user.email]
-        #     )
-        # except Exception as error:
-        #     pass
+        context = {
+            'full_name': user.first_name + ' ' + user.last_name,
+            'logo_url': "https://qrisq.com/wp-content/uploads/2020/10/QRISQ-logo-3D-white.png"
+        }
+        try:
+            utils.mail_sender(
+                template='user_app/password_change.html',
+                context=context,
+                subject="Password Changed Successfully",
+                recipient_list=[user.email]
+            )
+        except Exception as error:
+            pass
 
         return Response({'msg': "Your password has been changed successfully."})
