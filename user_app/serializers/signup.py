@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from user_app.models import User
+from user_app.models import User, UserProfile
 from user_app.utils import mail_sender
 
 
@@ -10,6 +10,8 @@ class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length=255)
     confirm_password = serializers.CharField(max_length=255)
+    phone_number = serializers.CharField(max_length=15)
+    address = serializers.JSONField()
 
     def validate(self, data):
         error = {}
@@ -29,6 +31,17 @@ class SignupSerializer(serializers.Serializer):
         last_name = validated_data.get('last_name')
         password = validated_data.get('password')
 
+        profile = {
+            "phone_number": validated_data.pop('phone_number'),
+            "address": validated_data.pop('address')
+        }
+
+        user = User.objects.create_user(email=email,
+                                        password=validated_data.pop('password'),
+                                        **validated_data)
+
+        UserProfile.objects.create(user=user, **profile)
+
         # send email confirmation to user
         context = {
             'email': email,
@@ -46,6 +59,4 @@ class SignupSerializer(serializers.Serializer):
         except Exception as error:
             print(str(error))
 
-        return User.objects.create_user(email=email,
-                                        password=validated_data.pop('password'),
-                                        **validated_data)
+        return user
