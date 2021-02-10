@@ -15,7 +15,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first_name'), max_length=60, blank=True)
     last_name = models.CharField(_('last_name'), max_length=60, blank=True)
     date_joined = models.DateTimeField(_('date_joined'), auto_now_add=True)
-    is_active = models.BooleanField(_('is_active'), default=False)
     is_admin = models.BooleanField(_('is_admin'), default=False)
     is_deleted = models.BooleanField(_('is_deleted'), default=False)
     deleted_at = models.DateTimeField(_('deleted_at'), default=None, null=True)

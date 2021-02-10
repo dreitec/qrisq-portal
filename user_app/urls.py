@@ -18,9 +18,9 @@ urlpatterns += [
     path('auth/refresh', RefreshTokenView.as_view(), name="refresh-token"),
     path('auth/change-password', ChangePasswordView.as_view(), name="change-password"),
     path('auth/forgot-password', ForgotPasswordView.as_view(), name="forgot-password"),
-    path('auth/reset-password', ResetPasswordView.as_view(), name="reset-password"),
+    path('auth/reset-password/<str:uid>/<str:token>', ResetPasswordView.as_view(), name="reset-password"),
 
-    path('signup', SignupView.as_view(), name="signup"),
+    path('auth/signup', SignupView.as_view(), name="signup"),
 
-    path('account-profile', AccountProfileView.as_view(), name='account-profile'),
+    path('auth/account-profile', AccountProfileView.as_view(), name='account-profile'),
 ]

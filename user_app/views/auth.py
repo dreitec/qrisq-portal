@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import check_password
+from django.conf import settings
 
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -11,7 +12,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from user_app import utils
 from user_app.models import User
-from user_app.serializers import LoginTokenSerializer, RefreshTokenSerializer, ResetPasswordSerializer
+from user_app.serializers import LoginTokenSerializer, RefreshTokenSerializer, \
+    ResetPasswordSerializer, ForgetPasswordSerializer
 
 
 class LoginView(TokenObtainPairView):
@@ -48,7 +50,7 @@ class LogoutView(GenericAPIView):
 
 
 class ForgotPasswordView(CreateAPIView):
-    permission_classes = ()
+    serializer_class = ForgetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
         email = request.data.get('email', '')
@@ -62,32 +64,33 @@ class ForgotPasswordView(CreateAPIView):
                 'email': email,
                 'username': user.username,
                 'full_name': user.full_name,
-                'uid': uid,
-                'token': token
+                'reset_link': f"{settings.DOMAIN}/api/auth/reset-password/{uid}/{token}",
+                # 'uid': uid,
+                # 'token': token
             }
-            # try:
-            #     utils.mail_sender(
-            #         template='user_app/reset_password.html',
-            #         context=context,
-            #         subject="Reset Password",
-            #         recipient_list=[email]
-            #     )
-            # except Exception as error:
-            #     return Response({"msg": "Server Error. Please try again in a while."},
-            #                     status=HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                utils.mail_sender(
+                    template='user_app/reset_password.html',
+                    context=context,
+                    subject="Reset Password",
+                    recipient_list=[email]
+                )
+            except Exception as error:
+                return Response({"msg": "Server Error. Please try again in a while."},
+                                status=HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"msg": "Password reset email has been sent. Please check your mail inbox."})
 
 
 class ResetPasswordView(CreateAPIView):
-    permission_classes = ()
     serializer_class = ResetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
         from django.utils.encoding import force_text
         from django.utils.http import urlsafe_base64_decode
 
-        uid = request.data.get('uid', '')
+        # uid = request.data.get('uid', '')
+        uid = self.kwargs.get('uid', '')
         if not uid:
             return Response({'uid': ["This field is required."]}, status=HTTP_400_BAD_REQUEST)
         uid = force_text(urlsafe_base64_decode(uid))
@@ -96,7 +99,8 @@ class ResetPasswordView(CreateAPIView):
         except Exception as err:
             return Response({'msg': "Requested user not found."}, status=HTTP_403_FORBIDDEN)
 
-        token = request.data.get('token', '')
+        # token = request.data.get('token', '')
+        token = self.kwargs.get('token', '')
         if not token:
             return Response({'token': ["This field is required."]}, status=HTTP_400_BAD_REQUEST)
 

@@ -5,8 +5,8 @@ from user_app.utils import mail_sender
 
 
 class SignupSerializer(serializers.Serializer):
-    first_name = serializers.CharField(max_length=30, required=False)
-    last_name = serializers.CharField(max_length=30, required=False)
+    first_name = serializers.CharField(max_length=30)
+    last_name = serializers.CharField(max_length=30)
     email = serializers.EmailField()
     password = serializers.CharField(max_length=255)
     confirm_password = serializers.CharField(max_length=255)
@@ -44,7 +44,7 @@ class SignupSerializer(serializers.Serializer):
                 recipient_list=[email]
             )
         except Exception as error:
-            pass
+            print(str(error))
 
         return User.objects.create_user(email=email,
                                         password=validated_data.pop('password'),

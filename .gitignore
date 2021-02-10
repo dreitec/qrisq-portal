@@ -81,3 +81,5 @@ media/
 *.pyc
 *.db
 *.pid
+
+staticfiles/
