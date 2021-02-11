@@ -45,9 +45,7 @@ class SignupSerializer(serializers.Serializer):
 
         # send email confirmation to user
         context = {
-            'email': email,
             'full_name': f"{first_name} {last_name}",
-            'password': password,
             'logo_url': "https://qrisq.com/wp-content/uploads/2020/10/QRISQ-logo-3D-white.png"
         }
         try:

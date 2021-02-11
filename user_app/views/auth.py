@@ -20,14 +20,14 @@ class LoginView(TokenObtainPairView):
     serializer_class = LoginTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        if not User.objects.filter(email=request.data['email']).exists():
-            return Response({'msg': "No active account found with the given credentials"},
+        if not User.objects.filter(email=request.data['email'], is_deleted=False).exists():
+            return Response({'message': "No active account found with the given credentials"},
                             status=HTTP_401_UNAUTHORIZED)
         try:
             return super().post(request, *args, **kwargs)
 
         except Exception:
-            return Response({'msg': 'No active account found with the given credentials.'},
+            return Response({'message': 'No active account found with the given credentials.'},
                             status=HTTP_401_UNAUTHORIZED)
 
 
@@ -55,7 +55,7 @@ class ForgotPasswordView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email', '')
         if not email:
-            return Response({"msg": "Email is not provided."}, status=HTTP_400_BAD_REQUEST)
+            return Response({"message": "Email is not provided."}, status=HTTP_400_BAD_REQUEST)
 
         user = User.objects.filter(email=email).first()
         if user:
@@ -74,10 +74,10 @@ class ForgotPasswordView(CreateAPIView):
                     recipient_list=[email]
                 )
             except Exception as error:
-                return Response({"msg": "Server Error. Please try again in a while."},
+                return Response({"message": "Server Error. Please try again in a while."},
                                 status=HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({"msg": "Password reset email has been sent. Please check your mail inbox."})
+        return Response({"message": "Password reset email has been sent. Please check your mail inbox."})
 
 
 class ResetPasswordView(CreateAPIView):
@@ -95,7 +95,7 @@ class ResetPasswordView(CreateAPIView):
         try:
             user = User.objects.get(id=int(uid))
         except Exception:
-            return Response({'msg': "Requested user not found."}, status=HTTP_403_FORBIDDEN)
+            return Response({'message': "Requested user not found."}, status=HTTP_403_FORBIDDEN)
 
         # token = request.data.get('token', '')
         token = self.kwargs.get('token', '')
@@ -103,7 +103,7 @@ class ResetPasswordView(CreateAPIView):
             return Response({'token': ["This field is required."]}, status=HTTP_400_BAD_REQUEST)
 
         if not utils.check_reset_token(user=user, token=token):
-            return Response({'msg': "Invalid token."}, status=HTTP_403_FORBIDDEN)
+            return Response({'message': "Invalid token."}, status=HTTP_403_FORBIDDEN)
 
         serializer = self.serializer_class(data=request.data, context={'user': user})
         serializer.is_valid(raise_exception=True)
@@ -123,7 +123,7 @@ class ResetPasswordView(CreateAPIView):
         except Exception:
             pass
 
-        return Response({'msg': "Your password has reset successfully."})
+        return Response({'message': "Your password has reset successfully."})
 
 
 class ChangePasswordView(CreateAPIView):
@@ -158,4 +158,4 @@ class ChangePasswordView(CreateAPIView):
         except Exception:
             pass
 
-        return Response({'msg': "Your password has been changed successfully."})
+        return Response({'message': "Your password has been changed successfully."})

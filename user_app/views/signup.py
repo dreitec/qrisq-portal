@@ -20,8 +20,8 @@ class SignupView(CreateAPIView):
         except Exception as error:
             transaction.savepoint_rollback(sid)
             return Response({
-                'msg': "Signup Failed.",
+                'message': "Signup Failed.",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
         
-        return Response({'msg': "User successfully created."}, status=HTTP_201_CREATED)
+        return Response({'message': "User successfully created."}, status=HTTP_201_CREATED)
 
