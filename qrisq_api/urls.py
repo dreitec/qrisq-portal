@@ -10,6 +10,7 @@ from django.urls import path, include
 urlpatterns = [
     # path('api', schema_view, name='list-out'),
     path('api/', include('user_app.urls')),
+    path('api/subscriptions', include('subscriptions.urls')),
 ]
 
 if settings.DEBUG:
