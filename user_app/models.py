@@ -1,13 +1,16 @@
 from __future__ import unicode_literals
 import hashlib
 
+from django.core.validators import RegexValidator
 from django.contrib.gis.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 
 from .manager import UserManager
-import datetime 
+import datetime
+
+NUMERIC_VALIDATOR = RegexValidator(r'^[0-9+]', 'Only numeric characters')
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -43,3 +46,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     address = models.JSONField(default=dict, null=True)
+    street_number = models.CharField(max_length=30, blank=True, default="")
+    city = models.CharField(max_length=30, blank=True, default="")
+    state = models.CharField(max_length=30, blank=True, default="")
+    zip_code = models.CharField(max_length=5, validators=[NUMERIC_VALIDATOR], blank=True, default="")
