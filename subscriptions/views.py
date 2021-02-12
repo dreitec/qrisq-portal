@@ -1,9 +1,9 @@
 from rest_framework import viewsets
 
-from .models import Subscription
-from .serializers import SubscriptionSerializer
+from .models import SubscriptionPlan
+from .serializers import SubscriptionPlanSerializer
 
 
-class SubscriptionViewSet(viewsets.ModelViewSet):
-    serializer_class = SubscriptionSerializer
-    queryset = Subscription.objects.all()
+class SubscriptionPlanViewSet(viewsets.ModelViewSet):
+    serializer_class = SubscriptionPlanSerializer
+    queryset = SubscriptionPlan.objects.all()
