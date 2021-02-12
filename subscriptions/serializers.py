@@ -1,14 +1,8 @@
 from rest_framework import serializers
-from .models import Subscription, UsersSubscription
+from .models import Subscription
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ['name', 'feature', 'price', 'duration']
-
-
-class UsersSubscriptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UsersSubscription
-        fields = ['user', 'subscription']
+        fields = "__all__"
