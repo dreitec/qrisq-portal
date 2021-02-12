@@ -8,7 +8,7 @@ from user_app.views import LoginView, LogoutView, RefreshTokenView, \
 
 
 router = SimpleRouter(trailing_slash=False)
-router.register(r'users', UserViewSet, basename="User")
+router.register('users', UserViewSet, basename="users")
 
 urlpatterns = router.urls
 
