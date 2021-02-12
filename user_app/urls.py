@@ -4,7 +4,7 @@ from rest_framework.routers import SimpleRouter
 
 from user_app.views import LoginView, LogoutView, RefreshTokenView, \
     ChangePasswordView, ResetPasswordView, ForgotPasswordView, \
-    SignupView, AccountProfileView, UserViewSet
+    SignupView, AccountProfileView, UserViewSet, list_admin_users, list_client_users
 
 
 router = SimpleRouter(trailing_slash=False)
@@ -23,4 +23,6 @@ urlpatterns += [
     path('auth/signup', SignupView.as_view(), name="signup"),
 
     path('auth/account-profile', AccountProfileView.as_view(), name='account-profile'),
+    path('admins', list_admin_users, name="admin-users"),
+    path('clients', list_client_users, name="client-users"),
 ]
