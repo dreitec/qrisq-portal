@@ -36,4 +36,4 @@ class UserSerializer(serializers.ModelSerializer):
             user_profile = instance.profile
             user_profile.phone_number = profile["phone_number"]
             user_profile.save()
-            return super().update(instance, validated_data)
+        return super().update(instance, validated_data)
