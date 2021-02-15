@@ -30,5 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         profile = validated_data.pop('profile', {})
-        UserProfile.objects.update_or_create(user=instance, defaults=profile)
-        return super().update(instance, validated_data)
+        if instance.is_admin:
+            UserProfile.objects.update_or_create(user=instance, defaults=profile)
+        else:
+            user_profile = instance.profile
+            user_profile.phone_number = profile["phone_number"]
+            user_profile.save()
+            return super().update(instance, validated_data)
