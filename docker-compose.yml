@@ -3,20 +3,26 @@ version: '3.9'
 volumes:
   dbdata:
 
+networks:
+  backend:
+    driver: bridge
+
 services:
   api:
+    restart: always
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
     volumes:
       - .:/qrisq
-    env_file: .env
+    env_file: .env.docker
     container_name: qrisq_api
     depends_on:
       - db
     links:
       - db
+    networks:
+      - backend
 
   db:
     image: postgis/postgis
@@ -29,4 +35,6 @@ services:
     ports:
       - 5430:5432
     volumes:
-      - dbdata:/var/lib/postgresql 
+      - dbdata:/var/lib/postgresql
+    networks:
+      - backend
