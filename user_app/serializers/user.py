@@ -12,7 +12,10 @@ class UserBasicSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'full_name', 'username')
+        fields = ('id', 'first_name', 'last_name', 'email', 'password')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,22 +23,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'full_name', 'profile')
+        fields = ('id', 'email', 'first_name', 'last_name', 'profile')
         extra_kwargs = {
             'email': {'required': False}
         }
-
-    def create(self, validated_data):
-        if not validated_data.get('username', ''):
-            raise serializers.ValidationError({'username': ['This field is required.']})
-
-        if not validated_data.get('email', ''):
-            raise serializers.ValidationError({'email': ['This field is required.']})
-
-        profile = validated_data.pop('profile', {})
-        user = User.objects.create_user(**validated_data)
-        UserProfile.objects.create(user=user, **profile)
-        return user
 
     def update(self, instance, validated_data):
         profile = validated_data.pop('profile', {})

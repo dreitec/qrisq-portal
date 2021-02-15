@@ -4,35 +4,49 @@ import hashlib
 from django.contrib.gis.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
 
 from .manager import UserManager
+import datetime
+
+NUMERIC_VALIDATOR = RegexValidator(r'^[0-9+]', 'Only numeric characters')
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(_('username'), unique=True, max_length=30, blank=True)
     email = models.EmailField(_('email'), unique=True)
-    full_name = models.CharField(_('full_name'), max_length=60, blank=True)
+    first_name = models.CharField(_('first_name'), max_length=60, blank=True)
+    last_name = models.CharField(_('last_name'), max_length=60, blank=True)
     date_joined = models.DateTimeField(_('date_joined'), auto_now_add=True)
-    is_active = models.BooleanField(_('is_active'), default=False)
+    is_admin = models.BooleanField(_('is_admin'), default=False)
+    is_deleted = models.BooleanField(_('is_deleted'), default=False)
+    deleted_at = models.DateTimeField(_('deleted_at'), default=None, null=True)
+    created_at = models.DateTimeField(_('created_at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated_at'), auto_now=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email',]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
     def __str__(self):
-        return self.username
+        return self.email
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.deleted_at = datetime.datetime.now()
+        self.save()
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     address = models.JSONField(default=dict, null=True)
-
-    def __str__(self):
-        return self.user.username
+    street_number = models.CharField(max_length=30, blank=True, default="")
+    city = models.CharField(max_length=30, blank=True, default="")
+    state = models.CharField(max_length=30, blank=True, default="")
+    zip_code = models.CharField(max_length=5, validators=[NUMERIC_VALIDATOR], blank=True, default="")
