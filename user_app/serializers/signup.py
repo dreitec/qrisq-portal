@@ -38,10 +38,8 @@ class SignupSerializer(serializers.Serializer):
         last_name = validated_data.pop('last_name')
         password = validated_data.pop('password')
 
-        user = User.objects.create_user(email=email,
+        user = User.objects.create_user(email=email, password=password,
                                         **{"first_name": first_name, "last_name": last_name})
-        user.set_password(password)
-        user.save()
 
         UserProfile.objects.create(user=user, **validated_data)
 
