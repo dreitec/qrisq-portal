@@ -24,7 +24,7 @@ class AccountProfileView(views.APIView):
 
 
 class UserViewSet(mixins.CreateModelMixin,
-                # mixins.UpdateModelMixin,
+                mixins.UpdateModelMixin,
                 mixins.DestroyModelMixin,
                 mixins.RetrieveModelMixin,
                 viewsets.GenericViewSet):
