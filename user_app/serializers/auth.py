@@ -20,6 +20,10 @@ class RefreshTokenSerializer(TokenRefreshSerializer):
         RefreshToken(refresh).blacklist()
 
 
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
 class ResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(max_length=100)
     confirm_password = serializers.CharField(max_length=100)
