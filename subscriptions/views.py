@@ -12,7 +12,6 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser, ]
 
     def get_permissions(self):
-        print(self.request.method)
         if self.request.method == "GET":
             return []
-        return [permission() for permission in self.permission_classes]
+        return super().get_permissions()
