@@ -1,0 +1,20 @@
+{% extends 'user_app/email/base.html' %}
+{% block content %}
+
+<p>
+    Congratulations on the creation of your Q-risq account! You will be able to prepare better than ever this tropical storm season. Your account will provide forecasts for maximum storm surge, sustained wind speeds, and rainfall every 6-hours during an active tropical storm or hurricane event.
+</p>
+<p>
+    Log into your Q-risq account here: 
+</p>
+<div class="row">
+    <div class="col-left">
+        <a href="https://www.Qrisq.com/login">www.Qrisq.com/login</a>
+    </div>
+    <div class="col-right">
+        {% include "user_app/email/learn_more.html" %}
+    </div>
+</div>
+<p>Please contact Member Support (<u>info@qrisq.com</u>) if you have any questions. </p>
+
+{% endblock content %}
