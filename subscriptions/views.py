@@ -14,4 +14,4 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.request.method == "GET":
             return []
-        return [permission() for permission in self.permission_classes]
+        return super().get_permissions()
