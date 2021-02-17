@@ -1,96 +1,167 @@
-from django.test import TestCase
 from django.urls import reverse
-from user_app.models import User
+from django.contrib.auth.hashers import check_password
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-class TestSignup(APITestCase):
+from user_app.models import User
+
+
+class SignupTestCase(APITestCase):
     def setUp(self):
         self.url = reverse('signup')
+        User.objects.create_user(email="first@last.com", password="asd123!@#", first_name="First", last_name="Last")
 
     def test_signup(self):
         data = {
-               "username": "test_name",
-               "full_name": "test_full_name",
-               "email": "test@gmail.com",
-               "password": "admin@123",
-               "confirm_password": "admin@123"
-               }
+            "first_name": "first",
+            "last_name": "last",
+            "email": "test@gmail.com",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700
+        }
 
         response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.get().username, 'test_name')
-        self.assertJSONEqual(str(response.content, encoding='utf8'),
-            {'msg': 'User successfully created.'})
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(User.objects.count(), 2)
+        self.assertEqual(User.objects.filter(email=data["email"]).count(), 1)
+        self.assertNotEquals(User.objects.last().password, data["password"])
+        self.assertTrue(check_password(data["password"], User.objects.get(email=data["email"]).password))
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'message': 'User successfully created.'}
+        )
 
-    def test_password_and_confirm_password(self):
+    def test_unmatched_passwords(self):
         data = {
-               "username": "test_name",
-               "full_name": "test_full_name",
-               "email": "test@gmail.com",
-               "password": "admin@123",
-               "confirm_password": "admin"
-               }
+            "first_name": "test_first_name",
+            "last_name": "test_last_name",
+            "email": "test@gmail.com",
+            "password": "admin@123",
+            "confirm_password": "admin",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700
+        }
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data,
+            {'confirm_password': ["Passwords didn't match."]}
+        )
+
+    def test_unique_email(self):
+        data = {
+            "first_name": "test_first_name",
+            "last_name": "test_last_name",
+            "email": "first@last.com",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700
+        }
 
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertJSONEqual(str(response.content, encoding='utf8'),
-            {'password_confirmation': ["Passwords didn't match."]})
+        self.assertEqual(
+            response.data,
+            {'email': ["User with this email exists."],}
+        )
 
-    def test_unique_username_and_email(self):
-        user = User.objects.create(username='test_name', email='test@gmail.com')
-        user.set_password('admin@123')
-        user.save()
+    def test_blank_name(self):
         data = {
-               "username": "test_name",
-               "full_name": "test_full_name",
-               "email": "test@gmail.com",
-               "password": "admin@123",
-               "confirm_password": "admin@123"
-               }
-
+            "first_name": "",
+            "last_name": "",
+            "email": "test@gmail.com",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700
+        }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertJSONEqual(str(response.content, encoding='utf8'),
-            {'email': ["User with this email exists."],
-            'username': ["User with this username exists."]})
+        self.assertEqual(
+            response.data,
+            {'first_name': ["This field may not be blank."],
+             'last_name': ["This field may not be blank."]}
+        )
 
-    def test_blank_username(self):
+    def test_invalid_email1(self):
         data = {
-               "username": "",
-               "full_name": "test_full_name",
-               "email": "test@gmail.com",
-               "password": "admin@123",
-               "confirm_password": "admin@123"
-            }
+            "first_name": "First",
+            "last_name": "Last",
+            "email": "test@gmail..com",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700
+        }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertJSONEqual(str(response.content, encoding='utf8'),
-            {'username': ["This field may not be blank."]})
-
-    def test_blank_fullname(self):
-        data = {
-               "username": "test_name",
-               "full_name": "",
-               "email": "test@gmail.com",
-               "password": "admin@123",
-               "confirm_password": "admin@123"
-            }
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertJSONEqual(str(response.content, encoding='utf8'),
-            {'full_name': ["This field may not be blank."]})
+        self.assertEqual(
+            response.data,
+            {'email': ["Enter a valid email address."]}
+        )
 
     def test_blank_email(self):
         data = {
-               "username": "test_name",
-               "full_name": "test_full_name",
-               "email": "",
-               "password": "admin@123",
-               "confirm_password": "admin@123"
-            }
+            "first_name": "first_name",
+            "last_name": "last_name",
+            "email": "",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700
+        }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertJSONEqual(str(response.content, encoding='utf8'),
-            {'email': ["This field may not be blank."]})
+        self.assertEqual(
+            response.data,
+            {'email': ["This field may not be blank."]}
+        )
+
+    def test_invalid_zipcode(self):
+        data = {
+            "first_name": "first_name",
+            "last_name": "last_name",
+            "email": "test@admin.com",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": "asdfa"
+        }
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data,
+            {'zip_code': ["Only numeric characters"]}
+        )
