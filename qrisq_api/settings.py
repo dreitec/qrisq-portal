@@ -86,19 +86,32 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'OPTIONS': {
-            'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+import sys
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'qrisq_db',
+            'USER': 'postgres',
+            'PASSWORD': config('DB_PASSWORD', default="password"),
+            'HOST': '127.0.0.1',
+            'PORT': 5432,
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('DB_NAME', default="qrisq_db"),
+            'USER': config('DB_USER', default="postgis"),
+            'PASSWORD': config('DB_PASSWORD', default="password"),
+            'HOST': config('DB_HOST', default="localhost"),
+            'PORT': config('DB_PORT', default=5432),
+            'OPTIONS': {
+                'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+            }
+        }
+    }
 
 
 # Email Settings
