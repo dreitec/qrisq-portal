@@ -22,8 +22,8 @@ class SubscriptionPlanTests(APITestCase):
             feature = "test feature",
             price = 0.0,
             duration = 0)
-        self.admin_user = User.objects.create(email='admin@gmail.com', is_admin=True)
-        self.user = User.objects.create(email='user@gmail.com')
+        self.admin_user = User.objects.create_user(email='admin@gmail.com', password="admin@123", is_admin=True)
+        self.user = User.objects.create_user(email='user@gmail.com', password="admin@123")
 
     def test_get_subscription_plan(self):
         response = self.client.get('/api/subscription-plans')
@@ -52,6 +52,7 @@ class SubscriptionPlanTests(APITestCase):
     def test_retrieve_non_existing_subscription_plan(self):
         response = self.client.get('/api/subscription-plans/100')
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(json.loads(response.content),{'detail': 'Not found.'})
 
     def test_create_subscription_plan_without_authentication(self):
         response = self.client.post('/api/subscription-plans', {
@@ -104,6 +105,10 @@ class SubscriptionPlanTests(APITestCase):
         force_authenticate(request, user=self.admin_user)
         response = view(request)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,{"name": [
+            "This field may not be blank."
+        ]})  
+
 
     def test_create_subscription_string_price(self):
         request = self.factory.post('/api/subscription-plans',  {
@@ -115,6 +120,10 @@ class SubscriptionPlanTests(APITestCase):
         force_authenticate(request, user=self.admin_user)
         response = view(request)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,{"price": [
+            "A valid number is required."
+            ]
+        }) 
 
     def test_create_subscription_string_duration(self):
         request = self.factory.post('/api/subscription-plans',  {
@@ -127,10 +136,20 @@ class SubscriptionPlanTests(APITestCase):
         force_authenticate(request, user=self.admin_user)
         response = view(request)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,{"duration": [
+            "A valid integer is required."
+            ]
+        }) 
 
     def test_delete_subscription(self):
+        data = {
+            "email": "admin@gmail.com",
+            "password": "admin@123"
+        }
+        login_response = self.client.post('/api/auth/login', data, format='json')
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + login_response.data['access'])
         response = self.client.delete('/api/subscription-plans/' + str(self.subscription_plan.id))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 204)
     
     def test_update_subscription_without_auth(self):
         response = self.client.put('/api/subscription-plans/' + str(self.subscription_plan.id), {
@@ -184,6 +203,9 @@ class SubscriptionPlanTests(APITestCase):
         force_authenticate(request, user=self.admin_user)
         response = view(request, pk=self.subscription_plan.id)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,{"name": [
+            "This field may not be blank."
+        ]}) 
 
     def test_update_subscription_plan_with_string_duration(self):
         request = self.factory.put('/api/subscription-plans',  {
@@ -196,6 +218,10 @@ class SubscriptionPlanTests(APITestCase):
         force_authenticate(request, user=self.admin_user)
         response = view(request, pk=self.subscription_plan.id)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,{"duration": [
+            "A valid integer is required."
+            ]
+        }) 
 
     def test_update_subscription_plan_with_string_price(self):
         request = self.factory.put('/api/subscription-plans',  {
@@ -208,3 +234,7 @@ class SubscriptionPlanTests(APITestCase):
         force_authenticate(request, user=self.admin_user)
         response = view(request, pk=self.subscription_plan.id)
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data,{"price": [
+            "A valid number is required."
+            ]
+        }) 

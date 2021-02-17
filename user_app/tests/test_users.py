@@ -35,15 +35,11 @@ class TestAdminUserCrud(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token)
         response = self.client.post('/api/users', data, format='json')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {'data': {
-            'id': 37,
-            'email': 'test11@gmail.com',
-            'first_name': 'Test',
-            'last_name': 'test'
-            },
-           'message': 'Admin User created'
-            })
-        
+        self.assertEqual(response.data['message'], 'Admin User created')
+        self.assertEqual(json.loads(response.content)['data']['email'],'test11@gmail.com')
+        self.assertEqual(json.loads(response.content)['data']['first_name'],'Test')
+        self.assertEqual(json.loads(response.content)['data']['last_name'],'test')
+
     def test_create_user_by_non_admin(self):
         data= {
             "email": "test2@gmail.com",
