@@ -58,25 +58,26 @@ class ForgotPasswordView(CreateAPIView):
             return Response({"message": "Email is not provided."}, status=HTTP_400_BAD_REQUEST)
 
         user = User.objects.filter(email=email).first()
-        if user:
-            uid, token = utils.generate_password_reset_token(user)
-            context = {
-                'email': email,
-                'full_name': user.first_name + ' ' + user.last_name,
-                'logo_url': "http://54.82.3.236/api/static/images/logo.png",
-                'reset_link': f"{settings.DOMAIN}/api/auth/reset-password/{uid}/{token}",
-            }
-            try:
-                utils.mail_sender(
-                    template='user_app/reset_password.html',
-                    context=context,
-                    subject="Reset Password",
-                    recipient_list=[email]
-                )
-            except Exception as error:
-                return Response({"message": "Server Error. Please try again in a while."},
-                                status=HTTP_500_INTERNAL_SERVER_ERROR)
+        if user is None:
+            return Response({"message": "User not found"}, status=HTTP_400_BAD_REQUEST)
 
+        uid, token = utils.generate_password_reset_token(user)
+        context = {
+            'email': email,
+            'full_name': user.first_name + ' ' + user.last_name,
+            'logo_url': "http://54.82.3.236/api/static/images/logo.png",
+            'reset_link': f"{settings.DOMAIN}/api/auth/reset-password/{uid}/{token}",
+        }
+        try:
+            utils.mail_sender(
+                template='user_app/reset_password.html',
+                context=context,
+                subject="Reset Password",
+                recipient_list=[email]
+            )
+        except Exception as error:
+            return Response({"message": "Server Error. Please try again in a while."},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({"message": "Password reset email has been sent. Please check your mail inbox."})
 
 

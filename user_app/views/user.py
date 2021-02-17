@@ -33,6 +33,9 @@ class UserViewSet(mixins.CreateModelMixin,
     permission_classes = [IsAdminUser,]
 
     def create(self, request, *args, **kwargs):
+        '''
+        Create Admin User only
+        '''
         self.serializer_class = UserBasicSerializer
         response = super().create(request, *args, **kwargs)
         response.data = {
@@ -40,6 +43,9 @@ class UserViewSet(mixins.CreateModelMixin,
             "data": response.data
         }
         return response
+    
+    def perform_create(self, serializer):
+        serializer.save(is_admin=True)
 
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()

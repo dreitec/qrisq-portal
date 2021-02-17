@@ -14,12 +14,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default="randomString")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
 
 
 # Application definition
@@ -93,7 +93,7 @@ if 'test' in sys.argv:
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'qrisq_db',
             'USER': 'postgres',
-            'PASSWORD': config('DB_PASSWORD', default="password"),
+            'PASSWORD': 'p@ssw0rd',
             'HOST': '127.0.0.1',
             'PORT': 5432,
         }
@@ -184,7 +184,7 @@ SWAGGER_SETTINGS = {
 LOGIN_EXEMPT_PATHS = (
     r'api/auth/login',
     r'api/auth/refresh',
-    r'api/auth/reset-password',
+    r'api/auth/reset-password$',
     r'api/auth/forgot-password',
     r'api/auth/forgot-email',
     r'api/auth/signup',

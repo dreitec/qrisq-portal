@@ -30,7 +30,7 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def validate(self, data):
         if not data['new_password'] == data['confirm_password']:
-            raise serializers.ValidationError({'password_confirmation': ["Passwords didn't match."]})
+            raise serializers.ValidationError({'confirm_password': ["Passwords didn't match."]})
 
         import re
         if not re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*_+=\\<>?,./-]).{8,}$",
