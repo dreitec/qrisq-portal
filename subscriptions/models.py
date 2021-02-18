@@ -18,3 +18,5 @@ class UsersSubscription(models.Model):
     subscribed_on = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     recurring = models.BooleanField(default=False)
+    is_cancelled = models.BooleanField(default=False)
+    cancelled_at = models.DateTimeField(default=None, null=True)
