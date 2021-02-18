@@ -7,7 +7,7 @@ class IsAdminUser(permissions.BasePermission):
     """
  
     def has_permission(self, request, view):
-          if isinstance(request.user, AnonymousUser):
-              return False
-          user = request.user
-          return user.is_superuser or user.is_admin
+        if isinstance(request.user, AnonymousUser):
+            return False
+        user = request.user
+        return user.is_superuser or user.is_admin

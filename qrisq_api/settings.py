@@ -14,12 +14,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default="randomString")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
 
 
 # Application definition
@@ -87,19 +87,32 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'OPTIONS': {
-            'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+import sys
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'qrisq_db',
+            'USER': 'postgres',
+            'PASSWORD': 'p@ssw0rd',
+            'HOST': '127.0.0.1',
+            'PORT': 5432,
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('DB_NAME', default="qrisq_db"),
+            'USER': config('DB_USER', default="postgis"),
+            'PASSWORD': config('DB_PASSWORD', default="password"),
+            'HOST': config('DB_HOST', default="localhost"),
+            'PORT': config('DB_PORT', default=5432),
+            'OPTIONS': {
+                'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+            }
+        }
+    }
 
 
 # Email Settings
@@ -172,7 +185,7 @@ SWAGGER_SETTINGS = {
 LOGIN_EXEMPT_PATHS = (
     r'api/auth/login',
     r'api/auth/refresh',
-    r'api/auth/reset-password',
+    r'api/auth/reset-password$',
     r'api/auth/forgot-password',
     r'api/auth/forgot-email',
     r'api/auth/signup',

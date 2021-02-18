@@ -3,7 +3,7 @@ from user_app.models import User
 
 
 class SubscriptionPlan(models.Model):
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=60, unique=True)
     feature = models.TextField(blank=True, default="")
     price = models.FloatField(default=0)
     duration = models.PositiveSmallIntegerField(default=0)
