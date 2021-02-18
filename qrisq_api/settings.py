@@ -91,12 +91,12 @@ import sys
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'qrisq_db',
-            'USER': 'postgres',
-            'PASSWORD': 'p@ssw0rd',
-            'HOST': '127.0.0.1',
-            'PORT': 5430,
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('DB_NAME', default="qrisq_db"),
+            'USER': config('DB_USER', default="postgres"),
+            'PASSWORD': config('DB_PASSWORD', default="password"),
+            'HOST': config('DB_HOST', default="localhost"),
+            'PORT': config('DB_PORT', default=5432),
         }
     }
 else:
