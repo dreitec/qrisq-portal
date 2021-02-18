@@ -96,7 +96,7 @@ if 'test' in sys.argv:
             'USER': 'postgres',
             'PASSWORD': 'p@ssw0rd',
             'HOST': '127.0.0.1',
-            'PORT': 5432,
+            'PORT': 5430,
         }
     }
 else:

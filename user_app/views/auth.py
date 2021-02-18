@@ -65,7 +65,7 @@ class ForgotPasswordView(CreateAPIView):
         context = {
             'email': email,
             'full_name': user.first_name + ' ' + user.last_name,
-            'logo_url': "http://54.82.3.236/api/static/images/logo.png",
+            'domain': f"{settings.DOMAIN}",
             'reset_link': f"{settings.DOMAIN}/api/auth/reset-password/{uid}/{token}",
         }
         try:
@@ -112,7 +112,7 @@ class ResetPasswordView(CreateAPIView):
 
         context = {
             'full_name': user.first_name + ' ' + user.last_name,
-            'logo_url': "http://54.82.3.236/api/static/images/logo.png"
+            'domain': f"{settings.DOMAIN}",
         }
         try:
             utils.mail_sender(
@@ -147,7 +147,7 @@ class ChangePasswordView(CreateAPIView):
 
         context = {
             'full_name': user.first_name + ' ' + user.last_name,
-            'logo_url': "http://54.82.3.236/api/static/images/logo.png"
+            'domain': f"{settings.DOMAIN}"
         }
         try:
             utils.mail_sender(
