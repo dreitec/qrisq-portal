@@ -12,5 +12,3 @@ ADD requirements.txt /qrisq/
 RUN pip install -r /qrisq/requirements.txt
 
 COPY ./ /qrisq
-
-ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]
