@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 import hashlib
 
-from django.core.validators import RegexValidator
 from django.contrib.gis.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
 
 from .manager import UserManager
