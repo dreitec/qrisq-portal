@@ -4,11 +4,11 @@ from rest_framework.routers import SimpleRouter
 
 from user_app.views import LoginView, LogoutView, RefreshTokenView, \
     ChangePasswordView, ResetPasswordView, ForgotPasswordView, \
-    SignupView, AccountProfileView, UserViewSet
+    SignupView, AccountProfileView, UserViewSet, list_admin_users, list_client_users
 
 
 router = SimpleRouter(trailing_slash=False)
-router.register(r'users', UserViewSet, basename="User")
+router.register('users', UserViewSet, basename="users")
 
 urlpatterns = router.urls
 
@@ -18,9 +18,11 @@ urlpatterns += [
     path('auth/refresh', RefreshTokenView.as_view(), name="refresh-token"),
     path('auth/change-password', ChangePasswordView.as_view(), name="change-password"),
     path('auth/forgot-password', ForgotPasswordView.as_view(), name="forgot-password"),
-    path('auth/reset-password', ResetPasswordView.as_view(), name="reset-password"),
+    path('auth/reset-password/<str:uid>/<str:token>', ResetPasswordView.as_view(), name="reset-password"),
 
     path('auth/signup', SignupView.as_view(), name="signup"),
 
-    path('auht/account-profile', AccountProfileView.as_view(), name='account-profile'),
+    path('auth/account-profile', AccountProfileView.as_view(), name='account-profile'),
+    path('admins', list_admin_users, name="admin-users"),
+    path('clients', list_client_users, name="client-users"),
 ]

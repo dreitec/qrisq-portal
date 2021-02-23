@@ -1,22 +1,25 @@
 from pathlib import Path
 from datetime import timedelta
 
+import os
+
 from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default="randomString")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
 
 
 # Application definition
@@ -36,7 +39,7 @@ INSTALLED_APPS = [
 
     # Project apps
     'user_app',
-    'paypal',
+    'subscriptions'
 ]
 
 MIDDLEWARE = [
@@ -50,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # Custom Middleware
-    # 'qrisq_api.middleware.JWTTokenMiddleware',
+    'qrisq_api.middleware.JWTTokenMiddleware',
 ]
 
 ROOT_URLCONF = 'qrisq_api.urls'
@@ -83,19 +86,46 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'OPTIONS': {
-            'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+import sys
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'qrisq_db',
+            'USER': 'postgres',
+            'PASSWORD': 'p@ssw0rd',
+            'HOST': '127.0.0.1',
+            'PORT': 5430,
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('DB_NAME', default="qrisq_db"),
+            'USER': config('DB_USER', default="postgis"),
+            'PASSWORD': config('DB_PASSWORD', default="password"),
+            'HOST': config('DB_HOST', default="localhost"),
+            'PORT': config('DB_PORT', default=5432),
+            'OPTIONS': {
+                'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+            }
+        }
+    }
+
+
+# Email Settings
+# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+FROM_EMAIL = config('FROM_EMAIL', default='')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = config('EMAIL_PORT', default='')
+# EMAIL_USE_TLS = True
+
+
+# Domain Name
+DOMAIN = config('DOMAIN', 'http://localhost:8000')
 
 
 # Rest Framework Configuration
@@ -103,6 +133,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
 
@@ -134,11 +165,26 @@ SIMPLE_JWT = {
 }
 
 
+# Swagger Settings
+SWAGGER_SETTINGS = {
+    'is_authenticated': False,
+    'is_superuser': False,
+    'unauthenticated_user': 'django.contrib.auth.models.AnonymousUser',
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+}
+
+
 # Login Exempts
 LOGIN_EXEMPT_PATHS = (
     r'api/auth/login',
     r'api/auth/refresh',
-    r'api/auth/reset-password',
+    r'api/auth/reset-password$',
     r'api/auth/forgot-password',
     r'api/auth/forgot-email',
     r'api/auth/signup',
@@ -181,7 +227,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/api/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 
 # Remove appending slash on urls
@@ -192,11 +242,3 @@ APPEND_SLASH = False
 PAYPAL_TEST = config("PAYPAL_TEST", True)
 PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID", "")
 PAYPAL_SECRET_KEY = config("PAYPAL_SECRET_KEY", "")
-
-
-# Email Settings
-FROM_EMAIL = config('FROM_EMAIL', default='')
-EMAIL_HOST = config('EMAIL_HOST', default='')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-EMAIL_PORT = config('EMAIL_PORT', default='')

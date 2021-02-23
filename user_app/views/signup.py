@@ -1,15 +1,14 @@
 from django.db import transaction
 
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 
 from user_app.serializers import SignupSerializer
 
 
-class SignupView(APIView):
+class SignupView(CreateAPIView):
     serializer_class = SignupSerializer
-    permission_classes = ()
 
     def post(self, request, *args, **kwargs):
         sid = transaction.savepoint()
@@ -21,8 +20,8 @@ class SignupView(APIView):
         except Exception as error:
             transaction.savepoint_rollback(sid)
             return Response({
-                'msg': "Signup Failed.",
+                'message': "Signup Failed.",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
         
-        return Response({'msg': "User successfully created."}, status=HTTP_200_OK)
+        return Response({'message': "User successfully created."}, status=HTTP_201_CREATED)
 
