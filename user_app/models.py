@@ -1,12 +1,16 @@
 from __future__ import unicode_literals
 import hashlib
 
+from django.conf import settings
 from django.core.validators import RegexValidator
 from django.contrib.gis.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+from user_app.utils import mail_sender
 from .manager import UserManager
 import datetime
 
@@ -41,7 +45,29 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.deleted_at = datetime.datetime.now()
         self.save()
 
+    @staticmethod
+    @receiver(post_save, sender="user_app.User")
+    def email_verification(sender, instance, created, **kwargs):
+        if created:
+            first_name = instance.first_name
+            last_name = instance.last_name
+            email = instance.email
 
+            context = {
+                'full_name': f"{first_name} {last_name}",
+                'domain': f"{settings.DOMAIN}"
+            }
+            try:
+                mail_sender(
+                    template='user_app/registration_confirmation.html',
+                    context=context,
+                    subject="User Registered",
+                    recipient_list=[email]
+                )
+            except Exception as error:
+                print(str(error))
+
+            
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)

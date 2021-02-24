@@ -43,19 +43,4 @@ class SignupSerializer(serializers.Serializer):
 
         UserProfile.objects.create(user=user, **validated_data)
 
-        # send email confirmation to user
-        context = {
-            'full_name': f"{first_name} {last_name}",
-            'domain': f"{settings.DOMAIN}"
-        }
-        try:
-            mail_sender(
-                template='user_app/registration_confirmation.html',
-                context=context,
-                subject="User Registered",
-                recipient_list=[email]
-            )
-        except Exception as error:
-            print(str(error))
-
         return user
