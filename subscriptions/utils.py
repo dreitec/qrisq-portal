@@ -4,7 +4,6 @@ from urllib.parse import quote
 from django.conf import settings
 
 from paypalcheckoutsdk.core import SandboxEnvironment, LiveEnvironment, PayPalHttpClient
-import paypalhttp
 
 
 def paypal_client():

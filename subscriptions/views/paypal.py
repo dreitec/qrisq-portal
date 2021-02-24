@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest, OrdersGetRequest
 from paypalcheckoutsdk.payments import CapturesGetRequest, CapturesRefundRequest
 
-from .utils import paypal_client, OrderApproveRequest
+from subscriptions.utils import paypal_client, OrderApproveRequest
 
 
 @api_view(["POST"])

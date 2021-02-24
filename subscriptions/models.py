@@ -20,3 +20,11 @@ class UsersSubscription(models.Model):
     recurring = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
     cancelled_at = models.DateTimeField(default=None, null=True)
+
+
+class PaypalCapture(models.Model):
+    capture_id = models.CharField(max_length=20, unique=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="capture")
+
+    class Meta:
+        db_table = "paypal_capture"

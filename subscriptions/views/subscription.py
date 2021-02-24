@@ -2,8 +2,8 @@ from rest_framework import viewsets
 
 from user_app.permissions import IsAdminUser
 
-from .models import SubscriptionPlan
-from .serializers import SubscriptionPlanSerializer
+from subscriptions.models import SubscriptionPlan
+from subscriptions.serializers import SubscriptionPlanSerializer
 
 
 class SubscriptionPlanViewSet(viewsets.ModelViewSet):
