@@ -28,10 +28,11 @@ services:
 
   db:
     image: postgis/postgis
+    env_file: .env.docker
     environment:
-      - POSTGRES_DB=qrisq_db
-      - POSTGRES_USER=qrisq
-      - POSTGRES_PASSWORD=p@ssw0rd
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     container_name: qrisq_db
     hostname: qrisq_psql
     ports:
