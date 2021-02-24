@@ -1,0 +1,12 @@
+{% extends 'user_app/email/base.html' %}
+
+{% block content %}
+
+    <p>
+        {{client_email}} has requested to change address. <br>
+        {{link}} 
+    </p>
+    <p>Old Address: {{old_address}}</p>
+    <p>New Address: {{new_address}}</p>
+
+{% endblock content %}
