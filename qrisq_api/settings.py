@@ -124,6 +124,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = config('EMAIL_PORT', default='')
 # EMAIL_USE_TLS = True
 
+#Admin Email
+ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@qrisq.com')
+
 
 # Domain Name
 DOMAIN = config('DOMAIN', 'http://localhost:8000')
