@@ -4,9 +4,12 @@ from rest_framework.response import Response
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, permission_classes
 
+from django.conf import settings
+
 from user_app.models import User
 from user_app.permissions import IsAdminUser
 from user_app.serializers import UserSerializer, UserBasicSerializer
+from user_app.utils import mail_sender
 
 
 class AccountProfileView(views.APIView):
@@ -66,3 +69,30 @@ def list_client_users(request):
     queryset = User.objects.filter(is_admin=False, is_deleted=False)
     return Response(UserSerializer(queryset, many=True).data)
  
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated,])
+def request_address_change(request):
+    new_address = request.data["new_address"]
+
+    if not new_address.strip():
+        return Response({'error': "Address field can't be empty"})
+
+    admin_email = settings.ADMIN_EMAIL
+    context = {
+        'new_address': new_address,
+        'old_address': request.user.profile.address,
+        'client_email': request.user.email,
+        'link': f"{settings.DOMAIN}/api/users/{request.user.id}"
+    }
+    try:
+        mail_sender(
+            template='user_app/request_address_change.html',
+            context=context,
+            subject="Request Address Change",
+            recipient_list=[admin_email]
+        )
+    except Exception as error:
+        return Response({'error': "Error sending message."})
+
+    return Response({'message': "Request has been sent to change your address."})
