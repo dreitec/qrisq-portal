@@ -28,5 +28,6 @@ urlpatterns += [
     path('clients', list_client_users, name="client-users"),
 
     path('request-address-change', request_address_change, name="request-address-change"),
+
     path('check-service-area', check_service_area, name="check-service-area")
 ]
