@@ -96,3 +96,8 @@ def request_address_change(request):
         return Response({'error': "Error sending message."})
 
     return Response({'message': "Request has been sent to change your address."})
+
+
+@api_view(["POST"])
+def check_service_area(request):
+    return Response({'exists': request.data["return_type"]})
