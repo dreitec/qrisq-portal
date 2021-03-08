@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     # Project apps
+    'core',
     'user_app',
     'subscriptions'
 ]
@@ -113,6 +114,12 @@ else:
             }
         }
     }
+
+
+# AWS Credentials
+AWS_ACCESS_KEY = config('AWS_ACCESS_KEY', "")
+AWS_SECRET_KEY = config('AWS_SECRET_KEY', "")
+AWS_REGION = config('AWS_REGION', 'us-east-1')
 
 
 # Email Settings
