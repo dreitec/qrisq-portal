@@ -23,9 +23,11 @@ class JWTTokenMiddleware():
             try:
                 request.user = authentication.JWTAuthentication().authenticate(request)[0]
             except InvalidToken as e:
-                if '/logout/' in path:
+                if '/logout' in path:
                     return JsonResponse({'detail': 'Successfully logged out.'}, status=200)
                 return JsonResponse({'error': 'Token is invalid or expired'}, status=401)
+            except TypeError as error:
+                return JsonResponse({'error': 'Token is not provided'}, status=401)
 
         return view_func(request, *view_args, **view_kwargs)
     
