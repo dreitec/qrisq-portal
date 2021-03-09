@@ -13,53 +13,56 @@ from .boto_client import download_file
 
 
 def service_area_finder(latitude, longitude):
+    surge_file = 'qrisq-service-area-surge-20210114.wkt'
+    wind_file = 'qrisq-service-area-wind-20210114.wkt'
+
     try:
-        if not os.path.exists("surge.wkt"):
-            download_file('qrisq-service-area-surge-20210114.wkt')
+        if not os.path.exists(wind_file):
+            download_file(wind_file)
 
-        if not os.path.exists("wind.wkt"):
-            download_file('qrisq-service-area-wind-20210114.wkt')
+        if not os.path.exists(surge_file):
+            download_file(surge_file)
+
     except ClientError as e:
-        return_body = 'WKT files not downloaded; ClientError: ' + e.response['Error']['Message']
-        return_status_code = 500
-    else:
-        # logger.info('Service Area WKT files downloaded.')
-        print("")
-
-    with open("wind.wkt", 'r') as wind_reader:                
-        filter_wind_wkt = wind_reader.read().decode()
+        return {
+            "status": 500,
+            "error": f"WKT files not downloaded; ClientError: {e.response['Error']['Message']}"
+        }
     
-    with open("surge.wkt", 'r') as surge_reader:
-        filter_surge_wkt = surge_reader.read().decode()     
+    try: 
+        with open(wind_file, 'r') as wind_reader:
+            wind_wkt = wind_reader.read()
         
+        with open(surge_file, 'r') as surge_reader:
+            surge_wkt = surge_reader.read()
+
+    except FileNotFoundError as err:
+        return {
+            "status": 500,
+            "error": 'WKT files not found'
+        }
+
     # logger.info('Filter Surge WKT: ' + filter_surge_wkt)
     # logger.info('Filter Wind WKT: ' + filter_wind_wkt)
     
-    shape_surge_filter = wkt.loads(filter_surge_wkt)
-    shape_wind_filter = wkt.loads(filter_wind_wkt)
+    return_data = {
+        "status": 200,
+        "available": False,
+        "services": []
+    }
 
+    shape_surge = wkt.loads(surge_wkt)
+    shape_wind = wkt.loads(wind_wkt)
     point = geometry.Point(longitude, latitude)
 
-    #'surge_and_wind'; 'surge_only'; 'wind_only'; 'no_service'
-    if shape_surge_filter.contains(point) and shape_wind_filter.contains(point):
+    if shape_surge.contains(point):
         # logger.info('Surge and Wind Service area contains point...')
-        return_status_code = 200
-        return_body = 'surge_and_wind'
-    elif shape_surge_filter.contains(point) and not shape_wind_filter.contains(point):
-        # logger.info('Surge Service area contains point...')
-        return_status_code = 200
-        return_body = 'surge_only'
-    elif not shape_surge_filter.contains(point) and  shape_wind_filter.contains(point):
-        # logger.info('Wind Service area contains point...')
-        return_status_code = 200
-        return_body = 'wind_only'
-    else:
-        # logger.info('Service area does not contain point...')
-        return_status_code = 200
-        return_body = 'no_service'    
+        return_data['available'] = True
+        return_data['services'].append('surge')
     
-    return {
-        'statusCode': return_status_code,
-        #'body': json.dumps(return_body)
-        'body': return_body
-    }
+    if shape_wind.contains(point):
+        # logger.info('Surge Service area contains point...')
+        return_data['available'] = True
+        return_data['services'].append('wind')
+   
+    return return_data
