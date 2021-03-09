@@ -196,11 +196,12 @@ SWAGGER_SETTINGS = {
 LOGIN_EXEMPT_PATHS = (
     r'api/auth/login',
     r'api/auth/refresh',
-    r'api/auth/reset-password$',
+    r'api/auth/reset-password',
     r'api/auth/forgot-password',
     r'api/auth/forgot-email',
     r'api/auth/signup',
     r'api/check-service-area',
+    r'api/subscription-plans',
 )
 
 
