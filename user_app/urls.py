@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from user_app.views import LoginView, LogoutView, RefreshTokenView, \
     ChangePasswordView, ResetPasswordView, ForgotPasswordView, \
     SignupView, AccountProfileView, UserViewSet, list_admin_users, list_client_users, \
-    request_address_change, check_service_area
+    request_address_change
     
 
 router = SimpleRouter(trailing_slash=False)
@@ -28,6 +28,4 @@ urlpatterns += [
     path('clients', list_client_users, name="client-users"),
 
     path('request-address-change', request_address_change, name="request-address-change"),
-
-    path('check-service-area', check_service_area, name="check-service-area")
 ]
