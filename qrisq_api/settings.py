@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     # Project apps
+    'core',
     'user_app',
     'subscriptions'
 ]
@@ -115,6 +116,13 @@ else:
     }
 
 
+# AWS Credentials
+AWS_ACCESS_KEY = config('AWS_ACCESS_KEY', "")
+AWS_SECRET_KEY = config('AWS_SECRET_KEY', "")
+AWS_REGION = config('AWS_REGION', 'us-east-1')
+AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
+
+
 # Email Settings
 # EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 FROM_EMAIL = config('FROM_EMAIL', default='')
@@ -188,11 +196,12 @@ SWAGGER_SETTINGS = {
 LOGIN_EXEMPT_PATHS = (
     r'api/auth/login',
     r'api/auth/refresh',
-    r'api/auth/reset-password$',
+    r'api/auth/reset-password',
     r'api/auth/forgot-password',
     r'api/auth/forgot-email',
     r'api/auth/signup',
     r'api/check-service-area',
+    r'api/subscription-plans',
 )
 
 
