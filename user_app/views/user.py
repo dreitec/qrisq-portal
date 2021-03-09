@@ -8,7 +8,7 @@ from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer
 from user_app.utils import mail_sender
 
 
@@ -67,7 +67,7 @@ def list_admin_users(request):
 @permission_classes([IsAdminUser,])
 def list_client_users(request):
     queryset = User.objects.filter(is_admin=False, is_deleted=False)
-    return Response(UserSerializer(queryset, many=True).data)
+    return Response(ClientUserSerializer(queryset, many=True).data)
  
 
 @api_view(["POST"])
