@@ -84,3 +84,6 @@ media/
 *.pid
 
 staticfiles/
+
+# WKT files
+*.wkt
