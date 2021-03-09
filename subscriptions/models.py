@@ -12,7 +12,7 @@ class SubscriptionPlan(models.Model):
         return self.name
 
 
-class UsersSubscription(models.Model):
+class UserSubscription(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="subscription_plan")
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name="users")
     subscribed_on = models.DateTimeField(auto_now_add=True)
@@ -22,9 +22,6 @@ class UsersSubscription(models.Model):
     cancelled_at = models.DateTimeField(default=None, null=True)
 
 
-class PaypalCapture(models.Model):
-    capture_id = models.CharField(max_length=20, unique=True)
+class UserPaypalPayment(models.Model):
+    payment_id = models.CharField(max_length=20, unique=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="capture")
-
-    class Meta:
-        db_table = "paypal_capture"

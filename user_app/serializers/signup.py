@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
-from subscriptions.models import UsersSubscription, SubscriptionPlan
+from subscriptions.models import UserSubscription, SubscriptionPlan, UserPaypalPayment
 
 
 class SignupSerializer(serializers.Serializer):
@@ -20,7 +20,6 @@ class SignupSerializer(serializers.Serializer):
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     subscription_plan_id = serializers.IntegerField()
     payment_id = serializers.CharField(max_length=30)
-
 
     def validate(self, data):
         error = {}
@@ -52,6 +51,7 @@ class SignupSerializer(serializers.Serializer):
 
         UserProfile.objects.create(user=user, **validated_data)
 
-        UsersSubscription.objects.create(user=user, plan_id=subscription_plan_id)
+        UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
+        UserPaypalPayment.objects.create(user=user, payment_id=payment_id)
 
         return user

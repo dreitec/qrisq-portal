@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SubscriptionPlan, UsersSubscription
+from .models import SubscriptionPlan, UserSubscription
 
 
 class SubscriptionPlanSerializer(serializers.ModelSerializer):
@@ -12,5 +12,5 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
     plan = SubscriptionPlanSerializer()
 
     class Meta:
-        model = UsersSubscription
+        model = UserSubscription
         exclude = ('id', 'user')

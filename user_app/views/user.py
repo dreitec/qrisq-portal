@@ -1,8 +1,8 @@
-from rest_framework import views
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from django.conf import settings
 
@@ -12,12 +12,15 @@ from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUser
 from user_app.utils import mail_sender
 
 
-class AccountProfileView(views.APIView):
-    serializer_class = UserSerializer 
+class AccountProfileView(APIView):
     permission_classes = [IsAuthenticated,]
 
+    def get_serializer(self, *args, **kwargs):
+        self.serializer_class = UserSerializer if self.request.user.is_admin else ClientUserSerializer
+        return self.serializer_class(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        return Response(self.serializer_class(request.user).data)
+        return Response(self.get_serializer(request.user).data)
     
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user, data=request.data)
