@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user_app.models import User, UserProfile
-from subscriptions.serializers import UsersSubscriptionSerializer
+from subscriptions.serializers import UserSubscriptionSerializer
 
 class _UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ClientUserSerializer(serializers.ModelSerializer):
     profile = _UserProfileSerializer()
-    subscription_plan = UsersSubscriptionSerializer()
+    subscription_plan = UserSubscriptionSerializer()
 
     class Meta:
         model = User

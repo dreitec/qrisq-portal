@@ -8,8 +8,9 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class UsersSubscriptionSerializer(serializers.ModelSerializer):
+class UserSubscriptionSerializer(serializers.ModelSerializer):
     plan = SubscriptionPlanSerializer()
+
     class Meta:
         model = UsersSubscription
         exclude = ('id', 'user')
