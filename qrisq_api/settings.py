@@ -120,6 +120,7 @@ else:
 AWS_ACCESS_KEY = config('AWS_ACCESS_KEY', "")
 AWS_SECRET_KEY = config('AWS_SECRET_KEY', "")
 AWS_REGION = config('AWS_REGION', 'us-east-1')
+AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
 
 
 # Email Settings
