@@ -55,7 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
             context = {
                 'full_name': f"{first_name} {last_name}",
-                'domain': f"{settings.DOMAIN}"
+                'domain': settings.DOMAIN
             }
             try:
                 mail_sender(

@@ -29,6 +29,9 @@ class SignupSerializer(serializers.Serializer):
         if User.objects.filter(email=data['email']).exists():
             error['email'] = "User with this email exists."
         
+        if UserPaypalPayment.objects.filter(payment_id=data['payment_id']).exists():
+            error['payment_id'] = "Payment ID exists."
+        
         if not SubscriptionPlan.objects.filter(id=data['subscription_plan_id']).exists():
             error['subscription_plan_id'] = "Subscription plan does not exists"
 
@@ -47,7 +50,7 @@ class SignupSerializer(serializers.Serializer):
         payment_id = validated_data.pop('payment_id')
 
         user = User.objects.create_user(email=email, password=password,
-                                        **{"first_name": first_name, "last_name": last_name})
+                                        first_name=first_name, last_name=last_name)
 
         UserProfile.objects.create(user=user, **validated_data)
 
