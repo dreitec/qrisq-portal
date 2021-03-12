@@ -1,15 +1,15 @@
 import os
-# import json
-# import logging
+import logging
+
 from shapely import wkt
 from shapely import geometry
+from shapely.errors import WKTReadingError
 
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ParamValidationError
 
 from .boto_client import download_file
 
-# logger = logging.getLogger()
-# logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def service_area_finder(latitude, longitude):
@@ -17,33 +17,74 @@ def service_area_finder(latitude, longitude):
     wind_file = 'qrisq-service-area-wind-20210114.wkt'
 
     try:
+        logger.info("Checking for wind WKT file existence")
         if not os.path.exists(wind_file):
             download_file(wind_file)
 
+
+        with open(wind_file, 'r') as wind_reader:
+            wind_wkt = wind_reader.read()
+            shape_wind = wkt.loads(wind_wkt)
+            logger.info(f"Wind WKT file data: {shape_wind}")
+    except ClientError as e:
+        return {
+            "status": 500,
+            "error": f"Wind WKT file not downloaded; ClientError: {e.response['Error']['Message']}"
+        }
+    except ParamValidationError as err:
+        return {
+            "status": 500,
+            "error": f"Wind WKT file not downloaded; ParamValidationError: Invalid bucket name"
+        }
+    except FileNotFoundError as err:
+        logger.warn(f"{wind_file} not found")
+        return {
+            "status": 500,
+            "error": 'Wind WKT file not found'
+        }
+    except WKTReadingError as err:
+        logger.warn(f"{wind_file} read error: Deleting the file")
+        os.remove(wind_file)
+        logger.info(f"{wind_file} removed.")
+        return {
+            "status": 500,
+            "error": "Wind WKT file is corrupted. Please try again in a while."
+        }
+    
+    try:
+        logger.info("Checking for surge WKT file existence")
         if not os.path.exists(surge_file):
             download_file(surge_file)
+        
+        with open(surge_file, 'r') as surge_reader:
+            surge_wkt = surge_reader.read()
+            shape_surge = wkt.loads(surge_wkt)
+            logger.info(f"Surge WKT file data: {shape_surge}")
 
     except ClientError as e:
         return {
             "status": 500,
-            "error": f"WKT files not downloaded; ClientError: {e.response['Error']['Message']}"
+            "error": f"Surge WKT file not downloaded; ClientError: {e.response['Error']['Message']}"
         }
-    
-    try: 
-        with open(wind_file, 'r') as wind_reader:
-            wind_wkt = wind_reader.read()
-        
-        with open(surge_file, 'r') as surge_reader:
-            surge_wkt = surge_reader.read()
-
-    except FileNotFoundError as err:
+    except ParamValidationError as err:
         return {
             "status": 500,
-            "error": 'WKT files not found'
+            "error": f"Wind WKT file not downloaded; ParamValidationError: Invalid bucket name"
         }
-
-    # logger.info('Filter Surge WKT: ' + filter_surge_wkt)
-    # logger.info('Filter Wind WKT: ' + filter_wind_wkt)
+    except FileNotFoundError as err:
+        logger.warn(f"{surge_file} not found")
+        return {
+            "status": 500,
+            "error": 'Surge WKT file not found'
+        }
+    except WKTReadingError as err:
+        logger.warn(f"{surge_file} read error: Deleting the file")
+        os.remove(surge_file)
+        logger.info(f"{surge_file} removed.")
+        return {
+            "status": 500,
+            "error": "Surge WKT file is corrupted. Please try again in a while."
+        }
     
     return_data = {
         "status": 200,
@@ -51,18 +92,17 @@ def service_area_finder(latitude, longitude):
         "services": []
     }
 
-    shape_surge = wkt.loads(surge_wkt)
-    shape_wind = wkt.loads(wind_wkt)
     point = geometry.Point(longitude, latitude)
-
+    logger.info(f"Requested Point data: {point}")
     if shape_surge.contains(point):
-        # logger.info('Surge and Wind Service area contains point...')
+        logger.info("Point {point} found in Surge service area")
         return_data['available'] = True
         return_data['services'].append('surge')
     
     if shape_wind.contains(point):
-        # logger.info('Surge Service area contains point...')
+        logger.info("Point {point} found in Wind service area")
         return_data['available'] = True
         return_data['services'].append('wind')
-   
+
+    logger.info(f"Response data for latitude {latitude} and longitude {longitude}: {return_data}")
     return return_data

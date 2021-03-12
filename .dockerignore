@@ -4,3 +4,5 @@
 db.sqlite3
 .dbdata
 venv/
+.env.example
+area_test.wkt

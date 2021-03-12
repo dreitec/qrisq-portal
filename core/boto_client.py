@@ -4,10 +4,9 @@ import logging
 from django.conf import settings
 
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ParamValidationError
 
-# logger = logging.getLogger()
-# logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def __s3_client():
@@ -27,12 +26,13 @@ def download_file(filename):
             s3.download_fileobj(bucket, filename, f)
     except ClientError as err:
         os.remove(filename)
-        print(filename + ' WKT file not downloaded; ClientError: ' + err.response['Error']['Message'])
+        logger.warn(filename + ' WKT file not downloaded; ClientError: ' + err.response['Error']['Message'])
         raise err
-        # logger.info(filename + ' WKT file not downloaded; ClientError: ' + err.response['Error']['Message'])
+    except ParamValidationError as err:
+        logger.warn(filename + ' WKT file not downloaded; ParamValidationError: Invalid bucket name')
+        raise err
     else:
-        # logger.info(filename + " WKT file downloaded")
-        print(filename + " WKT file downloaded")
+        logger.info(filename + " WKT file downloaded")
 
 
 def upload_file(filename):
@@ -43,8 +43,6 @@ def upload_file(filename):
     except ClientError as err:
         print(filename + ' WKT file not uploaded; ClientError: ' + err.response['Error']['Message'])
         raise err
-        # logger.info(filename + ' WKT file not downloaded; ClientError: ' + err.response['Error']['Message'])
     else:
-        # logger.info(filename + " WKT file downloaded")
         print(filename + " WKT file uploaded")
     pass

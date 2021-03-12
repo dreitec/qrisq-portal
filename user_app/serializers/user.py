@@ -48,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ClientUserSerializer(serializers.ModelSerializer):
     profile = _UserProfileSerializer()
-    subscription_plan = UserSubscriptionSerializer()
+    subscription_plan = UserSubscriptionSerializer(read_only=True)
 
     class Meta:
         model = User
