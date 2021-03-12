@@ -118,7 +118,7 @@ else:
 # Logger
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
@@ -135,7 +135,7 @@ LOGGING = {
             'formatter': 'simple',
         },
         'file': {
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': 'qrisq.log',
             'when': 'midnight',
@@ -151,17 +151,17 @@ LOGGING = {
         },
         'core': {
             'handlers': ['file'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': False,
         },
         'user_app': {
             'handlers': ['file'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': False,
         },
         'subscriptions': {
             'handlers': ['file'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': False,
         },
     },

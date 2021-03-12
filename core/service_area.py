@@ -25,7 +25,7 @@ def service_area_finder(latitude, longitude):
         with open(wind_file, 'r') as wind_reader:
             wind_wkt = wind_reader.read()
             shape_wind = wkt.loads(wind_wkt)
-            logger.info(f"Wind WKT file data: {shape_wind}")
+            logger.info(f"Wind WKT file data Parsed")
     except ClientError as e:
         return {
             "status": 500,
@@ -59,7 +59,7 @@ def service_area_finder(latitude, longitude):
         with open(surge_file, 'r') as surge_reader:
             surge_wkt = surge_reader.read()
             shape_surge = wkt.loads(surge_wkt)
-            logger.info(f"Surge WKT file data: {shape_surge}")
+            logger.info(f"Surge WKT file data Parsed")
 
     except ClientError as e:
         return {
@@ -95,12 +95,12 @@ def service_area_finder(latitude, longitude):
     point = geometry.Point(longitude, latitude)
     logger.info(f"Requested Point data: {point}")
     if shape_surge.contains(point):
-        logger.info("Point {point} found in Surge service area")
+        logger.info(f"Point {point} found in Surge service area")
         return_data['available'] = True
         return_data['services'].append('surge')
     
     if shape_wind.contains(point):
-        logger.info("Point {point} found in Wind service area")
+        logger.info(f"Point {point} found in Wind service area")
         return_data['available'] = True
         return_data['services'].append('wind')
 
