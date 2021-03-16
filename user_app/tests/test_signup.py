@@ -5,12 +5,14 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from user_app.models import User
+from subscriptions.models import SubscriptionPlan
 
 
 class SignupTestCase(APITestCase):
     def setUp(self):
         self.url = reverse('signup')
         User.objects.create_user(email="first@last.com", password="asd123!@#", first_name="First", last_name="Last")
+        SubscriptionPlan.objects.create(id =1, name="Monthly", price=5.0)
 
     def test_signup(self):
         data = {
@@ -24,7 +26,9 @@ class SignupTestCase(APITestCase):
             "street_number": "24-St. Martin",
             "city": "Patan",
             "state": "Bagmati",
-            "zip_code": 44700
+            "zip_code": 44700,
+            "subscription_plan_id": 1,
+            "payment_id": "123test"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -50,13 +54,15 @@ class SignupTestCase(APITestCase):
             "street_number": "24-St. Martin",
             "city": "Patan",
             "state": "Bagmati",
-            "zip_code": 44700
+            "zip_code": 44700,
+            "subscription_plan_id": 1,
+            "payment_id": "1234test"
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data,
-            {'confirm_password': ["Passwords didn't match."]}
+            response.data['confirm_password'],
+            ["Passwords didn't match."]
         )
 
     def test_unique_email(self):
@@ -71,36 +77,16 @@ class SignupTestCase(APITestCase):
             "street_number": "24-St. Martin",
             "city": "Patan",
             "state": "Bagmati",
-            "zip_code": 44700
+            "zip_code": 44700,
+            "subscription_plan_id": 1,
+            "payment_id": "123test"
         }
 
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data,
-            {'email': ["User with this email exists."],}
-        )
-
-    def test_blank_name(self):
-        data = {
-            "first_name": "",
-            "last_name": "",
-            "email": "test@gmail.com",
-            "password": "admin@123",
-            "confirm_password": "admin@123",
-            "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700
-        }
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data,
-            {'first_name': ["This field may not be blank."],
-             'last_name': ["This field may not be blank."]}
+            response.data["email"][0],
+            "User with this email exists."
         )
 
     def test_invalid_email1(self):
@@ -115,7 +101,9 @@ class SignupTestCase(APITestCase):
             "street_number": "24-St. Martin",
             "city": "Patan",
             "state": "Bagmati",
-            "zip_code": 44700
+            "zip_code": 44700,
+            "subscription_plan_id": 1,
+            "payment_id": "123test"
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -141,8 +129,8 @@ class SignupTestCase(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data,
-            {'email': ["This field may not be blank."]}
+            response.data['email'],
+            ["This field may not be blank."]
         )
 
     def test_invalid_zipcode(self):
@@ -162,6 +150,30 @@ class SignupTestCase(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data,
-            {'zip_code': ["Only numeric characters"]}
+            response.data['zip_code'],
+            ["Only numeric characters"]
+        )
+
+    def test_invalid_subscription_id(self):
+        data = {
+            "first_name": "first",
+            "last_name": "last",
+            "email": "test@gmail.com",
+            "password": "admin@123",
+            "confirm_password": "admin@123",
+            "phone_number": "1234567890",
+            "address": {"lat": 27.456123, "lng": "81.1213"},
+            "street_number": "24-St. Martin",
+            "city": "Patan",
+            "state": "Bagmati",
+            "zip_code": 44700,
+            "subscription_plan_id": 2,
+            "payment_id": "123test"
+        }
+
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['subscription_plan_id'],
+            ["Subscription plan does not exists"]
         )

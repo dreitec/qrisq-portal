@@ -57,16 +57,3 @@ class TestLoginLogout(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + login_credentials['access'])
         response = self.client.post(self.logout_url, data, format='json')
         self.assertEqual(response.data, {'detail': 'Successfully logged out.'})
-
-    def test_wrong_access_token(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + 'abc')
-        data = {
-            "refresh": 'abc'
-        }
-        response = self.client.post(self.logout_url, data, format='json')
-        error_message = {
-            "token_class": "AccessToken",
-            "token_type": "access",
-            "message": "Token is invalid or expired"
-        }
-        self.assertEqual(response.data['messages'][0], error_message)
