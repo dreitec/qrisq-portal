@@ -19,7 +19,7 @@ class AccountProfileView(APIView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_admin:
             self.serializer_class = ClientUserSerializer
-        return Response(serializer_class(request.user).data)
+        return Response(self.serializer_class(request.user).data)
     
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user, data=request.data)
