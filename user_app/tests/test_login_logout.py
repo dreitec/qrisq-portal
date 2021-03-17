@@ -1,5 +1,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+
+import json
+
 from user_app.models import User
 from user_app.views import ChangePasswordView, LoginView
 
@@ -64,9 +67,8 @@ class TestLoginLogout(APITestCase):
             "refresh": 'abc'
         }
         response = self.client.post(self.logout_url, data, format='json')
-        error_message = {
-            "token_class": "AccessToken",
-            "token_type": "access",
-            "message": "Token is invalid or expired"
-        }
-        self.assertEqual(response.data['messages'][0], error_message)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(json.loads(response.content), {
+            'detail': 'Successfully logged out.'
+        })

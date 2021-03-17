@@ -53,16 +53,19 @@ class TestAccountProfile(APITestCase):
                 "street_number": "24-St.Martin",
                 "city": "Somewhere",
                 "state": "Utah",
-                "zip_code": "12134" 
-            })
+                "zip_code": "12134"
+            }),
+            "subscription_plan": None
         })
 
     def test_unauthorized_get_profile(self):
         self.client.credentials()
         response = self.client.get(self.account_profile_url)
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.data['detail'], 'Authentication credentials were not provided.')
-
+        self.assertEqual(json.loads(response.content), {
+            'error': 'Token is not provided'
+        })
+        
     def test_update_profile_admin(self):
         data = {
             'first_name': 'Admin',
