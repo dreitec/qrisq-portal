@@ -63,6 +63,9 @@ class TestAdminUserCrud(APITestCase):
         }
         response = self.client.post('/api/users', data, format='json')
         self.assertEqual(response.status_code, 401)
+        self.assertEqual(json.loads(response.content), {
+            'error': 'Token is not provided'
+        })
 
     def test_create_user_with_empty_email(self):
         data= {
@@ -115,6 +118,9 @@ class TestAdminUserCrud(APITestCase):
     def test_retrieve_user_without_auth(self):
         response = self.client.get('/api/users/'+str(self.user.id))
         self.assertEqual(response.status_code, 401)
+        self.assertEqual(json.loads(response.content), {
+            'error': 'Token is not provided'
+        })
 
     def test_retrieve_user_by_client_user(self):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.client_access_token)
@@ -198,4 +204,7 @@ class TestAdminUserCrud(APITestCase):
     def test_delete_user_without_auth(self):
         response = self.client.delete('/api/users/'+str(self.client_user.id))
         self.assertEqual(response.status_code, 401)
+        self.assertEqual(json.loads(response.content), {
+            'error': 'Token is not provided'
+        })
         

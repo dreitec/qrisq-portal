@@ -1,5 +1,8 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+
+import json
+
 from user_app.models import User
 from user_app.views import ChangePasswordView, LoginView
 
@@ -57,3 +60,15 @@ class TestLoginLogout(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + login_credentials['access'])
         response = self.client.post(self.logout_url, data, format='json')
         self.assertEqual(response.data, {'detail': 'Successfully logged out.'})
+
+    def test_wrong_access_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + 'abc')
+        data = {
+            "refresh": 'abc'
+        }
+        response = self.client.post(self.logout_url, data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(json.loads(response.content), {
+            'detail': 'Successfully logged out.'
+        })

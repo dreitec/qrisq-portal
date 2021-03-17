@@ -62,7 +62,10 @@ class TestAccountProfile(APITestCase):
         self.client.credentials()
         response = self.client.get(self.account_profile_url)
         self.assertEqual(response.status_code, 401)
-
+        self.assertEqual(json.loads(response.content), {
+            'error': 'Token is not provided'
+        })
+        
     def test_update_profile_admin(self):
         data = {
             'first_name': 'Admin',
