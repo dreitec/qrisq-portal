@@ -22,6 +22,13 @@ class UserSubscription(models.Model):
     cancelled_at = models.DateTimeField(default=None, null=True)
 
 
-class UserPaypalPayment(models.Model):
+class UserPayment(models.Model):
+    
+    PAYMENT_CHOICES = (
+                ('paypal', 'PayPal'),
+                ('integrapay', 'IntegraPay'),
+            )
+            
     payment_id = models.CharField(max_length=20, unique=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="capture")
+    payment_gateway = models.CharField(max_length=30, choices = PAYMENT_CHOICES)

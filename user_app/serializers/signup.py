@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
-from subscriptions.models import UserSubscription, SubscriptionPlan, UserPaypalPayment
+from subscriptions.models import UserSubscription, SubscriptionPlan, UserPayment
 
 
 class SignupSerializer(serializers.Serializer):
@@ -20,6 +20,7 @@ class SignupSerializer(serializers.Serializer):
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     subscription_plan_id = serializers.IntegerField()
     payment_id = serializers.CharField(max_length=30)
+    payment_gateway = serializers.ChoiceField(choices = UserPayment.PAYMENT_CHOICES)
 
     def validate(self, data):
         error = {}
@@ -29,7 +30,7 @@ class SignupSerializer(serializers.Serializer):
         if User.objects.filter(email=data['email']).exists():
             error['email'] = "User with this email exists."
         
-        if UserPaypalPayment.objects.filter(payment_id=data['payment_id']).exists():
+        if UserPayment.objects.filter(payment_id=data['payment_id']).exists():
             error['payment_id'] = "Payment ID exists."
         
         if not SubscriptionPlan.objects.filter(id=data['subscription_plan_id']).exists():
@@ -48,6 +49,7 @@ class SignupSerializer(serializers.Serializer):
         password = validated_data.pop('password')
         subscription_plan_id = validated_data.pop('subscription_plan_id')
         payment_id = validated_data.pop('payment_id')
+        payment_gateway = validated_data.pop('payment_gateway')
 
         user = User.objects.create_user(email=email, password=password,
                                         first_name=first_name, last_name=last_name)
@@ -55,6 +57,6 @@ class SignupSerializer(serializers.Serializer):
         UserProfile.objects.create(user=user, **validated_data)
 
         UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
-        UserPaypalPayment.objects.create(user=user, payment_id=payment_id)
+        UserPayment.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway)
 
         return user
