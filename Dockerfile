@@ -1,11 +1,16 @@
-FROM python:3.9
+FROM python:3.9-alpine
 
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update &&\
-    apt-get install -y binutils libproj-dev gdal-bin python-gdal python3-gdal
+RUN apk update &&\
+    apk add --virtual .build-deps \
+    ca-certificates gcc linux-headers musl-dev \
+    libffi-dev libressl-dev jpeg-dev zlib-dev \
+    geos-dev gdal-dev python3-dev postgresql-dev cargo
 
 WORKDIR /qrisq
+
+RUN pip install --upgrade pip
 
 ADD requirements.txt /qrisq/
 

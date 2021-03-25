@@ -14,26 +14,21 @@ services:
       - 8000:8000
     volumes:
       - .:/qrisq
-    env_file: .env.docker
     command: >
       sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    container_name: qrisq_api
+    container_name: qrisq_alpine_api
     depends_on:
-      - db
-    links:
       - db
     networks:
       - backend
 
   db:
     image: postgis/postgis
-    env_file: .env.docker
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     container_name: qrisq_db
-    hostname: qrisq_psql
     ports:
       - 5430:5432
     volumes:
