@@ -76,3 +76,4 @@ class UserProfile(models.Model):
     city = models.CharField(max_length=50, blank=True, default="")
     state = models.CharField(max_length=30, blank=True, default="")
     zip_code = models.CharField(max_length=5, validators=[NUMERIC_VALIDATOR], blank=True, default="")
+    is_preprocessed = models.BooleanField(default=False)
