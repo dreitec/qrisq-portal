@@ -4,7 +4,7 @@ from rest_framework import serializers
 from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
 from subscriptions.models import UserSubscription, SubscriptionPlan, UserPaypalPayment
-
+from core.boto_client import send_message_to_sqs_queue
 
 class SignupSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=30)
@@ -52,9 +52,11 @@ class SignupSerializer(serializers.Serializer):
         user = User.objects.create_user(email=email, password=password,
                                         first_name=first_name, last_name=last_name)
 
-        UserProfile.objects.create(user=user, **validated_data)
+        user_profile = UserProfile.objects.create(user=user, **validated_data)
 
         UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
         UserPaypalPayment.objects.create(user=user, payment_id=payment_id)
+
+        send_message_to_sqs_queue(str(user.id), user_profile.address)
 
         return user
