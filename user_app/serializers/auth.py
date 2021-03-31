@@ -11,8 +11,16 @@ from .user import UserSerializer
 
 class LoginTokenSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        return super().validate(attrs)
-        
+        response = super().validate(attrs)
+        response['user_data'] = {
+            "email": self.user.email,
+            "address": self.user.profile.address,
+            "street_number": self.user.profile.street_number,
+            "city": self.user.profile.city,
+            "state": self.user.profile.state,
+            "zip_code": self.user.profile.zip_code
+        }
+        return response
 
 class RefreshTokenSerializer(TokenRefreshSerializer):
     def save(self):
