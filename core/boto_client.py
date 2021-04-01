@@ -20,15 +20,6 @@ def __s3_client():
     )
 
 
-def __sqs_client():
-    return boto3.client(
-        'sqs',
-        region_name=settings.AWS_REGION,
-        aws_access_key_id=settings.AWS_SQS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SQS_SECRET_ACCESS_KEY
-    )
-
-
 def download_file(filename):
     try:
         s3 = __s3_client()
@@ -52,11 +43,20 @@ def upload_file(filename):
         bucket = settings.AWS_WKT_BUCKET
         s3.upload_file(filename, bucket)
     except ClientError as err:
-        print(filename + ' WKT file not uploaded; ClientError: ' + err.response['Error']['Message'])
+        logger.warn(filename + ' WKT file not uploaded; ClientError: ' + err.response['Error']['Message'])
         raise err
     else:
-        print(filename + " WKT file uploaded")
+        logger.warn(filename + " WKT file uploaded")
     pass
+
+
+def __sqs_client():
+    return boto3.client(
+        'sqs',
+        region_name=settings.AWS_REGION,
+        aws_access_key_id=settings.AWS_SQS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SQS_SECRET_ACCESS_KEY
+    )
 
 
 def __generate_unique_message_deduplicationid(user_id):
@@ -66,12 +66,14 @@ def __generate_unique_message_deduplicationid(user_id):
 
 
 def send_message_to_sqs_queue(client_id, address, message_body=(
-    'This is a test message to ensure messages are being added to the SQS Queue for a registered client.'
-)):
+        'This is a test message to ensure messages are being added to the SQS Queue for a registered client.'
+    )):
+
+    sqs_client = __sqs_client()
     try:
-        sqs_client = __sqs_client()
         message_deduplicationid = __generate_unique_message_deduplicationid(client_id)
-        
+
+        logger.info("Sending Message to SQS queue.")
         response = sqs_client.send_message(
             QueueUrl=settings.SQS_QUEUE_URL,
             DelaySeconds=0,
@@ -82,15 +84,15 @@ def send_message_to_sqs_queue(client_id, address, message_body=(
                 },
                 'Address': {
                     'DataType': 'String',
-                    'StringValue': address['displayText']
+                    'StringValue': address.get('displayText', "")
                 },
                 'Latitude': {
                     'DataType': 'String',
-                    'StringValue': 123
+                    'StringValue': str(address.get('lat', ""))
                 },
                 'Longitude': {
                     'DataType': 'String',
-                    'StringValue': str(address['lon'])
+                    'StringValue': str(address.get('lng', ""))
                 }
             },
             MessageBody = message_body,
@@ -104,6 +106,7 @@ def send_message_to_sqs_queue(client_id, address, message_body=(
     except ClientError as err:
         logger.error('Message not sent to SQS queue; ClientError: ' + err.response['Error']['Message'])
         raise err
-    except Exception as err:
-        logger.error('Message not sent to SQS queue; Error: ' + err.response['Error']['Message'])
+
+    except ParamValidationError as err:
+        logger.error('Message not sent to SQS queue; ' + str(err))
         raise err
