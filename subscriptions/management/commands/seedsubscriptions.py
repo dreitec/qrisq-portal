@@ -21,6 +21,6 @@ class Command(BaseCommand):
         objs = [SubscriptionPlan(**plan) for plan in PLANS]
         try:
             SubscriptionPlan.objects.bulk_create(objs)
-            self.stdout.write("Seed Subscription Plans.")
+            self.stdout.write("Subscription Plans seeded.")
         except IntegrityError:
             self.stdout.write("Subscription plans already exists.")
