@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
 
@@ -15,6 +17,8 @@ from user_app.models import User
 from user_app.serializers import LoginTokenSerializer, RefreshTokenSerializer, \
     ResetPasswordSerializer, ForgetPasswordSerializer
 
+logger = logging.getLogger(__name__)
+
 
 class LoginView(TokenObtainPairView):
     serializer_class = LoginTokenSerializer
@@ -24,9 +28,11 @@ class LoginView(TokenObtainPairView):
             return Response({'message': "No active account found with the given credentials"},
                             status=HTTP_401_UNAUTHORIZED)
         try:
+            logger.info("Login Successful...")
             return super().post(request, *args, **kwargs)
 
-        except Exception:
+        except Exception as err:
+            logger.error(f"Login Failed: {str(err)}")
             return Response({'message': 'No active account found with the given credentials.'},
                             status=HTTP_401_UNAUTHORIZED)
 
