@@ -137,7 +137,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': 'qrisq.log',
+            'filename': 'logs/qrisq.log',
             'when': 'midnight',
             'backupCount': 50,
             'formatter': 'verbose',
