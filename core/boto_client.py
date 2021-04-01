@@ -59,7 +59,7 @@ def upload_file(filename):
     pass
 
 
-def generate_unique_message_deduplicationid(user_id):
+def __generate_unique_message_deduplicationid(user_id):
     time_now    = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S')
     uuid4 = str(uuid.uuid4())
     return f"{user_id}-{time_now}-{uuid4}"
@@ -70,7 +70,7 @@ def send_message_to_sqs_queue(client_id, address, message_body=(
 )):
     try:
         sqs_client = __sqs_client()
-        message_deduplicationid = generate_unique_message_deduplicationid(client_id)
+        message_deduplicationid = __generate_unique_message_deduplicationid(client_id)
         
         response = sqs_client.send_message(
             QueueUrl=settings.SQS_QUEUE_URL,
@@ -86,7 +86,7 @@ def send_message_to_sqs_queue(client_id, address, message_body=(
                 },
                 'Latitude': {
                     'DataType': 'String',
-                    'StringValue': str(address['lat'])
+                    'StringValue': 123
                 },
                 'Longitude': {
                     'DataType': 'String',
@@ -104,6 +104,6 @@ def send_message_to_sqs_queue(client_id, address, message_body=(
     except ClientError as err:
         logger.error('Message not sent to SQS queue; ClientError: ' + err.response['Error']['Message'])
         raise err
-    except ParamValidationError as err:
-        logger.error('Message not sent to SQS queue; ParamValidationError: ' + err.response['Error']['Message'])
+    except Exception as err:
+        logger.error('Message not sent to SQS queue; Error: ' + err.response['Error']['Message'])
         raise err
