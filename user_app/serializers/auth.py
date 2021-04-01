@@ -11,8 +11,9 @@ from .user import UserSerializer
 
 class LoginTokenSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        return super().validate(attrs)
-        
+        response = super().validate(attrs)
+        response['user_info'] = UserSerializer(self.user).data
+        return response
 
 class RefreshTokenSerializer(TokenRefreshSerializer):
     def save(self):
