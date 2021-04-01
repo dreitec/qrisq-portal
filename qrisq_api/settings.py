@@ -177,7 +177,7 @@ AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
 # SQS Credentials
 AWS_SQS_ACCESS_KEY_ID = config('AWS_SQS_ACCESS_KEY_ID', "")
 AWS_SQS_SECRET_ACCESS_KEY = config('AWS_SQS_SECRET_ACCESS_KEY', "")
-SQS_QUEUE_URL = config('SQS_QUEUE_URL', "")
+AWS_SQS_QUEUE_URL = config('AWS_SQS_QUEUE_URL', "")
 
 # Email Settings
 # EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'

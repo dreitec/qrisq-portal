@@ -75,7 +75,7 @@ def send_message_to_sqs_queue(client_id, address, message_body=(
 
         logger.info("Sending Message to SQS queue.")
         response = sqs_client.send_message(
-            QueueUrl=settings.SQS_QUEUE_URL,
+            QueueUrl=settings.AWS_SQS_QUEUE_URL,
             DelaySeconds=0,
             MessageAttributes={
                 'UserID': {
