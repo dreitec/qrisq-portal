@@ -79,7 +79,6 @@ class SignupSerializer(serializers.Serializer):
         try:
             send_message_to_sqs_queue(str(user.id), user_profile.address)
         except Exception as err:
-            print("FUCK ---- " + str(err))
             raise Exception("Error sending message to SQS queue.")
         
         context = {
