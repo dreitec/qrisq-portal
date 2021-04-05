@@ -8,8 +8,6 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from user_app.utils import mail_sender
 from .manager import UserManager
@@ -45,34 +43,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.deleted_at = datetime.datetime.now()
         self.save()
 
-    @staticmethod
-    @receiver(post_save, sender="user_app.User")
-    def email_verification(sender, instance, created, **kwargs):
-        if created:
-            first_name = instance.first_name
-            last_name = instance.last_name
-            email = instance.email
-
-            context = {
-                'full_name': f"{first_name} {last_name}",
-                'domain': settings.DOMAIN
-            }
-            try:
-                mail_sender(
-                    template='user_app/registration_confirmation.html',
-                    context=context,
-                    subject="User Registered",
-                    recipient_list=[email]
-                )
-            except Exception as error:
-                print(str(error))
-
             
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     address = models.JSONField(default=dict, null=True)
-    street_number = models.CharField(max_length=30, blank=True, default="")
-    city = models.CharField(max_length=30, blank=True, default="")
+    street_number = models.CharField(max_length=100, blank=True, default="")
+    city = models.CharField(max_length=50, blank=True, default="")
     state = models.CharField(max_length=30, blank=True, default="")
     zip_code = models.CharField(max_length=5, validators=[NUMERIC_VALIDATOR], blank=True, default="")
+    is_preprocessed = models.BooleanField(default=False)

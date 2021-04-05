@@ -137,7 +137,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': 'qrisq.log',
+            'filename': 'logs/qrisq.log',
             'when': 'midnight',
             'backupCount': 50,
             'formatter': 'verbose',
@@ -174,6 +174,10 @@ AWS_SECRET_KEY = config('AWS_SECRET_KEY', "")
 AWS_REGION = config('AWS_REGION', 'us-east-1')
 AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
 
+# SQS Credentials
+AWS_SQS_ACCESS_KEY_ID = config('AWS_SQS_ACCESS_KEY_ID', "")
+AWS_SQS_SECRET_ACCESS_KEY = config('AWS_SQS_SECRET_ACCESS_KEY', "")
+AWS_SQS_QUEUE_URL = config('AWS_SQS_QUEUE_URL', "")
 
 # Email Settings
 # EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'

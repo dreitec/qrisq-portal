@@ -26,7 +26,7 @@ class UserPayment(models.Model):
     
     PAYMENT_CHOICES = (
                 ('paypal', 'PayPal'),
-                ('integrapay', 'IntegraPay'),
+                ('fluidpay', 'FluidPay'),
             )
             
     payment_id = models.CharField(max_length=20, unique=True)

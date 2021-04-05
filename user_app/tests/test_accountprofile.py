@@ -53,7 +53,8 @@ class TestAccountProfile(APITestCase):
                 "street_number": "24-St.Martin",
                 "city": "Somewhere",
                 "state": "Utah",
-                "zip_code": "12134"
+                "zip_code": "12134",
+                "is_preprocessed": False
             }),
             "subscription_plan": None
         })
@@ -95,7 +96,8 @@ class TestAccountProfile(APITestCase):
                 "street_number": "24-St.Martin",
                 "city": "Somewhere",
                 "state": "Utah",
-                "zip_code": "12134"
+                "zip_code": "12134",
+                "is_preprocessed":False
             })
         })
 
@@ -128,7 +130,8 @@ class TestAccountProfile(APITestCase):
                 "street_number": "24-St.Martin",
                 "city": "Somewhere",
                 "state": "Utah",
-                "zip_code": "12134" 
+                "zip_code": "12134",
+                "is_preprocessed": False 
             })
         })
         self.assertNotEqual(response.data, {
@@ -142,6 +145,7 @@ class TestAccountProfile(APITestCase):
                 "street_number": "24-St.Mary's",
                 "city": "Somewhere on earth",
                 "state": "Oregon",
-                "zip_code": "12135"
+                "zip_code": "12135",
+                "is_preprocessed": False 
             })
         })
