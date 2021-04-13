@@ -15,7 +15,6 @@ class SignupView(CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            1/0
             serializer.save()
         except Exception as error:
             payment_id = request.data['payment_id']

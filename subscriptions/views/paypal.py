@@ -9,7 +9,6 @@ from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest, 
 from paypalcheckoutsdk.payments import CapturesGetRequest, CapturesRefundRequest
 
 from subscriptions.paypal import paypal_client, OrderApproveRequest
-from subscriptions.models import UserPaypalPayment
 
 
 @api_view(["POST"])
@@ -97,21 +96,10 @@ def refund_payment(request):
 
 
 def refund_order(payment_id):
-    print('paypal refund')
     client = paypal_client()
-
-    request_body = {
-        "amount": {
-            "value": "10.99",
-            "currency_code": "USD"
-        }
-    }
-
-    if UserPaypalPayment.objects.filter(payment_id=payment_id).exists():
-        UserPaypalPayment.objects.get(payment_id=payment_id).delete()
-
     request = CapturesRefundRequest(payment_id)
-    request.prefer("return=representation")
-    request.request_body(request_body)
-    response = client.execute(request)
+    try:    
+        response = client.execute(request)
+    except requests.HTTPError as error:
+        return Response(error.response)
     return response
