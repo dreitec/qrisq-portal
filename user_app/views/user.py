@@ -36,6 +36,7 @@ class UserViewSet(mixins.CreateModelMixin,
     queryset = User.objects.filter(is_deleted=False)
     serializer_class = UserSerializer 
     permission_classes = [IsAdminUser,]
+    http_method_names = ('get', 'post', 'put', 'delete', 'head', 'options')
 
     def create(self, request, *args, **kwargs):
         '''
