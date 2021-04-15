@@ -7,9 +7,10 @@ from rest_framework.response import Response
 
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest, OrdersGetRequest
 from paypalcheckoutsdk.payments import CapturesGetRequest, CapturesRefundRequest
+from paypalhttp.http_error import HttpError
 
 from subscriptions.paypal import paypal_client, OrderApproveRequest
-
+from subscriptions.models import PaymentRefund
 
 @api_view(["POST"])
 def create_order(request):
@@ -95,11 +96,14 @@ def refund_payment(request):
     return Response(response.result._dict)
 
 
-def refund_order(payment_id):
-    client = paypal_client()
-    request = CapturesRefundRequest(payment_id)
-    try:    
-        response = client.execute(request)
-    except requests.HTTPError as error:
-        return Response(error.response)
-    return response
+def refund_order(payment_id, payment_gateway, user):
+    if payment_gateway == 'paypal':
+        client = paypal_client()
+        try:
+            request = CapturesRefundRequest(payment_id)
+            response = client.execute(request)
+            refund_transaction_id = response.result.id
+        except HttpError as err:
+            raise err
+
+    PaymentRefund.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)

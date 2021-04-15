@@ -12,6 +12,7 @@ from user_app.models import User
 from user_app.permissions import IsAdminUser
 from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, CompleteProfileSerializer
 from user_app.utils import mail_sender
+from subscriptions.views.paypal import refund_order
 
 
 class AccountProfileView(APIView):
@@ -112,6 +113,10 @@ class CompleteProfileView(CreateAPIView):
         try:
             serializer.save()
         except Exception as error:
+            payment_id = request.data['payment_id']
+            payment_gateway = request.data['payment_gateway']
+            user = request.user
+            refund_order(payment_id, payment_gateway, user)
             return Response({
                 'message': "Error updating user profile",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
