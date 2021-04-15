@@ -8,12 +8,21 @@ RUN apk update &&\
     libffi-dev libressl-dev jpeg-dev zlib-dev \
     geos-dev gdal-dev python3-dev postgresql-dev cargo
 
+RUN adduser -D qrisq
+
+ENV HOME /home/qrisq
+
+ENV PATH "$PATH:/home/qrisq/.local/bin"
+
+USER qrisq
+
 WORKDIR /qrisq
 
 RUN pip install --upgrade pip
 
 ADD requirements.txt /qrisq/
 
-RUN pip install -r /qrisq/requirements.txt
+RUN --mount=type=cache,target=/root/.cache \
+    pip install -r /qrisq/requirements.txt
 
 COPY ./ /qrisq
