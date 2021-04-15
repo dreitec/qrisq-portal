@@ -22,13 +22,6 @@ class SignupTestCase(APITestCase):
             "password": "admin@123",
             "confirm_password": "admin@123",
             "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700,
-            "subscription_plan_id": 1,
-            "payment_id": "123test"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -39,7 +32,7 @@ class SignupTestCase(APITestCase):
         self.assertTrue(check_password(data["password"], User.objects.get(email=data["email"]).password))
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
-            {'message': 'User successfully created.'}
+            {'message': 'User successfully created. Please check your email'}
         )
 
     def test_unmatched_passwords(self):
@@ -50,13 +43,6 @@ class SignupTestCase(APITestCase):
             "password": "admin@123",
             "confirm_password": "admin",
             "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700,
-            "subscription_plan_id": 1,
-            "payment_id": "1234test"
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -73,13 +59,6 @@ class SignupTestCase(APITestCase):
             "password": "admin@123",
             "confirm_password": "admin@123",
             "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700,
-            "subscription_plan_id": 1,
-            "payment_id": "123test"
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -97,13 +76,6 @@ class SignupTestCase(APITestCase):
             "password": "admin@123",
             "confirm_password": "admin@123",
             "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700,
-            "subscription_plan_id": 1,
-            "payment_id": "123test"
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -120,60 +92,10 @@ class SignupTestCase(APITestCase):
             "password": "admin@123",
             "confirm_password": "admin@123",
             "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data['email'],
             ["This field may not be blank."]
-        )
-
-    def test_invalid_zipcode(self):
-        data = {
-            "first_name": "first_name",
-            "last_name": "last_name",
-            "email": "test@admin.com",
-            "password": "admin@123",
-            "confirm_password": "admin@123",
-            "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": "asdfa"
-        }
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data['zip_code'],
-            ["Only numeric characters"]
-        )
-
-    def test_invalid_subscription_id(self):
-        data = {
-            "first_name": "first",
-            "last_name": "last",
-            "email": "test@gmail.com",
-            "password": "admin@123",
-            "confirm_password": "admin@123",
-            "phone_number": "1234567890",
-            "address": {"lat": 27.456123, "lng": "81.1213"},
-            "street_number": "24-St. Martin",
-            "city": "Patan",
-            "state": "Bagmati",
-            "zip_code": 44700,
-            "subscription_plan_id": 2,
-            "payment_id": "123test"
-        }
-
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data['subscription_plan_id'],
-            ["Subscription plan does not exists"]
         )

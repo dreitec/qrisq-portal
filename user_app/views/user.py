@@ -3,12 +3,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView, CreateAPIView
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
 from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, CompleteProfileSerializer
 from user_app.utils import mail_sender
 
 
@@ -99,3 +101,20 @@ def request_address_change(request):
         return Response({'error': "Error sending message."})
 
     return Response({'message': "Request has been sent to change your address."})
+
+
+class CompleteProfileView(CreateAPIView):
+    serializer_class = CompleteProfileSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.save()
+        except Exception as error:
+            return Response({
+                'message': "Error updating user profile",
+                'error': str(error)}, status=HTTP_400_BAD_REQUEST)
+        
+        return Response({'message': "User profile completed."}, status=HTTP_200_OK)
