@@ -99,8 +99,8 @@ class CompleteProfileSerializer(serializers.Serializer):
         try:
             user_profile = UserProfile.objects.filter(user = user)
             user_profile.update(**validated_data)
-            UserSubscription.objects.create(user = user, plan_id=subscription_plan_id)
-            UserPayment.objects.create(user = user, payment_id=payment_id, payment_gateway=payment_gateway, price=SubscriptionPlan.objects.get(id=subscription_plan_id).price)
+            user_subscription = UserSubscription.objects.create(user = user, plan_id=subscription_plan_id)
+            UserPayment.objects.create(user = user, payment_id=payment_id, payment_gateway=payment_gateway, price=user_subscription.plan.price)
             
         except Exception as err:
             raise Exception("Error completing profile.")
