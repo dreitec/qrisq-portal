@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, CreateAPIView
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
 
 from django.conf import settings
 
@@ -116,7 +116,14 @@ class CompleteProfileView(CreateAPIView):
             payment_id = request.data['payment_id']
             payment_gateway = request.data['payment_gateway']
             user = request.user
-            refund_order(payment_id, payment_gateway, user)
+
+            try:
+                refund_order(payment_id, payment_gateway, user)
+            except Exception as err:
+                return Response({
+                'message': "Refund fail",
+                'error': str(err)}, status=HTTP_500_INTERNAL_SERVER_ERROR) 
+
             return Response({
                 'message': "Error updating user profile",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
