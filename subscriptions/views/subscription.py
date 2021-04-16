@@ -10,6 +10,7 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionPlanSerializer
     queryset = SubscriptionPlan.objects.all()
     permission_classes = [IsAdminUser, ]
+    http_method_names = ('get', 'post', 'put', 'delete', 'head', 'options')
 
     def get_permissions(self):
         if self.request.method == "GET":

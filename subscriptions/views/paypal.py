@@ -93,3 +93,13 @@ def refund_payment(request):
     except requests.HTTPError as error:
         return Response(error.response)
     return Response(response.result._dict)
+
+
+def refund_order(payment_id):
+    client = paypal_client()
+    request = CapturesRefundRequest(payment_id)
+    try:    
+        response = client.execute(request)
+    except requests.HTTPError as error:
+        return Response(error.response)
+    return response
