@@ -1,4 +1,5 @@
 from django.db import transaction
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from subscriptions.serializers.fluidpay import FluidPayTransactionSerializer
 
 class FluidPayTransaction(CreateAPIView):
     serializer_class = FluidPayTransactionSerializer
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
