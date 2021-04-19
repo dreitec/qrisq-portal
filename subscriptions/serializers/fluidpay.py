@@ -15,7 +15,7 @@ from subscriptions.fluidpay_response import FLUIDPAY_RESPONSE
 logger = logging.getLogger(__name__)
 
 DATE_VALIDATOR = RegexValidator(r'^((0?[1-9]|[1][0-2])\/\d{2})', 'Invalid Expiration date format')
-CARD_VALIDATOR = RegexValidator(r'(\d{16})', 'Only numeric characters')
+CARD_VALIDATOR = RegexValidator(r'(\d{14,16})', 'Only numeric characters or Invalid Card Number')
 CVC_VALIDATOR = RegexValidator(r'(\d{3,4})', 'Only numeric characters')
 
 
@@ -90,10 +90,12 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                 user_id=user.id,
             )
             subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
-            UserSubscription.objects.create(
+            UserSubscription.objects.update_or_create(
                 user=user,
-                plan=subscription_plan,
-                recurring=False
+                defaults={
+                    "plan": subscription_plan,
+                    'recurring': False
+                }
             )
 
         except Exception as err:
