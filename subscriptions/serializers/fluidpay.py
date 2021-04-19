@@ -1,6 +1,5 @@
 import json
 import logging
-from pprint import pprint
 
 from django.conf import settings
 
@@ -71,7 +70,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
             transaction_json_data = json.dumps(transaction_data)
             response = fp.request_handler('POST', ['transaction'], body=transaction_json_data)  # handle transaction
 
-            pprint(response.json())
             if not response.status_code == 200:
                 raise serializers.ValidationError({
                     **response.json()

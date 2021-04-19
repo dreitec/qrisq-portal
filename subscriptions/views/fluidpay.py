@@ -1,6 +1,6 @@
 import json
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK
@@ -25,6 +25,7 @@ class FluidPayTransaction(CreateAPIView):
 
 
 @api_view(["GET"])
+@permission_classes((IsAuthenticated, ))
 def fluidpay_refund(request):
     user = request.user
     last_transaction_detail_db = UserPayment.objects.filter(user_id=user, payment_gateway='fluidpay').latest('paid_at')
