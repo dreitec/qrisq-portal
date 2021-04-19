@@ -13,8 +13,8 @@ class SubscriptionPlan(models.Model):
 
 
 class UserSubscription(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="subscription_plan")
-    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name="users")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="users")
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name="subscription_plan")
     subscribed_on = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     recurring = models.BooleanField(default=False)

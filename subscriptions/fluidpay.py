@@ -23,6 +23,5 @@ class FluidPay(object):
             return requests.get(url, headers=headers)
         elif req_method == 'POST':
             return requests.post(url, data=body, headers=headers)
-            print('post->', results.text)
         elif req_method == 'DELETE':
             return requests.delete(url, data=body, headers=headers)

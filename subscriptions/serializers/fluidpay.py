@@ -7,7 +7,6 @@ from django.conf import settings
 from rest_framework import serializers
 from django.core.validators import RegexValidator
 
-from user_app.utils import mail_sender
 from subscriptions.fluidpay_custom_exception import FluidPayCustomException
 from subscriptions.fluidpay import FluidPay
 from subscriptions.models import UserPayment, UserSubscription, SubscriptionPlan
@@ -90,13 +89,12 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                 payment_gateway='fluidpay',
                 user_id=user.id,
             )
-            subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id).name
+            subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
             UserSubscription.objects.create(
-                user=user.id,
+                user=user,
                 plan=subscription_plan,
                 recurring=False
             )
-            # user_profile = UserProfile.objects.create(user=user, **validated_data)
 
         except Exception as err:
             logger.warning(f"Failed User instance; Error: {str(err)}")
