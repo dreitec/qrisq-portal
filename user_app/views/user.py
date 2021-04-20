@@ -14,7 +14,7 @@ from user_app.models import User
 from user_app.permissions import IsAdminUser
 from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, CompleteProfileSerializer
 from user_app.utils import mail_sender
-from subscriptions.views.paypal import refund_order
+from subscriptions.paypal import paypal_refund_payment
 
 
 class AccountProfileView(APIView):
@@ -120,7 +120,7 @@ class CompleteProfileView(CreateAPIView):
             user = request.user
 
             try:
-                refund_order(payment_id, payment_gateway, user)
+                paypal_refund_payment(payment_id, payment_gateway, user)
             except Exception as err:
                 error = json.loads(err.message)
 
