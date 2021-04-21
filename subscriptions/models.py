@@ -30,7 +30,7 @@ class UserPayment(models.Model):
             )
             
     payment_id = models.CharField(max_length=20, unique=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="capture")
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="payment")
     payment_gateway = models.CharField(max_length=30, choices=PAYMENT_CHOICES)
     price = models.FloatField(default=0)
     paid_at = models.DateTimeField(auto_now_add=True)
