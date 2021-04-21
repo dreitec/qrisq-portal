@@ -32,7 +32,7 @@ class RefundPayent(APIView):
     def post(self, request):
         try:
             user = User.objects.get(id=request.data.get('uid'), is_deleted=False)
-            user_payment = UserPayment.objects.get(user=user)
+            user_payment = UserPayment.objects.filter(user=user).last()
             user_subscription = UserSubscription.objects.get(user=user)
         except ObjectDoesNotExist:
             return Response({
