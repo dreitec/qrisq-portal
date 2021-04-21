@@ -28,8 +28,9 @@ class LoginView(TokenObtainPairView):
             return Response({'message': "No active account found with the given credentials"},
                             status=HTTP_401_UNAUTHORIZED)
         try:
-            logger.info("Login Successful...")
-            return super().post(request, *args, **kwargs)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            return Response(serializer.data)
 
         except Exception as err:
             logger.error(f"Login Failed: {str(err)}")

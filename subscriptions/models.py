@@ -30,5 +30,5 @@ class UserPayment(models.Model):
             )
             
     payment_id = models.CharField(max_length=20, unique=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="capture")
-    payment_gateway = models.CharField(max_length=30, choices = PAYMENT_CHOICES)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="payment")
+    payment_gateway = models.CharField(max_length=30, choices=PAYMENT_CHOICES)
