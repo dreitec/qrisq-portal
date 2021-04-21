@@ -14,7 +14,6 @@ WORKDIR /qrisq
 
 ADD requirements.txt /qrisq/
 
-RUN --mount=type=cache,target=/root/.cache \
-    pip install -r /qrisq/requirements.txt
+RUN pip install -r /qrisq/requirements.txt
 
 COPY ./ /qrisq
