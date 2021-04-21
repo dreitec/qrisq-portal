@@ -125,7 +125,11 @@ class CompleteProfileView(CreateAPIView):
 def verify_email(request):
     email = request.data.get("email")
     if not email:
-        return Response({'message': "empty email"}, status=HTTP_400_BAD_REQUEST)
+        return Response({
+            'error': {
+                'email': "This field is required."
+            }
+        }, status=HTTP_400_BAD_REQUEST)
 
     if User.objects.filter(email=email).exists():
         return Response({
@@ -133,5 +137,5 @@ def verify_email(request):
                 'email': "Email already exists"
             }
         }, status=HTTP_400_BAD_REQUEST)
-    else:
-        return Response({'message': "Email available"}, status=HTTP_200_OK)
+
+    return Response({'message': "Email available"}, status=HTTP_200_OK)
