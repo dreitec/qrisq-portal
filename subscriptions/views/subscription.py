@@ -10,11 +10,11 @@ from rest_framework.views import APIView
 
 from user_app.permissions import IsAdminUser
 from user_app.models import User
+from user_app.utils import mail_sender
+
 from subscriptions.models import SubscriptionPlan, UserPayment, UserSubscription
 from subscriptions.serializers import SubscriptionPlanSerializer
 from subscriptions.paypal import paypal_refund_payment
-from user_app.permissions import IsAdminUser
-from user_app.utils import mail_sender
 
 
 class SubscriptionPlanViewSet(viewsets.ModelViewSet):
@@ -29,10 +29,10 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
 
-class RefundPayent(APIView):
+class RefundPaymentView(APIView):
     permission_classes = [IsAdminUser,]
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         try:
             user = User.objects.get(id=request.data.get('uid'), is_deleted=False)
             user_payment = UserPayment.objects.filter(user=user).last()
@@ -41,19 +41,19 @@ class RefundPayent(APIView):
             return Response({
                 'message': 'No subscribed user found.'
             })
+
         payment_gateway = user_payment.payment_gateway
         if payment_gateway == 'paypal':
             try:
                 paypal_refund_payment(user_payment.payment_id, payment_gateway, user)
-                user_subscription.cancel_subscription()
             except Exception as err:
                 error = json.loads(err.message)
-                
                 return Response({
-                'message': "Paypal Refund fail.",
-                'error': error.get('message')
+                    'message': error.get('message'),
+                    'error': "Paypal Refund fail."
                 }, status=HTTP_400_BAD_REQUEST)
-            
+
+        user_subscription.cancel_subscription()           
         context = {
             'full_name': f"{user.first_name} {user.last_name}",
             'domain': settings.DOMAIN
@@ -69,13 +69,13 @@ class RefundPayent(APIView):
             raise Exception("Error sending email to User.")
         
         return Response({
-            "message": "Refund successful"
+            "message": "Refund successful."
         })
 
 
-class CancelSubscription(APIView):
+class CancelSubscriptionView(APIView):
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         user = request.user
         
         if not UserSubscription.objects.filter(user=user, is_cancelled=False).exists():

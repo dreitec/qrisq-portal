@@ -37,12 +37,12 @@ class UserPayment(models.Model):
             )
             
     payment_id = models.CharField(max_length=20, unique=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="capture")
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="payment")
     payment_gateway = models.CharField(max_length=30, choices = PAYMENT_CHOICES)
     
 
 class PaymentRefund(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    payment_id = models.CharField(max_length=20, unique=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="refund")
+    payment = models.OneToOneField(UserPayment, on_delete=models.DO_NOTHING, related_name="refund")
     refund_transaction_id = models.CharField(max_length=20, unique=True)
     payment_gateway = models.CharField(max_length=30, choices = UserPayment.PAYMENT_CHOICES)

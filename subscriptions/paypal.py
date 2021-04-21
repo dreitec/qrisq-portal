@@ -9,6 +9,7 @@ from paypalhttp.http_error import HttpError
 
 from subscriptions.models import PaymentRefund
 
+
 def paypal_client():
     '''
     Method to select the paypal environment and return paypal client
@@ -34,13 +35,12 @@ class OrderApproveRequest:
 
 
 def paypal_refund_payment(payment_id, payment_gateway, user):
-    if payment_gateway == 'paypal':
-        client = paypal_client()
-        try:
-            request = CapturesRefundRequest(payment_id)
-            response = client.execute(request)
-            refund_transaction_id = response.result.id
-        except HttpError as err:
-            raise err
+    client = paypal_client()
+    try:
+        request = CapturesRefundRequest(payment_id)
+        response = client.execute(request)
+        refund_transaction_id = response.result.id
+    except HttpError as err:
+        raise err
 
     PaymentRefund.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)

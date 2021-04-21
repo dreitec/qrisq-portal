@@ -126,8 +126,8 @@ class CompleteProfileView(CreateAPIView):
                 error = json.loads(err.message)
 
                 return Response({
-                'message': "Paypal Refund fail.",
-                'error': error.get('message')
+                    'message': "Paypal Refund fail.",
+                    'error': error.get('message')
                 }, status=HTTP_400_BAD_REQUEST)
 
             return Response({
