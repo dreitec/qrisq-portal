@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import transaction
 
 from rest_framework import serializers
-from user_app.models import User, UserProfile
+from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
 from .auth import LoginTokenSerializer
 
@@ -18,6 +18,11 @@ class SignupSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255)
     confirm_password = serializers.CharField(max_length=255)
     phone_number = serializers.CharField(max_length=15)
+    address = serializers.JSONField()
+    street_number = serializers.CharField(max_length=30)
+    city = serializers.CharField(max_length=30)
+    state = serializers.CharField(max_length=30)
+    zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
 
     def to_representation(self, instance=None):
         serializer = LoginTokenSerializer(data=self.validated_data, context=self.context)
@@ -31,6 +36,10 @@ class SignupSerializer(serializers.Serializer):
         
         if User.objects.filter(email=data['email']).exists():
             error['email'] = "User with this email exists."
+
+        address = data.get('address', {})
+        if not ('lat' in address and 'lng' in address and 'displayText' in address):
+            error['address'] = "Address information invalid. Please add 'lat', 'lng' and 'displayText' to address."
 
         if error:
             raise serializers.ValidationError(error)
