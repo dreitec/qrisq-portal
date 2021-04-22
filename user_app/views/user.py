@@ -116,10 +116,6 @@ class CompleteProfileView(CreateAPIView):
         try:
             serializer.save()
         except Exception as error:
-            payment_id = request.data['payment_id']
-            payment_gateway = request.data['payment_gateway']
-            user = request.user
-
             return Response({
                 'message': "Error updating user profile",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
