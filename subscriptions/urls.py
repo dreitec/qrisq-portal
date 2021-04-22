@@ -3,6 +3,7 @@ from rest_framework.routers import SimpleRouter
 
 from .views import SubscriptionPlanViewSet, create_order, approve_order, capture_order
 from subscriptions.views.fluidpay import FluidPayTransaction, fluidpay_refund
+from subscriptions.views import AddPaymentInfoView
 
 router = SimpleRouter(trailing_slash=False)
 router.register('subscription-plans', SubscriptionPlanViewSet, basename="subscription-plans")
@@ -18,4 +19,5 @@ urlpatterns += [
     path("fluidpay/process-transaction", FluidPayTransaction.as_view(), name="fluid_pay_process_transaction"),
     path("fluidpay/refund-transaction", fluidpay_refund, name="fluid_pay_refund_transaction"),
 
+    path('add-payment-info', AddPaymentInfoView.as_view(), name="add_payment_info"),
 ]
