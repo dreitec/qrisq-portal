@@ -14,7 +14,6 @@ from user_app.models import User
 from user_app.permissions import IsAdminUser
 from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, CompleteProfileSerializer
 from user_app.utils import mail_sender
-from subscriptions.paypal import paypal_refund_payment
 
 
 class AccountProfileView(APIView):
