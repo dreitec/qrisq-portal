@@ -11,7 +11,7 @@ class SignupView(CreateAPIView):
     serializer_class = SignupSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         try:
             serializer.save()
@@ -19,6 +19,8 @@ class SignupView(CreateAPIView):
             return Response({
                 'message': "Signup Failed. Please try again in a while",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
-        
-        return Response({'message': "User successfully created. Please check your email"}, status=HTTP_201_CREATED)
+
+        print(serializer.data)
+        return Response(serializer.data, status=HTTP_201_CREATED)
+
 

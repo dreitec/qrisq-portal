@@ -1,19 +1,22 @@
-from django.utils.text import gettext_lazy as _
-
 from rest_framework import serializers
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
+from subscriptions.serializers import UserSubscriptionSerializer
 from .user import UserSerializer
 
 
 class LoginTokenSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        response = super().validate(attrs)
-        response['user_info'] = UserSerializer(self.user).data
+
+    def to_representation(self, instance):
+        response = self.validated_data
+        response['user'] = UserSerializer(self.user).data
+        subscribed_plan = getattr(self.user, "subscription_plan", None)
+        response['user']['subscription'] = UserSubscriptionSerializer(subscribed_plan).data
+        response['user']['has_paid'] = self.user.payment.last() and not subscribed_plan.is_cancelled
         return response
+
 
 class RefreshTokenSerializer(TokenRefreshSerializer):
     def save(self):

@@ -288,6 +288,7 @@ LOGIN_EXEMPT_PATHS = (
     r'api/check-service-area',
     r'api/subscription-plans',
     r'api/swagger$',
+    r'api/verify-email',
 )
 
 
@@ -342,3 +343,13 @@ APPEND_SLASH = False
 PAYPAL_TEST = config("PAYPAL_TEST", True)
 PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID", "")
 PAYPAL_SECRET_KEY = config("PAYPAL_SECRET_KEY", "")
+
+
+#fluidpay
+FLUID_PAY_API_KEY = config("FLUID_PAY_API_KEY", "")
+FLUID_PAY_SANDBOX_URL = config("FLUID_PAY_SANDBOX_URL", "")
+FLUID_PAY_PRODUCTION_URL = config("FLUID_PAY_PRODUCTION_URL", "")
+FLUID_PAY_PROCESSOR_ID = config("FLUID_PAY_PROCESSOR_ID", "")
+
+
+
