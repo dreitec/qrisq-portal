@@ -120,16 +120,6 @@ class CompleteProfileView(CreateAPIView):
             payment_gateway = request.data['payment_gateway']
             user = request.user
 
-            try:
-                paypal_refund_payment(payment_id, payment_gateway, user)
-            except Exception as err:
-                error = json.loads(err.message)
-
-                return Response({
-                    'message': "Paypal Refund fail.",
-                    'error': error.get('message')
-                }, status=HTTP_400_BAD_REQUEST)
-
             return Response({
                 'message': "Error updating user profile",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
