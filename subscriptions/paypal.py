@@ -10,18 +10,6 @@ from paypalhttp.http_error import HttpError
 from subscriptions.models import PaymentRefund
 
 
-def paypal_client():
-    '''
-    Method to select the paypal environment and return paypal client
-    '''
-    if settings.PAYPAL_TEST:
-        environment = SandboxEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
-    else:
-        environment = LiveEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
-    
-    return PayPalHttpClient(environment)
-
-
 class OrderApproveRequest:
     """
     Approve an order, by ID.
@@ -44,3 +32,25 @@ def paypal_refund_payment(payment_id, payment_gateway, user):
         raise err
 
     PaymentRefund.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)
+
+
+class PayPal:
+    def __init__(self):
+        if settings.PAYPAL_TEST:
+            self.environment = SandboxEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
+        else:
+            self.environment = LiveEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
+    
+    def paypal_client():
+        return PayPalHttpClient(self.environment)
+    
+    def refund_payment(payment_id, payment_gateway, user):
+        client = paypal_client()
+        try:
+            request = CapturesRefundRequest(payment_id)
+            response = client.execute(request)
+            refund_transaction_id = response.result.id
+        except HttpError as err:
+            raise err
+
+        PaymentRefund.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)
