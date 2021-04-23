@@ -7,7 +7,7 @@ from paypalcheckoutsdk.core import SandboxEnvironment, LiveEnvironment, PayPalHt
 from paypalcheckoutsdk.payments import CapturesGetRequest, CapturesRefundRequest
 from paypalhttp.http_error import HttpError
 
-from subscriptions.models import PaymentRefund
+from subscriptions.models import PaymentRefund, UserPayment
 
 
 class OrderApproveRequest:
@@ -22,18 +22,6 @@ class OrderApproveRequest:
         self.body = None
 
 
-def paypal_refund_payment(payment_id, payment_gateway, user):
-    client = paypal_client()
-    try:
-        request = CapturesRefundRequest(payment_id)
-        response = client.execute(request)
-        refund_transaction_id = response.result.id
-    except HttpError as err:
-        raise err
-
-    PaymentRefund.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)
-
-
 class PayPal:
     def __init__(self):
         if settings.PAYPAL_TEST:
@@ -41,11 +29,11 @@ class PayPal:
         else:
             self.environment = LiveEnvironment(client_id=settings.PAYPAL_CLIENT_ID, client_secret=settings.PAYPAL_SECRET_KEY)
     
-    def paypal_client():
+    def __paypal_client(self):
         return PayPalHttpClient(self.environment)
     
-    def refund_payment(payment_id, payment_gateway, user):
-        client = paypal_client()
+    def refund_payment(self, payment_id, payment_gateway, user):
+        client = self.__paypal_client()
         try:
             request = CapturesRefundRequest(payment_id)
             response = client.execute(request)
@@ -53,4 +41,6 @@ class PayPal:
         except HttpError as err:
             raise err
 
-        PaymentRefund.objects.create(user=user, payment_id=payment_id, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)
+
+        user_payment = UserPayment.objects.get(payment_id=payment_id)
+        PaymentRefund.objects.create(user=user, payment=user_payment, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)

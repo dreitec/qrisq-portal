@@ -13,7 +13,6 @@ from user_app.utils import mail_sender
 
 from subscriptions.models import SubscriptionPlan, UserSubscription
 from subscriptions.serializers import SubscriptionPlanSerializer
-from subscriptions.paypal import paypal_refund_payment
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +39,7 @@ class CancelSubscriptionView(APIView):
                 'message': 'You have not subscribed yet.'
             })
 
+        logger.info('Cancelling subscription of ' + user.email)
         user_subscription = UserSubscription.objects.get(user=user)
         user_subscription.cancel_subscription()
 
@@ -55,7 +55,7 @@ class CancelSubscriptionView(APIView):
                 recipient_list=[user.email]
             )
         except Exception as error:
-            logger.error('Error sending email to User:' + err.response['Error']['Message'])
+            logger.error('Error sending email to account: ' + user.email)
         
         return Response({
             "message": "Subscription cancelled."

@@ -13,7 +13,7 @@ from user_app.models import User
 from user_app.utils import mail_sender
 
 from subscriptions.models import SubscriptionPlan, UserPayment, UserSubscription
-from subscriptions.paypal import paypal_refund_payment, PayPal
+from subscriptions.paypal import PayPal
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +32,15 @@ class RefundPaymentView(APIView):
             })
 
         payment_gateway = user_payment.payment_gateway
+        logger.info("Refunding to account " + user.email)
         if payment_gateway == 'paypal':
             try:
-                PayPal.refund_payment(user_payment.payment_id, payment_gateway, user)
+                paypal = PayPal()
+                paypal.refund_payment(user_payment.payment_id, payment_gateway, user)
+
             except Exception as err:
                 error = json.loads(err.message)
+                logger.error("Failed refunding paypal to account " + json.dumps(error.get('details')))
                 return Response({
                     'message': error.get('message'),
                     'error': "Paypal Refund fail."
@@ -55,9 +59,8 @@ class RefundPaymentView(APIView):
                 recipient_list=[user.email]
             )
         except Exception as error:
-            logger.error('Error sending email to User:' + err.response['Error']['Message'])
+            logger.error("Failed sending email to user")
 
-        
         return Response({
             "message": "Refund successful."
         })

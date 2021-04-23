@@ -46,7 +46,7 @@ class UserPayment(models.Model):
         return self.payment_id
 
 class PaymentRefund(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="refund")
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="user")
     payment = models.OneToOneField(UserPayment, on_delete=models.DO_NOTHING, related_name="refund")
     refund_transaction_id = models.CharField(max_length=20, unique=True)
     payment_gateway = models.CharField(max_length=30, choices = UserPayment.PAYMENT_CHOICES)
