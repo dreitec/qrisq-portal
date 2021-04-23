@@ -25,25 +25,26 @@ class PingDragAddress(APIView):
     serializer_class = UserProfileSerializer
 
     def post(self, request, *args, **kwargs):
+        subscribed_plan = getattr(request.user, "subscription_plan", None)
 
         try:
             if request.user.profile.address_updated >= 1:
                 return Response({'message': "Already updated"}, status=HTTP_403_FORBIDDEN)
-            if UserPayment.objects.filter(user=request.user).exists():
-                return Response({'message': "User payment already exist"}, status=HTTP_403_FORBIDDEN)
-            serializer = self.serializer_class(data=request.data, context={'request': request})
-            serializer.is_valid(raise_exception=True)
-            try:
-                serializer.save()
-            except Exception as error:
-                return Response({
-                    'message': "pin drag address error",
-                    'error': str(error)}, status=HTTP_400_BAD_REQUEST
-                )
+            if UserPayment.objects.filter(user=request.user).exists() and \
+                    not subscribed_plan.is_cancelled:
+                serializer = self.serializer_class(data=request.data, context={'request': request})
+                serializer.is_valid(raise_exception=True)
+                try:
+                    serializer.save()
+                except Exception as error:
+                    return Response({
+                        'message': "pin drag address error",
+                        'error': str(error)}, status=HTTP_400_BAD_REQUEST
+                    )
 
-            return Response({'message': "pin drag address updated"}, status=HTTP_201_CREATED)
+                return Response({'message': "pin drag address updated"}, status=HTTP_201_CREATED)
         except Exception as e:
             return Response({
-                'message': "complete yor profile",
+                'message': "complete yor profile or payment does not exist",
                 'error': str(e)}, status=HTTP_400_BAD_REQUEST
             )
