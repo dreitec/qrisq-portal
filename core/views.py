@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR, HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED, \
+from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR, HTTP_200_OK, HTTP_201_CREATED, \
     HTTP_403_FORBIDDEN
 from rest_framework.views import APIView
 
@@ -26,25 +26,19 @@ class PingDragAddress(APIView):
 
     def post(self, request, *args, **kwargs):
         subscribed_plan = getattr(request.user, "subscription_plan", None)
-
+        user_payment = getattr(request.user, "capture", None)
         try:
             if request.user.profile.address_updated >= 1:
                 return Response({'message': "Already updated"}, status=HTTP_403_FORBIDDEN)
-            if UserPayment.objects.filter(user=request.user).exists() and \
-                    not subscribed_plan.is_cancelled:
+            if user_payment.exists() and not subscribed_plan.is_cancelled:
                 serializer = self.serializer_class(data=request.data, context={'request': request})
                 serializer.is_valid(raise_exception=True)
-                try:
-                    serializer.save()
-                except Exception as error:
-                    return Response({
-                        'message': "pin drag address error",
-                        'error': str(error)}, status=HTTP_400_BAD_REQUEST
-                    )
+                serializer.save()
+                return Response({'message': "Pin-drag Address Updated"}, status=HTTP_201_CREATED)
 
-                return Response({'message': "pin drag address updated"}, status=HTTP_201_CREATED)
+            return Response({'message': "Error. Payment does not exist"}, status=HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({
-                'message': "complete yor profile or payment does not exist",
-                'error': str(e)}, status=HTTP_400_BAD_REQUEST
+                'message': "User Subscription is Cancelled",
+                'error': str(e)}, status=HTTP_403_FORBIDDEN
             )
