@@ -53,3 +53,4 @@ class UserProfile(models.Model):
     state = models.CharField(max_length=30, blank=True, default="")
     zip_code = models.CharField(max_length=5, validators=[NUMERIC_VALIDATOR], blank=True, default="")
     is_preprocessed = models.BooleanField(default=False)
+    address_updated = models.IntegerField(default=0)
