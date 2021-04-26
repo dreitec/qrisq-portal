@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -76,7 +78,6 @@ def list_client_users(request):
  
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated,])
 def request_address_change(request):
     new_address = request.data["new_address"]
 
@@ -88,7 +89,8 @@ def request_address_change(request):
         'new_address': new_address,
         'old_address': request.user.profile.address,
         'client_email': request.user.email,
-        'link': f"{settings.DOMAIN}/api/users/{request.user.id}"
+        'link': f"{settings.DOMAIN}/api/users/{request.user.id}",
+        'domain': settings.DOMAIN
     }
     try:
         mail_sender(
