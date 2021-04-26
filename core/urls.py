@@ -3,5 +3,5 @@ from .views import CheckServiceArea
     
 
 urlpatterns = [
-    path('check-service-area', CheckServiceArea.as_view(), name="check-service-area")
+    path('check-service-area', CheckServiceArea.as_view(), name="check-service-area"),
 ]

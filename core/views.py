@@ -1,6 +1,6 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR, HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
+from rest_framework.views import APIView
 
 from .serializers import ServiceAreaSerializer
 from .service_area import service_area_finder as finder
