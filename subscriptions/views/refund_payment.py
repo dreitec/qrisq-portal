@@ -25,11 +25,16 @@ class RefundPaymentView(APIView):
         try:
             user = User.objects.get(id=request.data.get('uid'), is_deleted=False)
             user_payment = UserPayment.objects.filter(user=user).last()
-            user_subscription = UserSubscription.objects.get(user=user)
         except ObjectDoesNotExist:
             return Response({
                 'message': 'No subscribed user found.'
-            })
+            }, status=HTTP_400_BAD_REQUEST)
+        
+        user_subscription = UserSubscription.objects.get(user=user)
+        if not user_payment:
+            return Response({
+                'message': "Requested user has not paid yet."
+            }, status=HTTP_400_BAD_REQUEST)
 
         payment_gateway = user_payment.payment_gateway
         logger.info("Refunding to account " + user.email)

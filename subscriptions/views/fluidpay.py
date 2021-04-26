@@ -43,6 +43,7 @@ def fluidpay_refund(request):
         response_body = response.json()
         response_message = response_body.get('msg', 0)
         return Response({'message': response_message}, status=HTTP_400_BAD_REQUEST)
+
     return Response({
         'message': "$" + str(amount["amount"]) + " has been successfully refunded"}, status=HTTP_200_OK
     )

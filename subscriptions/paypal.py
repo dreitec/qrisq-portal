@@ -41,6 +41,5 @@ class PayPal:
         except HttpError as err:
             raise err
 
-
         user_payment = UserPayment.objects.get(payment_id=payment_id)
         PaymentRefund.objects.create(user=user, payment=user_payment, payment_gateway=payment_gateway, refund_transaction_id=refund_transaction_id)

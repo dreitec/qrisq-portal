@@ -5,6 +5,7 @@ from django.conf import settings
 
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from user_app.permissions import IsAdminUser
@@ -37,7 +38,7 @@ class CancelSubscriptionView(APIView):
         if not UserSubscription.objects.filter(user=user, is_cancelled=False).exists():
             return Response({
                 'message': 'You have not subscribed yet.'
-            })
+            }, status=HTTP_400_BAD_REQUEST)
 
         logger.info('Cancelling subscription of ' + user.email)
         user_subscription = UserSubscription.objects.get(user=user)

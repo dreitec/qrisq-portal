@@ -9,7 +9,7 @@ from django.core.validators import RegexValidator
 from subscriptions.fluidpay_custom_exception import FluidPayCustomException
 from subscriptions.fluidpay import FluidPay
 from subscriptions.models import UserPayment, UserSubscription, SubscriptionPlan
-from subscriptions.fluidpay_response import FLUIDPAY_RESPONSE
+from subscriptions.fluidpay_response_mapper import FLUIDPAY_RESPONSE
 
 logger = logging.getLogger(__name__)
 
