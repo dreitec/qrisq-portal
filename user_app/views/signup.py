@@ -20,7 +20,6 @@ class SignupView(CreateAPIView):
                 'message': "Signup Failed. Please try again in a while",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
 
-        print(serializer.data)
         return Response(serializer.data, status=HTTP_201_CREATED)
 
 
