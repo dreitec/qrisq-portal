@@ -1,6 +1,8 @@
+import json
+
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, CreateAPIView
@@ -10,7 +12,7 @@ from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, CompleteProfileSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer
 from user_app.utils import mail_sender
 
 
@@ -76,7 +78,6 @@ def list_client_users(request):
  
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated,])
 def request_address_change(request):
     new_address = request.data["new_address"]
 
@@ -88,7 +89,8 @@ def request_address_change(request):
         'new_address': new_address,
         'old_address': request.user.profile.address,
         'client_email': request.user.email,
-        'link': f"{settings.DOMAIN}/api/users/{request.user.id}"
+        'link': f"{settings.DOMAIN}/api/users/{request.user.id}",
+        'domain': settings.DOMAIN
     }
     try:
         mail_sender(
@@ -103,18 +105,22 @@ def request_address_change(request):
     return Response({'message': "Request has been sent to change your address."})
 
 
-class CompleteProfileView(CreateAPIView):
-    serializer_class = CompleteProfileSerializer
-    permission_classes = [IsAuthenticated,]
+@api_view(["POST"])
+@permission_classes((AllowAny,))
+def verify_email(request):
+    email = request.data.get("email")
+    if not email:
+        return Response({
+            'error': {
+                'email': "This field is required."
+            }
+        }, status=HTTP_400_BAD_REQUEST)
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        try:
-            serializer.save()
-        except Exception as error:
-            return Response({
-                'message': "Error updating user profile",
-                'error': str(error)}, status=HTTP_400_BAD_REQUEST)
-        
-        return Response({'message': "User profile completed."}, status=HTTP_200_OK)
+    if User.objects.filter(email=email).exists():
+        return Response({
+            'error': {
+                'email': "Email already exists"
+            }
+        }, status=HTTP_400_BAD_REQUEST)
+
+    return Response({'message': "Email available"}, status=HTTP_200_OK)

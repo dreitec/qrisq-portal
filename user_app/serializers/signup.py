@@ -1,13 +1,12 @@
 import logging
 
 from django.conf import settings
-from django.contrib.auth.hashers import make_password
 from django.db import transaction
 
 from rest_framework import serializers
-
-from user_app.models import User, UserProfile
+from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
+from .auth import LoginTokenSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +18,16 @@ class SignupSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255)
     confirm_password = serializers.CharField(max_length=255)
     phone_number = serializers.CharField(max_length=15)
+    address = serializers.JSONField()
+    street_number = serializers.CharField(max_length=30)
+    city = serializers.CharField(max_length=30)
+    state = serializers.CharField(max_length=30)
+    zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
+
+    def to_representation(self, instance=None):
+        serializer = LoginTokenSerializer(data=self.validated_data, context=self.context)
+        serializer.is_valid()
+        return serializer.data
 
     def validate(self, data):
         error = {}
@@ -27,6 +36,10 @@ class SignupSerializer(serializers.Serializer):
         
         if User.objects.filter(email=data['email']).exists():
             error['email'] = "User with this email exists."
+
+        address = data.get('address', {})
+        if not ('lat' in address and 'lng' in address and 'displayText' in address):
+            error['address'] = "Address information invalid. Please add 'lat', 'lng' and 'displayText' to address."
 
         if error:
             raise serializers.ValidationError(error)
@@ -45,10 +58,10 @@ class SignupSerializer(serializers.Serializer):
             logger.info("Creating User Instance for email " + email)
             user = User.objects.create_user(email=email, password=password,
                                             first_name=first_name, last_name=last_name)
-            user_profile = UserProfile.objects.create(user=user, **validated_data)
+            UserProfile.objects.create(user=user, **validated_data)
 
         except Exception as err:
-            logger.warn(f"Failed User instance; Error: {str(err)}")
+            logger.warning(f"Failed User instance; Error: {str(err)}")
             raise err
         
         context = {
@@ -63,7 +76,7 @@ class SignupSerializer(serializers.Serializer):
                 recipient_list=[email]
             )
         except Exception as error:
-            logger.warn("Failed sending email to user; Error: {str(error)}")
+            logger.warning("Failed sending email to user; Error: {str(error)}")
             raise Exception("Error sending email to User.")
         
         logger.info(f"User {email} created successfully.")
