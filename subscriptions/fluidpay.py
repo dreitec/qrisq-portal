@@ -9,10 +9,14 @@ class FluidPay(object):
 
     def __init__(self):
         self.api_key = settings.FLUID_PAY_API_KEY
+        if settings.FLUIDPAY_TEST:
+            self.main_url = settings.FLUID_PAY_SANDBOX_URL
+        else:
+            self.main_url = settings.FLUID_PAY_PRODUCTION_URL
 
     def request_handler(self, req_method, params, body={}):
-        url_sandbox = settings.FLUID_PAY_SANDBOX_URL
-        url = f"{url_sandbox}/{'/'.join(params)}"
+        url = f"{self.main_url}/{'/'.join(params)}"
+        print(url)
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
