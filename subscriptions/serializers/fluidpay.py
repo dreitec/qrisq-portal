@@ -16,12 +16,19 @@ logger = logging.getLogger(__name__)
 DATE_VALIDATOR = RegexValidator(r'^((0?[1-9]|[1][0-2])\/\d{2})', 'Invalid Expiration date format')
 CARD_VALIDATOR = RegexValidator(r'(\d{14,16})', 'Only numeric characters or Invalid Card Number')
 CVC_VALIDATOR = RegexValidator(r'(\d{3,4})', 'Only numeric characters')
+NUMERIC_VALIDATOR = RegexValidator(r'^[0-9+]', 'Only numeric characters')
 
 
 class FluidPayTransactionSerializer(serializers.Serializer):
+    first_name = serializers.CharField(max_length=60)
+    last_name = serializers.CharField(max_length=60)
     card_number = serializers.CharField(max_length=16, validators=[CARD_VALIDATOR], error_messages={"required": "Enter card Number."})
     expiration_date = serializers.CharField(max_length=5, validators=[DATE_VALIDATOR], error_messages={"required": "Enter expiration date."})
     cvc = serializers.CharField(max_length=4, validators=[CVC_VALIDATOR], error_messages={"required": "Enter cvc number."})
+    billing_address = serializers.CharField(max_length=99)
+    city = serializers.CharField(max_length=50)
+    state = serializers.CharField(max_length=30)
+    zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     amount = serializers.DecimalField(max_digits=8, decimal_places=2,
                                       error_messages={"required": "Enter amount."})
     subscription_plan_id = serializers.IntegerField()
@@ -37,9 +44,15 @@ class FluidPayTransactionSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
+        first_name = validated_data.pop("first_name")
+        last_name = validated_data.pop("last_name")
         card_number = validated_data.pop('card_number')
         expiration_date = validated_data.pop('expiration_date')
         cvc = validated_data.pop('cvc')
+        billing_address = validated_data.pop('billing_address')
+        city = validated_data.pop('city')
+        state = validated_data.pop('state')
+        zip_code = validated_data.pop('zip_code')
         amount = validated_data.pop('amount')
         subscription_plan_id = validated_data.pop('subscription_plan_id')
 
@@ -64,6 +77,14 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                         "expiration_date": expiration_date,
                         "cvc": cvc
                     }
+                },
+                "billing_address": {
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "address_line_1": billing_address,
+                    "city": city,
+                    "state": state,
+                    "postal_code": zip_code,
                 },
             }
 
