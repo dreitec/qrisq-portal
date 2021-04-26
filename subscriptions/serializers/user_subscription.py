@@ -22,7 +22,7 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
 class AddPaymentInfoSerializer(serializers.Serializer):
     subscription_plan_id = serializers.IntegerField()
     payment_id = serializers.CharField(max_length=30)
-    payment_gateway = serializers.ChoiceField(choices = UserPayment.PAYMENT_CHOICES)
+    payment_gateway = serializers.ChoiceField(choices=UserPayment.PAYMENT_CHOICES)
 
     def validate(self, data):
         error = {}
@@ -45,7 +45,10 @@ class AddPaymentInfoSerializer(serializers.Serializer):
         payment_gateway = validated_data.get('payment_gateway')
         user = self.context['request'].user
 
-        user_subscription = UserSubscription.objects.create(user = user, plan_id=subscription_plan_id)
-        UserPayment.objects.create(user = user, payment_id=payment_id, payment_gateway=payment_gateway, price=user_subscription.plan.price)
+        user_subscription = UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
+        UserPayment.objects.create(
+            user=user, payment_id=payment_id,
+            payment_gateway=payment_gateway, price=user_subscription.plan.price
+        )
             
         return user_subscription
