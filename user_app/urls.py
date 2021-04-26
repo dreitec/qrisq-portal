@@ -27,7 +27,7 @@ urlpatterns += [
     path('admins', list_admin_users, name="admin-users"),
     path('clients', list_client_users, name="client-users"),
 
-    path('pin-drag-address', PingDragAddress.as_view(), name="pin-drag-address"),
+    path('pin-drag-address', PingDragAddressView.as_view(), name="pin-drag-address"),
     path('request-address-change', request_address_change, name="request-address-change"),
 
     path('verify-email', verify_email, name="verify-email"),

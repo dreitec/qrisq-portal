@@ -1,9 +1,8 @@
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
-from .views import SubscriptionPlanViewSet, RefundPaymentView, CancelSubscriptionView
-from subscriptions.views.fluidpay import FluidPayTransaction, fluidpay_refund
-from subscriptions.views import AddPaymentInfoView
+from subscriptions.views import SubscriptionPlanViewSet, RefundPaymentView, CancelSubscriptionView, \
+    AddPaymentInfoView, FluidPayTransaction, fluidpay_refund
 
 router = SimpleRouter(trailing_slash=False)
 router.register('subscription-plans', SubscriptionPlanViewSet, basename="subscription-plans")
