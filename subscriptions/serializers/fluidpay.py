@@ -107,6 +107,7 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                 payment_id=transaction['id'],
                 payment_gateway='fluidpay',
                 user_id=user.id,
+                price=amount,
             )
             subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
             UserSubscription.objects.update_or_create(
