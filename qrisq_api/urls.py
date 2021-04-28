@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/', include('core.urls')),
     path('api/', include('user_app.urls')),
     path('api/', include('subscriptions.urls')),
+    path('api/', include('storm.urls')),
 ]
 
 if settings.DEBUG:

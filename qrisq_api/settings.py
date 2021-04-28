@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     # Project apps
     'core',
     'user_app',
-    'subscriptions'
+    'subscriptions',
+    'storm',
 ]
 
 MIDDLEWARE = [
@@ -114,6 +115,17 @@ else:
             'PORT': config('DB_PORT', default=5432),
             'OPTIONS': {
                 'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+            }
+        },
+        'storm': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('STORM_DB_NAME', default="qrisq_db"),
+            'USER': config('STORM_DB_USER', default="postgis"),
+            'PASSWORD': config('STORM_DB_PASSWORD', default="password"),
+            'HOST': config('STORM_DB_HOST', default="localhost"),
+            'PORT': config('STORM_DB_PORT', default=5432),
+            'OPTIONS': {
+                'options': '-c search_path=%s' % config('STORM_DB_SCHEMA', default='public')
             }
         }
     }
