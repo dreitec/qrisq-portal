@@ -7,7 +7,7 @@ from subscriptions.serializers import UserSubscriptionSerializer
 class _UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        exclude = ('id', 'user')
+        exclude = ('id', 'user', 'address_updated')
 
 
 class UserBasicSerializer(serializers.ModelSerializer):
@@ -55,3 +55,7 @@ class ClientUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'subscription_plan')
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()

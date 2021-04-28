@@ -12,7 +12,7 @@ from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, VerifyEmailSerializer
 from user_app.utils import mail_sender
 
 
@@ -105,22 +105,24 @@ def request_address_change(request):
     return Response({'message': "Request has been sent to change your address."})
 
 
-@api_view(["POST"])
-@permission_classes((AllowAny,))
-def verify_email(request):
-    email = request.data.get("email")
-    if not email:
-        return Response({
-            'error': {
-                'email': "This field is required."
-            }
-        }, status=HTTP_400_BAD_REQUEST)
+class VerifyEmail(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = VerifyEmailSerializer
 
-    if User.objects.filter(email=email).exists():
-        return Response({
-            'error': {
-                'email': "Email already exists"
-            }
-        }, status=HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({
+                'error': {
+                    'email': "This field is required."
+                }
+            }, status=HTTP_400_BAD_REQUEST)
 
-    return Response({'message': "Email available"}, status=HTTP_200_OK)
+        if User.objects.filter(email=email).exists():
+            return Response({
+                'error': {
+                    'email': "Email already exists"
+                }
+            }, status=HTTP_400_BAD_REQUEST)
+
+        return Response({'message': "Email available"}, status=HTTP_200_OK)
