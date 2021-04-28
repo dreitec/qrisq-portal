@@ -170,7 +170,8 @@ class TestAdminUserCrud(APITestCase):
                 "city": "lalitpur",
                 "state": "2",
                 "zip_code": "44614",
-                "is_preprocessed": False
+                "is_preprocessed": False,
+                "address_updated": 0
             }
         })
 
