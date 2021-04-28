@@ -54,9 +54,10 @@ class TestAccountProfile(APITestCase):
                 "city": "Somewhere",
                 "state": "Utah",
                 "zip_code": "12134",
-                "is_preprocessed": False
+                "is_preprocessed": False,
+                "address_updated": 0
             }),
-            "subscription_plan": None
+            "subscription_plan": None,
         })
 
     def test_unauthorized_get_profile(self):
@@ -97,7 +98,8 @@ class TestAccountProfile(APITestCase):
                 "city": "Somewhere",
                 "state": "Utah",
                 "zip_code": "12134",
-                "is_preprocessed":False
+                "is_preprocessed":False,
+                "address_updated": 0
             })
         })
 
@@ -131,7 +133,8 @@ class TestAccountProfile(APITestCase):
                 "city": "Somewhere",
                 "state": "Utah",
                 "zip_code": "12134",
-                "is_preprocessed": False 
+                "is_preprocessed": False,
+                "address_updated": 0
             })
         })
         self.assertNotEqual(response.data, {
