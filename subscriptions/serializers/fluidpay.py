@@ -4,7 +4,8 @@ import logging
 from django.conf import settings
 
 from rest_framework import serializers
-from django.core.validators import RegexValidator
+
+from core.validators import CARD_VALIDATOR, CVC_VALIDATOR, DATE_VALIDATOR
 
 from subscriptions.fluidpay_custom_exception import FluidPayCustomException
 from subscriptions.fluidpay import FluidPay
@@ -12,10 +13,6 @@ from subscriptions.models import UserPayment, UserSubscription, SubscriptionPlan
 from subscriptions.fluidpay_response_mapper import FLUIDPAY_RESPONSE
 
 logger = logging.getLogger(__name__)
-
-DATE_VALIDATOR = RegexValidator(r'^((0?[1-9]|[1][0-2])\/\d{2})', 'Invalid Expiration date format')
-CARD_VALIDATOR = RegexValidator(r'(\d{14,16})', 'Only numeric characters or Invalid Card Number')
-CVC_VALIDATOR = RegexValidator(r'(\d{3,4})', 'Only numeric characters')
 
 
 class FluidPayTransactionSerializer(serializers.Serializer):
