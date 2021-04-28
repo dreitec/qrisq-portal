@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from user_app.views import LoginView, LogoutView, RefreshTokenView, \
     ChangePasswordView, ResetPasswordView, ForgotPasswordView, \
     SignupView, AccountProfileView, UserViewSet, list_admin_users, list_client_users, \
-    request_address_change, verify_email, PingDragAddressView
+    request_address_change, verify_email, PingDragAddressView, UpdateUserInfoView
     
 
 router = SimpleRouter(trailing_slash=False)
@@ -31,4 +31,6 @@ urlpatterns += [
     path('request-address-change', request_address_change, name="request-address-change"),
 
     path('verify-email', verify_email, name="verify-email"),
+
+    path('update-info', UpdateUserInfoView.as_view(), name="update-user-info"),
 ]

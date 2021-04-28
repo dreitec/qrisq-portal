@@ -2,4 +2,4 @@ from .auth import LoginView, LogoutView, RefreshTokenView, ResetPasswordView, Fo
 from .pin_drag import PingDragAddressView
 from .signup import SignupView
 from .user import AccountProfileView, UserViewSet, list_admin_users, list_client_users, request_address_change,\
-    verify_email
+    verify_email, UpdateUserInfoView
