@@ -5,15 +5,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
-from subscriptions.fluidpay import FluidPay
-from user_app.permissions import IsAdminUser
 from user_app.models import User
 from user_app.utils import mail_sender
+from user_app.permissions import IsAdminUser
 
-from subscriptions.models import SubscriptionPlan, UserPayment, UserSubscription
+from subscriptions.fluidpay import FluidPay
+
+from subscriptions.models import SubscriptionPlan, UserPayment, UserSubscription, PaymentRefund
 from subscriptions.paypal import PayPal
 
 logger = logging.getLogger(__name__)
@@ -37,10 +38,12 @@ class RefundPaymentView(APIView):
             return Response({
                 'message': "Requested user has cancelled their subscription"
             }, status=HTTP_400_BAD_REQUEST)
+
         if not user_payment:
             return Response({
                 'message': "Requested user has not paid yet."
             }, status=HTTP_400_BAD_REQUEST)
+
         payment_gateway = user_payment.payment_gateway
         last_transaction_id = user_payment.payment_id
         logger.info("Refunding to account " + user.email)
@@ -56,6 +59,7 @@ class RefundPaymentView(APIView):
                     'message': error.get('message'),
                     'error': "Paypal Refund fail."
                 }, status=HTTP_400_BAD_REQUEST)
+
         elif payment_gateway == 'fluidpay':
             fp = FluidPay()
             amount = {
@@ -63,12 +67,16 @@ class RefundPaymentView(APIView):
             }
             amount_json_data = json.dumps(amount)
 
+            # refund transaction via fluidpay
             response = fp.request_handler('POST', ['transaction', last_transaction_id, 'refund'],
-                                          body=amount_json_data)  # refund transaction
+                                          body=amount_json_data)
             if not response.status_code == 200:
                 response_body = response.json()
                 response_message = response_body.get('msg', 0)
                 return Response({'message': response_message}, status=HTTP_400_BAD_REQUEST)
+        
+        # record the refund information
+        PaymentRefund.objects.create(user=user, payment=user_payment, payment_gateway=payment_gateway)
 
         user_subscription.cancel_subscription()
         context = {
