@@ -14,9 +14,13 @@ class PingDragAddressView(APIView):
         subscribed_plan = getattr(user, "subscription_plan", None)
         user_payment = getattr(user, "payment", None)
 
+        if not subscribed_plan:
+            return Response({'message': "Please subscribe for a plan and make the payment."},
+                            status=HTTP_400_BAD_REQUEST)
+
         if user.profile.address_updated >= 1:
             return Response({'message': "Your address has already been changed earlier."}, status=HTTP_403_FORBIDDEN)
-        
+
         if not user_payment.exists() or subscribed_plan.is_cancelled:
             return Response({'message': "Please subscribe for a plan and make the payment."},
                             status=HTTP_403_FORBIDDEN)

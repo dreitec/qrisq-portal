@@ -16,12 +16,24 @@ logger = logging.getLogger(__name__)
 DATE_VALIDATOR = RegexValidator(r'^((0?[1-9]|[1][0-2])\/\d{2})', 'Invalid Expiration date format')
 CARD_VALIDATOR = RegexValidator(r'(\d{14,16})', 'Only numeric characters or Invalid Card Number')
 CVC_VALIDATOR = RegexValidator(r'(\d{3,4})', 'Only numeric characters')
+NUMERIC_VALIDATOR = RegexValidator(r'^[0-9+]', 'Only numeric characters')
 
 
 class FluidPayTransactionSerializer(serializers.Serializer):
-    card_number = serializers.CharField(max_length=16, validators=[CARD_VALIDATOR], error_messages={"required": "Enter card Number."})
-    expiration_date = serializers.CharField(max_length=5, validators=[DATE_VALIDATOR], error_messages={"required": "Enter expiration date."})
-    cvc = serializers.CharField(max_length=4, validators=[CVC_VALIDATOR], error_messages={"required": "Enter cvc number."})
+    first_name = serializers.CharField(max_length=60)
+    last_name = serializers.CharField(max_length=60)
+    card_number = serializers.CharField(max_length=16, validators=[CARD_VALIDATOR],
+                                        error_messages={"required": "Enter card Number."})
+    expiration_date = serializers.CharField(
+        max_length=5, validators=[DATE_VALIDATOR],
+        error_messages={"required": "Enter expiration date."}
+    )
+    cvc = serializers.CharField(max_length=4, validators=[CVC_VALIDATOR],
+                                error_messages={"required": "Enter cvc number."})
+    billing_address = serializers.CharField(max_length=99)
+    city = serializers.CharField(max_length=50)
+    state = serializers.CharField(max_length=30)
+    zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     amount = serializers.DecimalField(max_digits=8, decimal_places=2,
                                       error_messages={"required": "Enter amount."})
     subscription_plan_id = serializers.IntegerField()
@@ -37,37 +49,42 @@ class FluidPayTransactionSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        card_number = validated_data.pop('card_number')
-        expiration_date = validated_data.pop('expiration_date')
-        cvc = validated_data.pop('cvc')
         amount = validated_data.pop('amount')
         subscription_plan_id = validated_data.pop('subscription_plan_id')
+        transaction_data = {
+            "processor_id": settings.FLUID_PAY_PROCESSOR_ID,
+            "type": "sale",
+            "amount": int(amount * 100),
+            "tax_amount": 0,
+            "shipping_amount": 0,
+            "currency": "USD",
+            "description": "test transaction",
+            "email_receipt": True,
+            "email_address": user.email,
+            "create_vault_record": True,
+            "payment_method": {
+                "card": {
+                    "entry_type": "keyed",
+                    "number": validated_data.get('card_number'),
+                    "expiration_date": validated_data.pop('expiration_date'),
+                    "cvc": validated_data.pop('cvc'),
+                }
+            },
+            "billing_address": {
+                "first_name": validated_data.get("first_name"),
+                "last_name": validated_data.get("last_name"),
+                "address_line_1": validated_data.get("billing_address"),
+                "city": validated_data.get("city"),
+                "state": validated_data.get("state"),
+                "postal_code": validated_data.get("zip_code"),
+            },
+        }
 
         try:
             logger.info("Processing transaction")
-            fp = FluidPay()
-            transaction_data = {
-                "processor_id": settings.FLUID_PAY_PROCESSOR_ID,
-                "type": "sale",
-                "amount": int(amount * 100),
-                "tax_amount": 0,
-                "shipping_amount": 0,
-                "currency": "USD",
-                "description": "test transaction",
-                "email_receipt": True,
-                "email_address": user.email,
-                "create_vault_record": True,
-                "payment_method": {
-                    "card": {
-                        "entry_type": "keyed",
-                        "number": card_number,
-                        "expiration_date": expiration_date,
-                        "cvc": cvc
-                    }
-                },
-            }
-
             transaction_json_data = json.dumps(transaction_data)
+            
+            fp = FluidPay()
             response = fp.request_handler('POST', ['transaction'], body=transaction_json_data)  # handle transaction
 
             if not response.status_code == 200:
@@ -86,6 +103,7 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                 payment_id=transaction['id'],
                 payment_gateway='fluidpay',
                 user_id=user.id,
+                price=amount,
             )
             subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
             UserSubscription.objects.update_or_create(
