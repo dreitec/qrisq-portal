@@ -20,7 +20,24 @@ def __s3_client():
     )
 
 
-def download_file(filename):
+def list_storm_folders():
+    try:
+        s3 = __s3_client()
+        bucket = settings.AWS_STORM_BUCKET
+        return s3.list_objects(Bucket=bucket, Delimiter='/')
+    except ClientError as err:
+        logger.warn('Error listing storm files; ClientError: ' + err.response['Error']['Message'])
+        raise err
+    except ParamValidationError as err:
+        logger.warn('Error listing storm files; ParamValidationError: Invalid bucket name')
+        raise err
+
+
+def download_storm_file(filename):
+    pass
+
+
+def download_wkt_file(filename):
     try:
         s3 = __s3_client()
         bucket = settings.AWS_WKT_BUCKET
@@ -37,7 +54,7 @@ def download_file(filename):
         logger.info(filename + " WKT file downloaded")
 
 
-def upload_file(filename):
+def upload_wkt_file(filename):
     try:
         s3 = __s3_client()
         bucket = settings.AWS_WKT_BUCKET
