@@ -89,6 +89,25 @@ AUTH_USER_MODEL = 'user_app.User'
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'HEAD',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 # Database
@@ -189,6 +208,7 @@ AWS_ACCESS_KEY = config('AWS_ACCESS_KEY', "")
 AWS_SECRET_KEY = config('AWS_SECRET_KEY', "")
 AWS_REGION = config('AWS_REGION', 'us-east-1')
 AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
+AWS_STORM_BUCKET = config('AWS_STORM_BUCKET', '')
 
 # SQS Credentials
 AWS_SQS_ACCESS_KEY_ID = config('AWS_SQS_ACCESS_KEY_ID', "")

@@ -7,7 +7,7 @@ from shapely.errors import WKTReadingError
 
 from botocore.exceptions import ClientError, ParamValidationError
 
-from .boto_client import download_file
+from .boto_client import download_wkt_file
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def service_area_finder(latitude, longitude):
     try:
         logger.info("Checking for wind WKT file existence")
         if not os.path.exists(wind_file):
-            download_file(wind_file)
+            download_wkt_file(wind_file)
 
 
         with open(wind_file, 'r') as wind_reader:
@@ -54,7 +54,7 @@ def service_area_finder(latitude, longitude):
     try:
         logger.info("Checking for surge WKT file existence")
         if not os.path.exists(surge_file):
-            download_file(surge_file)
+            download_wkt_file(surge_file)
         
         with open(surge_file, 'r') as surge_reader:
             surge_wkt = surge_reader.read()
