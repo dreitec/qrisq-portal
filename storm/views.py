@@ -9,11 +9,14 @@ from rest_framework.response import Response
 from core.db_connection import query_executor
 from .models import StormData
 from .serializers import StormDataSerializer
-from .storm_file_handler import compressed_geojson_parser, wind_js_parser, surge_zip_creator
+from .storm_file_handler import get_latest_files, compressed_geojson_parser, wind_js_parser, surge_zip_creator
 
 
 class StormDataView(APIView):
     def get(self, request, *args, **kwargs):
+        # check and download latest storm data files
+        get_latest_files()
+
         user = request.user
         user_address = user.profile.address
         storm_data = StormData.objects.filter(qid=user.id)[:1]
