@@ -88,3 +88,5 @@ staticfiles/
 
 # WKT files
 *.wkt
+zip/
+storm_files/

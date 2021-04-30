@@ -1,13 +1,15 @@
 import datetime
 import json
 
+from django.conf import settings
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from core.db_connection import query_executor
 from .models import StormData
 from .serializers import StormDataSerializer
-from .storm_file_handler import compressed_geojson_parser, wind_js_parser
+from .storm_file_handler import compressed_geojson_parser, wind_js_parser, surge_zip_creator
 
 
 class StormDataView(APIView):
@@ -22,9 +24,9 @@ class StormDataView(APIView):
             storm_data = None
         storm_data = StormDataSerializer(storm_data).data
 
-        line_data = compressed_geojson_parser('2020-al28-17/line-2020-al28-17-202010282100.json')
-        points_data = compressed_geojson_parser('2020-al28-17/points-2020-al28-17-202010282100.json')
-        polygon_data = compressed_geojson_parser('2020-al28-17/polygon-2020-al28-17-202010282100.json')
+        line_data = compressed_geojson_parser('storm_files/line-2020-al28-17-202010282100.json')
+        points_data = compressed_geojson_parser('storm_files/points-2020-al28-17-202010282100.json')
+        polygon_data = compressed_geojson_parser('storm_files/polygon-2020-al28-17-202010282100.json')
 
         storm_info = points_data.get('features')[0].get('properties')
         adv_datestring = storm_info.get('ADVDATE')
@@ -48,10 +50,16 @@ class StormDataView(APIView):
         return Response(response)
 
 
+class SurgeDataView(APIView):
+    def get(self, request, *args, **kwargs):
+        filename = surge_zip_creator()
+        return Response({'url': f"{settings.DOMAIN}/api/{filename}"})
+
+
 class WindDataView(APIView):
     def get(self, request, *args, **kwargs):
         response_data = {
-            'js_data': wind_js_parser('2020-al28-17/wind-2020-al28-17-202010282100.js'),
-            'json_data': json.dumps(compressed_geojson_parser('2020-al28-17/wind-2020-al28-17-202010282100.json'))
+            'js_data': wind_js_parser('storm_files/wind-2020-al28-17-202010282100.js'),
+            'json_data': json.dumps(compressed_geojson_parser('storm_files/wind-2020-al28-17-202010282100.json'))
         }
         return Response(response_data)

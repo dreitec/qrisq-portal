@@ -7,4 +7,5 @@ class StormDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StormData
-        fields = ('windrisk', 'surgerisk', 'maxflood', 'landfall_location', 'landfall_datetime', 'storm_distance')
+        fields = ('windrisk', 'surgerisk', 'maxflood', 'landfall_location', 'landfall_datetime',
+                  'storm_distance', 'maxflood_datetime', 'maxwind_datetime')
