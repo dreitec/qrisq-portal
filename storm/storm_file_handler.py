@@ -3,18 +3,37 @@ import json
 import logging
 import os
 from os.path import basename
+from pprint import pprint
 import re
 from zipfile import ZipFile
 
-# from core.boto_client import list_storm_folders
+from django.conf import settings
+
+from core.boto_client import read_file, list_folder_files, download_file
 
 logger = logging.getLogger(__name__)
 
 
-# def download_latest_files():
-#     result = list_storm_files(prefix="most-recent/")
-#     for o in result.get('CommonPrefixes'):
-#         print(o.get('Prefix'))
+def get_latest_files():
+    if not os.path.isdir('storm_files'):
+        os.makedirs('storm_files')
+
+    # find latest storm data folder
+    most_recent_file = settings.AWS_STORM_MOST_RECENT_FILE
+    content = read_file(filename=most_recent_file)    # b's3://bucket/latest-folder/'
+    latest_folder = content.decode('utf-8').split('/')[-2]
+
+    result = list_folder_files(prefix=latest_folder)
+    file_list = result.get('Contents', [])
+    files = [fl.get('Key').split("/")[-1] for fl in file_list if fl.get('Key').replace(latest_folder, '') != '/']  # conditional statement to remove folder name from the list
+
+    for filename in files:        
+        if not os.path.exists(f"storm_files/{filename}"):
+            download_file(
+                bucket=settings.AWS_STORM_BUCKET,
+                source_filename=f"{latest_folder}/{filename}",
+                dest_filename=f"storm_files/{filename}"
+            )
 
 
 def compressed_geojson_parser(geojson_compressed_filename):
