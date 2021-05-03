@@ -72,8 +72,8 @@ class CancelSubscriptionView(APIView):
                 subject="Subscription plan cancelled.",
                 recipient_list=[user.email]
             )
-        except Exception as error:
-            logger.error('Error sending email to account: ' + user.email)
+        except Exception as err:
+            logger.error(f"Error sending email to account {user.email}: {str(err)}")
         
         return Response({
             "message": "Subscription cancelled."

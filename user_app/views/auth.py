@@ -128,8 +128,8 @@ class ResetPasswordView(CreateAPIView):
                 subject="Password Reset Successfully",
                 recipient_list=[user.email]
             )
-        except Exception:
-            pass
+        except Exception as err:
+            logger.error(f"Error sending email: {str(err)}")
 
         return Response({'message': "Your password has reset successfully."})
 
@@ -163,7 +163,7 @@ class ChangePasswordView(CreateAPIView):
                 subject="Password Changed Successfully",
                 recipient_list=[user.email]
             )
-        except Exception:
-            pass
+        except Exception as err:
+            logger.error(f"Error sending email: {str(err)}")
 
         return Response({'message': "Your password has been changed successfully."})

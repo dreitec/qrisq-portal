@@ -90,8 +90,8 @@ class RefundPaymentView(APIView):
                 subject="Subscription price refunded.",
                 recipient_list=[user.email]
             )
-        except Exception as error:
-            logger.error("Failed sending email to user")
+        except Exception as err:
+            logger.error(f"Failed sending email to user: {str(err)}")
 
         return Response({
             "message": "Refund successful."

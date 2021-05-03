@@ -100,7 +100,7 @@ def request_address_change(request):
             recipient_list=[admin_email]
         )
     except Exception as error:
-        return Response({'error': "Error sending message."})
+        return Response({'error': "Error sending email."})
 
     return Response({'message': "Request has been sent to change your address."})
 

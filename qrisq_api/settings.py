@@ -21,8 +21,7 @@ SECRET_KEY = config("SECRET_KEY", default="randomString")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=False)
 
-# ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
 
 
 # Application definition
@@ -218,13 +217,13 @@ AWS_SQS_SECRET_ACCESS_KEY = config('AWS_SQS_SECRET_ACCESS_KEY', "")
 AWS_SQS_QUEUE_URL = config('AWS_SQS_QUEUE_URL', "")
 
 # Email Settings
-# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 FROM_EMAIL = config('FROM_EMAIL', default='')
 EMAIL_HOST = config('EMAIL_HOST', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = config('EMAIL_PORT', default='')
-# EMAIL_USE_TLS = True
+EMAIL_USE_TLS = True
 
 #Admin Email
 ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@qrisq.com')

@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.validators import NUMERIC_VALIDATOR
 
-from user_app.utils import mail_sender
 from .manager import UserManager
 
 
