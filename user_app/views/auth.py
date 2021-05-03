@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
 
+from rest_framework.decorators import api_view
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -40,6 +41,11 @@ class LoginView(TokenObtainPairView):
 
 class RefreshTokenView(TokenRefreshView):
     serializer_class = RefreshTokenSerializer
+
+
+@api_view(['GET',])
+def check_token(request):
+    return Response({})
 
 
 class LogoutView(GenericAPIView):
