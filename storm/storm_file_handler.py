@@ -37,35 +37,54 @@ def get_latest_files():
 
 
 def compressed_geojson_parser(geojson_compressed_filename):
+    logger.debug(f"Parsing geojson compressed file '{geojson_compressed_filename}'")
     try:
         geojson_compressed_file = gzip.open(geojson_compressed_filename,'rb')
         geojson_compressed_data = geojson_compressed_file.read()
+        logger.debug(f"'{geojson_compressed_filename}' parsed successfully")
         return json.loads(geojson_compressed_data.decode())
+    except FileNotFoundError as err:
+        logger.error(f"Geojson file '{geojson_compressed_filename}' not found!!")
     except Exception as err:
-        pass
+        logger.warn(f"Geojson file '{geojson_compressed_filename}' parse FAILED: {str(err)}")
 
 
 def wind_js_parser(filename):
+    logger.debug(f"Parsing wind JS file '{filename}'")
     try:
         with open(filename, 'r') as f:
             js_string = f.read()
             winddata = js_string.partition('=')[-1]  # get only the wind data value
             json_string = re.sub(' +', '', winddata)
+            logger.debug(f"Wind JS file '{filename}' parsed successfully")
             return json.dumps(json.loads(json_string))
     except FileNotFoundError as err:
-       pass
+        logger.warn(f"Wind JS file '{filename}' not found")
+    except Exception as err:
+        logger.warn(f"Wind js file '{filename}' parse FAILED: {str(err)}")
 
 
 def surge_zip_creator():
+    logger.info("Creating Surge files zip")
     files = os.listdir('storm_files')
     surge_files = [fil for fil in files if fil.startswith('surge')]
 
-    if not os.path.isdir('zip'):
-        os.makedirs('zip')
-    zipname = f"zip/{surge_files[0].split('.')[0]}.zip"
+    try:
+        if not os.path.isdir('zip'):
+            logger.debug("Creating zip folder to store zip file")
+            os.makedirs('zip')
+
+        zipname = f"zip/{surge_files[0].split('.')[0]}.zip"
+        logger.info(f"Zip file name: {zipname}")
+
+        if not os.path.exists(zipname):
+            with ZipFile(zipname, 'w') as zipobj:
+                for filename in surge_files:
+                    filepath = os.path.join('storm_files', filename)
+                    zipobj.write(filepath, basename(filepath))
+        logger.debug(f"{zipname} file created successfully")
+        return zipname 
     
-    with ZipFile(zipname, 'w') as zipobj:
-        for filename in surge_files:
-            filepath = os.path.join('storm_files', filename)
-            zipobj.write(filepath, basename(filepath))
-    return zipname
+    except Exception as err:
+        logger.warn(f"Error creating surge files zip: {str(err)}")
+        return ""
