@@ -21,7 +21,7 @@ SECRET_KEY = config("SECRET_KEY", default="randomString")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost",])
 
 
 # Application definition
@@ -88,7 +88,8 @@ AUTH_USER_MODEL = 'user_app.User'
 
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOWED_ORIGINS = config('CORS_HOSTS', cast=Csv(), default=['http://localhost',])
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -108,6 +109,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Database
