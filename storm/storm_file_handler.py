@@ -1,3 +1,4 @@
+import glob
 import gzip
 import json
 import logging
@@ -15,25 +16,33 @@ logger = logging.getLogger(__name__)
 
 
 def get_latest_files():
+    logger.info("Checking for 'storm_files' folder existence")
     if not os.path.isdir('storm_files'):
+        logger.info("Creating 'storm_files'")
         os.makedirs('storm_files')
 
     # find latest storm data folder
     most_recent_file = settings.AWS_STORM_MOST_RECENT_FILE
     content = read_file(filename=most_recent_file)    # b's3://bucket/latest-folder/'
     latest_folder = content.decode('utf-8').split('/')[-2]
+    logger.info(f"Latest Storm data folder: '{latest_folder}'")
 
     result = list_folder_files(prefix=latest_folder)
     file_list = result.get('Contents', [])
-    files = [fl.get('Key').split("/")[-1] for fl in file_list if fl.get('Key').replace(latest_folder, '') != '/']  # conditional statement to remove folder name from the list
+    files = [fl.get('Key').split('/')[-1] for fl in file_list if fl.get('Key').replace(latest_folder, '') != '/']  # conditional statement to remove folder name from the list
+    logger.info(f"Latest Storm data files in bucket: '{files}'")
 
+    logger.info("Downloading the missing files")
     for filename in files:        
         if not os.path.exists(f"storm_files/{filename}"):
+            # remove all other old storm data files
+            [os.remove(f) for f in glob.glob('storm_files/*', recursive=True) if not f.split('/')[-1] in files]
             download_file(
                 bucket=settings.AWS_STORM_BUCKET,
                 source_filename=f"{latest_folder}/{filename}",
                 dest_filename=f"storm_files/{filename}"
             )
+            logger.info(f"Downloaded '{filename}' file")
 
 
 def compressed_geojson_parser(geojson_compressed_filename):
@@ -45,8 +54,10 @@ def compressed_geojson_parser(geojson_compressed_filename):
         return json.loads(geojson_compressed_data.decode())
     except FileNotFoundError as err:
         logger.error(f"Geojson file '{geojson_compressed_filename}' not found!!")
+        return ""
     except Exception as err:
         logger.warn(f"Geojson file '{geojson_compressed_filename}' parse FAILED: {str(err)}")
+        return ""
 
 
 def wind_js_parser(filename):
@@ -60,8 +71,10 @@ def wind_js_parser(filename):
             return json.dumps(json.loads(json_string))
     except FileNotFoundError as err:
         logger.warn(f"Wind JS file '{filename}' not found")
+        return ""
     except Exception as err:
         logger.warn(f"Wind js file '{filename}' parse FAILED: {str(err)}")
+        return ""
 
 
 def surge_zip_creator():
@@ -78,6 +91,8 @@ def surge_zip_creator():
         logger.info(f"Zip file name: {zipname}")
 
         if not os.path.exists(zipname):
+            # remove all other old zip files
+            [os.remove(f) for f in glob.glob('zip/*', recursive=True)]
             with ZipFile(zipname, 'w') as zipobj:
                 for filename in surge_files:
                     filepath = os.path.join('storm_files', filename)
