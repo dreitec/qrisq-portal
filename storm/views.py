@@ -3,6 +3,8 @@ import json
 import os
 
 from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,6 +16,7 @@ from .storm_file_handler import get_latest_files, compressed_geojson_parser, win
 
 
 class StormDataView(APIView):
+    @method_decorator(cache_page(60*5))
     def get(self, request, *args, **kwargs):
         # check and download latest storm data files
         get_latest_files()
@@ -57,13 +60,21 @@ class StormDataView(APIView):
 
 
 class SurgeDataView(APIView):
+    @method_decorator(cache_page(60*5))
     def get(self, request, *args, **kwargs):
+        # check and download latest storm data files
+        get_latest_files()
+
         filename = surge_zip_creator()
         return Response({'url': f"{settings.DOMAIN}/api/{filename}"})
 
 
 class WindDataView(APIView):
+    @method_decorator(cache_page(60*5))
     def get(self, request, *args, **kwargs):
+        # check and download latest storm data files
+        get_latest_files()
+
         files = os.listdir('storm_files')
         wind_files = sorted(filter(lambda fil: fil.startswith('wind'), files))
         response_data = {
