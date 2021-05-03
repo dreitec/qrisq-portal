@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 
 from django.conf import settings
 
@@ -27,9 +28,11 @@ class StormDataView(APIView):
             storm_data = None
         storm_data = StormDataSerializer(storm_data).data
 
-        line_data = compressed_geojson_parser('storm_files/line-2020-al28-17-202010282100.json')
-        points_data = compressed_geojson_parser('storm_files/points-2020-al28-17-202010282100.json')
-        polygon_data = compressed_geojson_parser('storm_files/polygon-2020-al28-17-202010282100.json')
+        files = os.listdir('storm_files')
+        storm_files = sorted([f for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
+        line_data = compressed_geojson_parser(f"storm_files/{storm_files[0]}")
+        points_data = compressed_geojson_parser(f"storm_files/{storm_files[1]}")
+        polygon_data = compressed_geojson_parser(f"storm_files/{storm_files[-1]}")
 
         storm_info = points_data.get('features')[0].get('properties')
         adv_datestring = storm_info.get('ADVDATE')
@@ -61,8 +64,10 @@ class SurgeDataView(APIView):
 
 class WindDataView(APIView):
     def get(self, request, *args, **kwargs):
+        files = os.listdir('storm_files')
+        wind_files = sorted(filter(lambda fil: fil.startswith('wind'), files))
         response_data = {
-            'js_data': wind_js_parser('storm_files/wind-2020-al28-17-202010282100.js'),
-            'json_data': json.dumps(compressed_geojson_parser('storm_files/wind-2020-al28-17-202010282100.json'))
+            'js_data': wind_js_parser(f"storm_files/{wind_files[0]}"),
+            'json_data': json.dumps(compressed_geojson_parser(f"storm_files/{wind_files[1]}"))
         }
         return Response(response_data)
