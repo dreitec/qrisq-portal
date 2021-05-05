@@ -4,8 +4,11 @@ from django.conf import settings
 from django.db import transaction
 
 from rest_framework import serializers
+
+from subscriptions.models import UserSubscription, SubscriptionPlan, UserPayment
 from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
+
 from .auth import LoginTokenSerializer
 
 logger = logging.getLogger(__name__)
@@ -23,6 +26,7 @@ class SignupSerializer(serializers.Serializer):
     city = serializers.CharField(max_length=30)
     state = serializers.CharField(max_length=30)
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
+    subscription_plan_id = serializers.IntegerField()
 
     def to_representation(self, instance=None):
         serializer = LoginTokenSerializer(data=self.validated_data, context=self.context)
@@ -41,6 +45,9 @@ class SignupSerializer(serializers.Serializer):
         if not ('lat' in address and 'lng' in address and 'displayText' in address):
             error['address'] = "Address information invalid. Please add 'lat', 'lng' and 'displayText' to address."
 
+        if not SubscriptionPlan.objects.filter(id=data['subscription_plan_id']).exists():
+            error['subscription_plan_id'] = "Subscription plan does not exists"
+        
         if error:
             raise serializers.ValidationError(error)
 
@@ -53,15 +60,17 @@ class SignupSerializer(serializers.Serializer):
         first_name = validated_data.pop('first_name')
         last_name = validated_data.pop('last_name')
         password = validated_data.pop('password')
+        subscription_plan_id = validated_data.pop('subscription_plan_id')
         
         try:
             logger.info("Creating User Instance for email " + email)
             user = User.objects.create_user(email=email, password=password,
                                             first_name=first_name, last_name=last_name)
             UserProfile.objects.create(user=user, **validated_data)
+            UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
 
         except Exception as err:
-            logger.warning(f"Failed User instance; Error: {str(err)}")
+            logger.warning(f"FailNo Environmented User instance; Error: {str(err)}")
             raise err
         
         context = {
