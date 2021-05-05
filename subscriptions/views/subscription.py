@@ -5,6 +5,7 @@ from django.conf import settings
 
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionPlanSerializer
     queryset = SubscriptionPlan.objects.all()
-    permission_classes = [IsAdminUser, ]
+    permission_classes = (IsAdminUser,)
     http_method_names = ('get', 'post', 'put', 'delete', 'head', 'options')
 
     def get_permissions(self):
@@ -33,6 +34,7 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
 
 class AddPaymentInfoView(CreateAPIView):
     serializer_class = AddPaymentInfoSerializer
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -48,6 +50,7 @@ class AddPaymentInfoView(CreateAPIView):
 
 
 class CancelSubscriptionView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         user = request.user
