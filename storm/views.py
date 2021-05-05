@@ -23,7 +23,7 @@ class StormDataView(APIView):
 
         user = request.user
         user_address = user.profile.address
-        storm_data = StormData.objects.filter(qid=user.id)[:1]
+        storm_data = StormData.objects.filter(qid=17)[:1]
 
         if storm_data.__len__():
             storm_data = storm_data[0]

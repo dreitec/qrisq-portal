@@ -86,8 +86,9 @@ media/
 
 staticfiles/
 
-# WKT files
+# project files
 *.wkt
 zip/
 storm_files/
 most-recent-ADV/
+run.txt
