@@ -6,6 +6,10 @@ from .serializers import ServiceAreaSerializer
 from .service_area import service_area_finder as finder
 
 
+def healthcheck_view(request):
+    return Response("QRisq Server is running up!!!") 
+
+
 class CheckServiceArea(APIView):
     serializer_class = ServiceAreaSerializer
 
