@@ -324,6 +324,7 @@ LOGIN_EXEMPT_PATHS = (
     r'api/subscription-plans',
     r'api/swagger$',
     r'api/verify-email',
+    r'api/health-check',
 )
 
 
