@@ -46,4 +46,4 @@ class AddPaymentInfoSerializer(serializers.Serializer):
             payment_gateway=payment_gateway, price=price
         )
             
-        return user_subscription
+        return user.subscription_plan
