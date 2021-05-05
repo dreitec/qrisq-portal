@@ -1,13 +1,15 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
-from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 
 from user_app.serializers import PinDragAddressSerializer
 
 
 
-class PingDragAddressView(APIView):
+class PingDragAddressView(CreateAPIView):
     serializer_class = PinDragAddressSerializer
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         user = request.user
