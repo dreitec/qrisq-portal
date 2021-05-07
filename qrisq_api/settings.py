@@ -325,6 +325,7 @@ LOGIN_EXEMPT_PATHS = (
     r'api/swagger$',
     r'api/verify-email',
     r'api/health-check',
+    r'api/zip/*'
 )
 
 
@@ -370,6 +371,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+MEDIA_URL = '/api/zip/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "zip")
 
 # Remove appending slash on urls
 APPEND_SLASH = False
