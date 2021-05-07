@@ -9,6 +9,8 @@ db.sqlite3
 venv/
 
 .env.example
+.env.local
+.end.production
 area_test.wkt
 most-recent-ADV/
 setup.sh/
