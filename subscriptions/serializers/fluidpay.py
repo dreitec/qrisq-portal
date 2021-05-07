@@ -32,7 +32,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     amount = serializers.DecimalField(max_digits=8, decimal_places=2,
                                       error_messages={"required": "Enter amount."})
-    subscription_plan_id = serializers.IntegerField()
 
     def validate_expiration_date(self, date):
         year = date.split("/")[1]
@@ -46,7 +45,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = self.context["request"].user
         amount = validated_data.pop('amount')
-        subscription_plan_id = validated_data.pop('subscription_plan_id')
         transaction_data = {
             "processor_id": settings.FLUID_PAY_PROCESSOR_ID,
             "type": "sale",
@@ -100,14 +98,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                 payment_gateway='fluidpay',
                 user_id=user.id,
                 price=amount,
-            )
-            subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
-            UserSubscription.objects.update_or_create(
-                user=user,
-                defaults={
-                    "plan": subscription_plan,
-                    'recurring': False
-                }
             )
 
         except Exception as err:

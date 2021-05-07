@@ -14,7 +14,7 @@ class LoginTokenSerializer(TokenObtainPairSerializer):
         response['user'] = UserSerializer(self.user).data
         subscribed_plan = getattr(self.user, "subscription_plan", None)
         response['user']['subscription'] = UserSubscriptionSerializer(subscribed_plan).data
-        response['user']['has_paid'] = self.user.payment.last() and not subscribed_plan.is_cancelled
+        response['user']['has_paid'] = True if self.user.payment.last() and not subscribed_plan.is_cancelled else False
         return response
 
 
