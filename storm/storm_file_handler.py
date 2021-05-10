@@ -27,16 +27,22 @@ def get_latest_files():
     latest_folder = content.decode('utf-8').split('/')[-2]
     logger.info(f"Latest Storm data folder: '{latest_folder}'")
 
+    # list the storm files
     result = list_folder_files(prefix=latest_folder)
     file_list = result.get('Contents', [])
-    files = [fl.get('Key').split('/')[-1] for fl in file_list if fl.get('Key').replace(latest_folder, '') != '/']  # conditional statement to remove folder name from the list
-    logger.info(f"Latest Storm data files in bucket: '{files}'")
+    s3_files = {fl.get('Key').split('/')[-1] for fl in file_list if fl.get('Key').replace(latest_folder, '') != '/'}  # conditional statement to remove folder name from the list
+    logger.info(f"Latest Storm data files in bucket: '{s3_files}'")
 
     logger.info("Downloading the missing files")
-    for filename in files:        
+    existing_files = set(os.listdir('storm_files'))
+    download_files = s3_files - existing_files
+
+    # delete outdated files
+    [os.remove(f"storm_files/{_file}") for _file in (existing_files - s3_files)]
+
+    # download missing files
+    for filename in download_files:        
         if not os.path.exists(f"storm_files/{filename}"):
-            # remove all other old storm data files
-            [os.remove(f) for f in glob.glob('storm_files/*', recursive=True) if not f.split('/')[-1] in files]
             download_file(
                 bucket=settings.AWS_STORM_BUCKET,
                 source_filename=f"{latest_folder}/{filename}",
