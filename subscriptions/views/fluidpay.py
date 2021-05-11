@@ -21,7 +21,7 @@ class FluidPayTransaction(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response({'message': "Transaction is success"}, status=HTTP_201_CREATED)
+        return Response({'message': "Transaction is success"})
 
 
 # @api_view(["GET"])

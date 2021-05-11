@@ -4,7 +4,8 @@ import logging
 from django.conf import settings
 
 from rest_framework import serializers
-from django.core.validators import RegexValidator
+
+from core.validators import CARD_VALIDATOR, CVC_VALIDATOR, DATE_VALIDATOR, NUMERIC_VALIDATOR
 
 from subscriptions.fluidpay_custom_exception import FluidPayCustomException
 from subscriptions.fluidpay import FluidPay
@@ -12,11 +13,6 @@ from subscriptions.models import UserPayment, UserSubscription, SubscriptionPlan
 from subscriptions.fluidpay_response_mapper import FLUIDPAY_RESPONSE
 
 logger = logging.getLogger(__name__)
-
-DATE_VALIDATOR = RegexValidator(r'^((0?[1-9]|[1][0-2])\/\d{2})', 'Invalid Expiration date format')
-CARD_VALIDATOR = RegexValidator(r'(\d{14,16})', 'Only numeric characters or Invalid Card Number')
-CVC_VALIDATOR = RegexValidator(r'(\d{3,4})', 'Only numeric characters')
-NUMERIC_VALIDATOR = RegexValidator(r'^[0-9+]', 'Only numeric characters')
 
 
 class FluidPayTransactionSerializer(serializers.Serializer):
@@ -36,7 +32,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     amount = serializers.DecimalField(max_digits=8, decimal_places=2,
                                       error_messages={"required": "Enter amount."})
-    subscription_plan_id = serializers.IntegerField()
 
     def validate_expiration_date(self, date):
         year = date.split("/")[1]
@@ -50,7 +45,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = self.context["request"].user
         amount = validated_data.pop('amount')
-        subscription_plan_id = validated_data.pop('subscription_plan_id')
         transaction_data = {
             "processor_id": settings.FLUID_PAY_PROCESSOR_ID,
             "type": "sale",
@@ -104,14 +98,6 @@ class FluidPayTransactionSerializer(serializers.Serializer):
                 payment_gateway='fluidpay',
                 user_id=user.id,
                 price=amount,
-            )
-            subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
-            UserSubscription.objects.update_or_create(
-                user=user,
-                defaults={
-                    "plan": subscription_plan,
-                    'recurring': False
-                }
             )
 
         except Exception as err:

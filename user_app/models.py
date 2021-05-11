@@ -6,13 +6,11 @@ from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
 
-from user_app.utils import mail_sender
-from .manager import UserManager
+from core.validators import NUMERIC_VALIDATOR
 
-NUMERIC_VALIDATOR = RegexValidator(r'^[0-9+]', 'Only numeric characters')
+from .manager import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):

@@ -6,13 +6,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, CreateAPIView
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, UpdateUserInfoSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, VerifyEmailSerializer, UpdateUserInfoSerializer
 from user_app.utils import mail_sender
 
 
@@ -100,30 +100,32 @@ def request_address_change(request):
             recipient_list=[admin_email]
         )
     except Exception as error:
-        return Response({'error': "Error sending message."})
+        return Response({'error': "Error sending email."})
 
     return Response({'message': "Request has been sent to change your address."})
 
 
-@api_view(["POST"])
-@permission_classes((AllowAny,))
-def verify_email(request):
-    email = request.data.get("email")
-    if not email:
-        return Response({
-            'error': {
-                'email': "This field is required."
-            }
-        }, status=HTTP_400_BAD_REQUEST)
+class VerifyEmail(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = VerifyEmailSerializer
 
-    if User.objects.filter(email=email).exists():
-        return Response({
-            'error': {
-                'email': "Email already exists"
-            }
-        }, status=HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({
+                'error': {
+                    'email': "This field is required."
+                }
+            }, status=HTTP_400_BAD_REQUEST)
 
-    return Response({'message': "Email available"}, status=HTTP_200_OK)
+        if User.objects.filter(email=email).exists():
+            return Response({
+                'error': {
+                    'email': "Email already exists"
+                }
+            }, status=HTTP_400_BAD_REQUEST)
+
+        return Response({'message': "Email available"})
 
 
 class UpdateUserInfoView(APIView):
@@ -139,4 +141,4 @@ class UpdateUserInfoView(APIView):
                 'message': "User update failed.",
                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
 
-        return Response({'message': "User update successfully."}, status=HTTP_200_OK)
+        return Response({'message': "User update successfully."})

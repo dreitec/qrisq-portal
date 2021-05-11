@@ -45,6 +45,7 @@ class UserPayment(models.Model):
     def __str__(self):
         return self.payment_id
 
+
 class PaymentRefund(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="refund")
     payment = models.OneToOneField(UserPayment, on_delete=models.DO_NOTHING, related_name="refund")

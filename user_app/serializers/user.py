@@ -8,6 +8,7 @@ class _UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         exclude = ('id', 'user')
+        read_only_fields = ('address_updated',)
 
 
 class UserBasicSerializer(serializers.ModelSerializer):
@@ -108,3 +109,7 @@ class UpdateUserInfoSerializer(serializers.Serializer):
             user.profile.save()
         
         return validated_data
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()

@@ -63,7 +63,8 @@ celerybeat-schedule
 
 # dotenv
 .env
-.env.docker
+.env.local
+.env.production
 
 # virtualenv
 .venv
@@ -86,5 +87,9 @@ media/
 
 staticfiles/
 
-# WKT files
+# project files
 *.wkt
+zip/
+storm_files/
+most-recent-ADV/
+run.txt

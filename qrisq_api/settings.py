@@ -21,7 +21,7 @@ SECRET_KEY = config("SECRET_KEY", default="randomString")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost:8000"])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default=["localhost",])
 
 
 # Application definition
@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     # Project apps
     'core',
     'user_app',
-    'subscriptions'
+    'subscriptions',
+    'storm',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +88,28 @@ AUTH_USER_MODEL = 'user_app.User'
 
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOWED_ORIGINS = config('CORS_HOSTS', cast=Csv(), default=['http://localhost',])
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'HEAD',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Database
@@ -114,6 +136,17 @@ else:
             'PORT': config('DB_PORT', default=5432),
             'OPTIONS': {
                 'options': '-c search_path=%s' % config('DB_SCHEMA', default='public')
+            }
+        },
+        'storm': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': config('STORM_DB_NAME', default="qrisq_db"),
+            'USER': config('STORM_DB_USER', default="postgis"),
+            'PASSWORD': config('STORM_DB_PASSWORD', default="password"),
+            'HOST': config('STORM_DB_HOST', default="localhost"),
+            'PORT': config('STORM_DB_PORT', default=5432),
+            'OPTIONS': {
+                'options': '-c search_path=%s' % config('STORM_DB_SCHEMA', default='public')
             }
         }
     }
@@ -177,6 +210,8 @@ AWS_ACCESS_KEY = config('AWS_ACCESS_KEY', "")
 AWS_SECRET_KEY = config('AWS_SECRET_KEY', "")
 AWS_REGION = config('AWS_REGION', 'us-east-1')
 AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
+AWS_STORM_BUCKET = config('AWS_STORM_BUCKET', '')
+AWS_STORM_MOST_RECENT_FILE = config('AWS_STORM_MOST_RECENT_FILE', '')
 
 # SQS Credentials
 AWS_SQS_ACCESS_KEY_ID = config('AWS_SQS_ACCESS_KEY_ID', "")
@@ -184,13 +219,13 @@ AWS_SQS_SECRET_ACCESS_KEY = config('AWS_SQS_SECRET_ACCESS_KEY', "")
 AWS_SQS_QUEUE_URL = config('AWS_SQS_QUEUE_URL', "")
 
 # Email Settings
-# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 FROM_EMAIL = config('FROM_EMAIL', default='')
 EMAIL_HOST = config('EMAIL_HOST', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = config('EMAIL_PORT', default='')
-# EMAIL_USE_TLS = True
+EMAIL_USE_TLS = True
 
 #Admin Email
 ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@qrisq.com')
@@ -289,6 +324,8 @@ LOGIN_EXEMPT_PATHS = (
     r'api/subscription-plans',
     r'api/swagger$',
     r'api/verify-email',
+    r'api/health-check',
+    r'api/zip/*'
 )
 
 
@@ -334,6 +371,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+MEDIA_URL = '/api/zip/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "zip")
 
 # Remove appending slash on urls
 APPEND_SLASH = False

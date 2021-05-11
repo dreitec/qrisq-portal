@@ -1,6 +1,8 @@
 import os
 import logging
 
+from django.conf import settings
+
 from shapely import wkt
 from shapely import geometry
 from shapely.errors import WKTReadingError
@@ -19,8 +21,7 @@ def service_area_finder(latitude, longitude):
     try:
         logger.info("Checking for wind WKT file existence")
         if not os.path.exists(wind_file):
-            download_file(wind_file)
-
+            download_file(bucket=settings.AWS_WKT_BUCKET, source_filename=wind_file, dest_filename=wind_file)
 
         with open(wind_file, 'r') as wind_reader:
             wind_wkt = wind_reader.read()
@@ -54,7 +55,7 @@ def service_area_finder(latitude, longitude):
     try:
         logger.info("Checking for surge WKT file existence")
         if not os.path.exists(surge_file):
-            download_file(surge_file)
+            download_file(settings.AWS_WKT_BUCKET, source_filename=surge_file, dest_filename=surge_file)
         
         with open(surge_file, 'r') as surge_reader:
             surge_wkt = surge_reader.read()
