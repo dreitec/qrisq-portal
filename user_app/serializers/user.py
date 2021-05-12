@@ -100,11 +100,11 @@ class UpdateUserInfoSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = self.context['request'].user
         
-        if validated_data.get('old_email') is not '':
+        if validated_data.get('old_email') != '':
             user.email = validated_data.get('new_email')
             user.save()
         
-        if validated_data.get('old_phone_number') is not '':
+        if validated_data.get('old_phone_number') != '':
             user.profile.phone_number = validated_data.get('new_phone_number')
             user.profile.save()
         
