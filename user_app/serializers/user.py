@@ -58,5 +58,58 @@ class ClientUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'subscription_plan')
 
 
+class UpdateUserInfoSerializer(serializers.Serializer):
+    old_email = serializers.EmailField(required=False, allow_blank=True)
+    new_email = serializers.EmailField(required=False,  allow_blank=True)
+    confirm_new_email = serializers.EmailField(required=False, allow_blank=True)
+    old_phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
+    new_phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
+    confirm_new_phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
+    
+    def validate(self, data):
+        error = {}
+        
+        if data['old_email'] != '' or data['new_email'] != '':
+            if not data['new_email'] == data['confirm_new_email']:
+                error['confirm_new_email'] = "Emails didn't match."
+
+            if User.objects.filter(email=data['new_email']).exists():
+                error['new_email'] = "User with this email exists."
+
+            if data['new_email'] == '':
+                error['new_email'] = "This field is required."
+
+            if not self.context['request'].user.email == data['old_email']:
+                error['old_email'] = "Old email didn't match."
+
+        if data['old_phone_number'] != '' or data['new_phone_number'] != '':
+            if not data['new_phone_number'] == data['confirm_new_phone_number']:
+                error['confirm_new_phone_number'] = "Phone numbers didn't match."
+
+            if not self.context['request'].user.profile.phone_number == data['old_phone_number']:
+                error['old_phone_number'] = "Old phone number didn't match."
+
+            if data['new_phone_number'] == '':
+                error['new_phone_number'] = "This field is required."
+
+        if error:
+            raise serializers.ValidationError(error)
+
+        return data
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        
+        if validated_data.get('old_email') != '':
+            user.email = validated_data.get('new_email')
+            user.save()
+        
+        if validated_data.get('old_phone_number') != '':
+            user.profile.phone_number = validated_data.get('new_phone_number')
+            user.profile.save()
+        
+        return validated_data
+
+
 class VerifyEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()

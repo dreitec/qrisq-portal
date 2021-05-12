@@ -6,13 +6,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, CreateAPIView
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, VerifyEmailSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, VerifyEmailSerializer, UpdateUserInfoSerializer
 from user_app.utils import mail_sender
 
 
@@ -125,4 +125,20 @@ class VerifyEmail(CreateAPIView):
                 }
             }, status=HTTP_400_BAD_REQUEST)
 
-        return Response({'message': "Email available"}, status=HTTP_200_OK)
+        return Response({'message': "Email available"})
+
+
+class UpdateUserInfoView(APIView):
+    serializer_class = UpdateUserInfoSerializer
+
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data , context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.save()
+        except Exception as error:
+            return Response({
+                'message': "User update failed.",
+                'error': str(error)}, status=HTTP_400_BAD_REQUEST)
+
+        return Response({'message': "User update successfully."})
