@@ -79,7 +79,7 @@ class ForgotPasswordView(CreateAPIView):
             'email': email,
             'full_name': user.first_name + ' ' + user.last_name,
             'domain': f"{settings.DOMAIN}",
-            'reset_link': f"{settings.DOMAIN}/api/auth/reset-password/{uid}/{token}",
+            'reset_link': f"{settings.FRONTEND_DOMAIN}/identity/reset-password/?uid={uid}&token={token}",
         }
         try:
             utils.mail_sender(

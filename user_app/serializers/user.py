@@ -33,9 +33,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'email', 'first_name', 'last_name', 'is_admin', 'profile')
         extra_kwargs = {
-            'email': {'required': False}
+            'email': {'required': False},
+            'is_admin': {'read_only': True}
         }
 
     def update(self, instance, validated_data):

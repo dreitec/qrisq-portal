@@ -233,6 +233,7 @@ ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@qrisq.com')
 
 # Domain Name
 DOMAIN = config('DOMAIN', 'http://localhost:8000')
+FRONTEND_DOMAIN = config('FRONTEND_DOMAIN', 'http://localhost:4200')
 
 
 # Rest Framework Configuration
@@ -390,6 +391,3 @@ FLUID_PAY_API_KEY = config("FLUID_PAY_API_KEY", "")
 FLUID_PAY_SANDBOX_URL = config("FLUID_PAY_SANDBOX_URL", "")
 FLUID_PAY_PRODUCTION_URL = config("FLUID_PAY_PRODUCTION_URL", "")
 FLUID_PAY_PROCESSOR_ID = config("FLUID_PAY_PROCESSOR_ID", "")
-
-
-
