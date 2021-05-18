@@ -1,6 +1,5 @@
 import logging
 
-from django.contrib.auth.hashers import check_password
 from django.conf import settings
 
 from rest_framework.decorators import api_view
@@ -138,38 +137,3 @@ class ResetPasswordView(CreateAPIView):
             logger.error(f"Error sending email: {str(err)}")
 
         return Response({'message': "Your password has reset successfully."})
-
-
-class ChangePasswordView(CreateAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = ResetPasswordSerializer
-
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        try:
-            old_password = request.data['old_password']
-        except KeyError:
-            return Response({'old_password': ["This field is required"]}, status=HTTP_400_BAD_REQUEST)
-
-        if not check_password(old_password, user.password):
-            return Response({'old_password': ["Invalid old password."]}, status=HTTP_403_FORBIDDEN)
-
-        serializer = self.serializer_class(data=request.data, context={'user': user})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        context = {
-            'full_name': user.first_name + ' ' + user.last_name,
-            'domain': f"{settings.DOMAIN}"
-        }
-        try:
-            utils.mail_sender(
-                template='user_app/password_change.html',
-                context=context,
-                subject="Password Changed Successfully",
-                recipient_list=[user.email]
-            )
-        except Exception as err:
-            logger.error(f"Error sending email: {str(err)}")
-
-        return Response({'message': "Your password has been changed successfully."})
