@@ -5,31 +5,48 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, CreateAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView, ListCreateAPIView
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
 from django.conf import settings
 
 from user_app.models import User
 from user_app.permissions import IsAdminUser
-from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, VerifyEmailSerializer, UpdateUserInfoSerializer
+from user_app.serializers import UserSerializer, UserBasicSerializer, ClientUserSerializer, \
+    VerifyEmailSerializer, AccountProfileSerializer
 from user_app.utils import mail_sender
 
 
-class AccountProfileView(APIView):
-    permission_classes = [IsAuthenticated,]
-    serializer_class = UserSerializer
+class AccountProfileView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = AccountProfileSerializer
 
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_admin:
             self.serializer_class = ClientUserSerializer
-        return Response(self.serializer_class(request.user).data)
+        return Response(UserSerializer(request.user).data)
     
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user, data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+
+        if request.data.get('password'):
+            user = request.user
+            context = {
+                'full_name': user.first_name + ' ' + user.last_name,
+                'domain': f"{settings.DOMAIN}"
+            }
+            try:
+                mail_sender(
+                    template='user_app/password_change.html',
+                    context=context,
+                    subject="Password Changed Successfully",
+                    recipient_list=[user.email]
+                )
+            except Exception as err:
+                logger.error(f"Error sending email: {str(err)}")
+        return Response({'message': "Contact Information updated successfully."})
 
 
 class UserViewSet(mixins.CreateModelMixin,
@@ -128,17 +145,17 @@ class VerifyEmail(CreateAPIView):
         return Response({'message': "Email available"})
 
 
-class UpdateUserInfoView(APIView):
-    serializer_class = UpdateUserInfoSerializer
+# class UpdateUserInfoView(APIView):
+#     serializer_class = UpdateUserInfoSerializer
 
-    def put(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data , context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        try:
-            serializer.save()
-        except Exception as error:
-            return Response({
-                'message': "User update failed.",
-                'error': str(error)}, status=HTTP_400_BAD_REQUEST)
+#     def put(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=request.data , context={'request': request})
+#         serializer.is_valid(raise_exception=True)
+#         try:
+#             serializer.save()
+#         except Exception as error:
+#             return Response({
+#                 'message': "User update failed.",
+#                 'error': str(error)}, status=HTTP_400_BAD_REQUEST)
 
-        return Response({'message': "User update successfully."})
+#         return Response({'message': "User update successfully."})

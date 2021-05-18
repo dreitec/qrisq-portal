@@ -1,7 +1,15 @@
+from django.contrib.auth.hashers import check_password
+from django.db import transaction
+
 from rest_framework import serializers
 
+from core.validators import NUMERIC_VALIDATOR
 from user_app.models import User, UserProfile
 from subscriptions.serializers import UserSubscriptionSerializer
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
 
 class _UserProfileSerializer(serializers.ModelSerializer):
@@ -59,39 +67,80 @@ class ClientUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'subscription_plan')
 
 
-class UpdateUserInfoSerializer(serializers.Serializer):
-    old_email = serializers.EmailField(required=False, allow_blank=True)
-    new_email = serializers.EmailField(required=False,  allow_blank=True)
-    confirm_new_email = serializers.EmailField(required=False, allow_blank=True)
-    old_phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
-    new_phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
-    confirm_new_phone_number = serializers.CharField(max_length=15, required=False, allow_blank=True)
-    
+class _EmailUpdateSerializer(serializers.Serializer):
+    current_email = serializers.EmailField()
+    new_email = serializers.EmailField()
+    confirm_email = serializers.EmailField()
+
     def validate(self, data):
         error = {}
+        user = self.context['request'].user
+
+        if not data['new_email'] == data['confirm_email']:
+            error['confirm_email'] = "Emails didn't match."
+
+        if User.objects.exclude(id=user.id).filter(email=data['new_email']).exists():
+            error['new_email'] = "User with this email exists."
+
+        if not user.email == data['current_email']:
+            error['current_email'] = "Current email didn't match."
         
-        if data['old_email'] != '' or data['new_email'] != '':
-            if not data['new_email'] == data['confirm_new_email']:
-                error['confirm_new_email'] = "Emails didn't match."
+        if error:
+            raise serializers.ValidationError(error)
 
-            if User.objects.filter(email=data['new_email']).exists():
-                error['new_email'] = "User with this email exists."
+        return data
 
-            if data['new_email'] == '':
-                error['new_email'] = "This field is required."
+    def create(self, validated_data):
+        user = self.context['request'].user
+        user.email = validated_data.get('new_email')
+        user.save()
+        return user
 
-            if not self.context['request'].user.email == data['old_email']:
-                error['old_email'] = "Old email didn't match."
 
-        if data['old_phone_number'] != '' or data['new_phone_number'] != '':
-            if not data['new_phone_number'] == data['confirm_new_phone_number']:
-                error['confirm_new_phone_number'] = "Phone numbers didn't match."
+class _PhoneUpdateSerializer(serializers.Serializer):
+    current_phone = serializers.CharField(max_length=15, validators=[NUMERIC_VALIDATOR])
+    new_phone = serializers.CharField(max_length=15, validators=[NUMERIC_VALIDATOR])
+    confirm_phone = serializers.CharField(max_length=15, validators=[NUMERIC_VALIDATOR])
 
-            if not self.context['request'].user.profile.phone_number == data['old_phone_number']:
-                error['old_phone_number'] = "Old phone number didn't match."
+    def validate(self, data):
+        error = {}
+        if not data['new_phone'] == data['confirm_phone']:
+            error['confirm_phone'] = "Phone numbers didn't match."
 
-            if data['new_phone_number'] == '':
-                error['new_phone_number'] = "This field is required."
+        if not self.context['request'].user.profile.phone_number == data['current_phone']:
+            error['current_phone'] = "Current phone number didn't match."
+
+        if error:
+            raise serializers.ValidationError(error)
+
+        return data
+
+    def create(self, validated_data):
+        profile = self.context['request'].user.profile
+        profile.phone_number = validated_data.get('new_phone')
+        profile.save()
+        return profile
+
+
+class _PasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(max_length=100)
+    new_password = serializers.CharField(max_length=100)
+    confirm_password = serializers.CharField(max_length=100)
+
+    def validate(self, data):
+        error = {}
+        user = self.context['request'].user
+
+        if not data['new_password'] == data['confirm_password']:
+            error['confirm_password'] = "Passwords didn't match."
+
+        import re
+        if not re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*_+=\\<>?,./-]).{8,}$",
+                        data['new_password']):
+            error['new_password'] = "Password must contain at least 8 characters with one number and one special character."
+        
+        if not check_password(data['old_password'], user.password):
+            error['old_password'] = "Invalid old password."
 
         if error:
             raise serializers.ValidationError(error)
@@ -100,17 +149,24 @@ class UpdateUserInfoSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        
-        if validated_data.get('old_email') != '':
-            user.email = validated_data.get('new_email')
-            user.save()
-        
-        if validated_data.get('old_phone_number') != '':
-            user.profile.phone_number = validated_data.get('new_phone_number')
-            user.profile.save()
-        
-        return validated_data
+        user.set_password(validated_data['new_password'])
+        user.save()
+        return user
 
 
-class VerifyEmailSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+class AccountProfileSerializer(serializers.Serializer):
+    email = _EmailUpdateSerializer(allow_null=True)
+    phone_number = _PhoneUpdateSerializer(allow_null=True)
+    password = _PasswordUpdateSerializer(allow_null=True)
+
+    @transaction.atomic()
+    def create(self, validated_data):
+        if validated_data.get('email'):
+            user = _EmailUpdateSerializer(context=self.context).create(validated_data.pop('email'))
+        
+        if validated_data.get('phone_number'):
+            profile = _PhoneUpdateSerializer(context=self.context).create(validated_data.pop('phone_number'))
+
+        if validated_data.get('password'):
+            user = _PasswordUpdateSerializer(context=self.context).create(validated_data.pop('password'))
+        return user
