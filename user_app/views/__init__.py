@@ -4,3 +4,4 @@ from .pin_drag import PingDragAddressView
 from .signup import SignupView
 from .user import AccountProfileView, UserViewSet, list_admin_users, list_client_users, request_address_change,\
     VerifyEmail
+from  .send_message import SendMessageView
