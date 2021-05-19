@@ -22,4 +22,4 @@ class SendMessageView(APIView):
             return Response({'message': "Message Sent Successfully"})
             
         except Exception as error:
-            raise Exception("Error sending message.")
+            return Response({'message': "Error sending message."})
