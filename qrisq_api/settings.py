@@ -328,7 +328,8 @@ LOGIN_EXEMPT_PATHS = (
     r'api/health-check',
     r'api/zip/*',
     r'api/static/*',
-    r'api/send-message'
+    r'api/send-message',
+    r'api/surge-data'
 )
 
 
