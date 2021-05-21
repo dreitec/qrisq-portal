@@ -88,8 +88,8 @@ AUTH_USER_MODEL = 'user_app.User'
 
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOWED_ORIGINS = config('CORS_HOSTS', cast=Csv(), default=['http://localhost',])
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = config('CORS_HOSTS', cast=Csv(), default=['http://localhost',])
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -329,7 +329,9 @@ LOGIN_EXEMPT_PATHS = (
     r'api/zip/*',
     r'api/static/*',
     r'api/send-message',
-    r'api/surge-data'
+    r'api/storm-data',
+    r'api/surge-data',
+    r'api/wind-data',
 )
 
 

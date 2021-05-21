@@ -22,7 +22,8 @@ class StormDataView(APIView):
         get_latest_files()
 
         user = request.user
-        user_address = user.profile.address
+        user_profile = getattr(user, 'profile', {})
+        user_address = user_profile.get('address', {})
         storm_data = StormData.objects.filter(qid=17)[:1]
 
         if storm_data.__len__():
