@@ -1,18 +1,19 @@
 import datetime
 import json
 import os
+import concurrent.futures as c_futures
 
 from django.conf import settings
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from core.db_connection import query_executor
+from core.storm_file_handler import get_latest_files, compressed_geojson_parser, wind_js_parser, surge_zip_creator
 from .models import StormData
 from .serializers import StormDataSerializer
-from .storm_file_handler import get_latest_files, compressed_geojson_parser, wind_js_parser, surge_zip_creator
 
 
 class StormDataView(APIView):
@@ -33,10 +34,10 @@ class StormDataView(APIView):
         storm_data = StormDataSerializer(storm_data).data
 
         files = os.listdir('storm_files')
-        storm_files = sorted([f for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
-        line_data = compressed_geojson_parser(f"storm_files/{storm_files[0]}")
-        points_data = compressed_geojson_parser(f"storm_files/{storm_files[1]}")
-        polygon_data = compressed_geojson_parser(f"storm_files/{storm_files[-1]}")
+        storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
+
+        with c_futures.ThreadPoolExecutor(max_workers=5) as executor:
+            line_data, points_data, polygon_data = executor.map(compressed_geojson_parser, storm_files)
 
         storm_info = points_data.get('features')[0].get('properties')
         adv_datestring = storm_info.get('ADVDATE')
