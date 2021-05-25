@@ -6,11 +6,13 @@ from rest_framework.views import APIView
 
 from .serializers import ServiceAreaSerializer
 from .service_area import service_area_finder as finder
+from .storm_file_handler import get_latest_files
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny,])
 def healthcheck_view(request):
+    get_latest_files()
     return Response({"message": "QRisq Server is running up!!!"}) 
 
 
