@@ -3,10 +3,13 @@
 {% block content %}
 
     <p>
-        {{client_email}} has requested to change address. <br>
-        {{link}} 
+        {{client_name}}<{{client_email}}> has requested to change address. <br>
     </p>
-    <p>Old Address: {{old_address}}</p>
-    <p>New Address: {{new_address}}</p>
+    <p>Phone Number: {{phone}}</p>
+    <p>Address: {{address}}</p>
+    <p>Street Number: {{street_number}}</p>
+    <p>City: {{city}}</p>
+    <p>State: {{state}}</p>
+    <p>Zip Code: {{zip_code}}</p>
 
 {% endblock content %}

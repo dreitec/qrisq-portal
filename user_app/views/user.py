@@ -95,24 +95,36 @@ def list_client_users(request):
 
 @api_view(["POST"])
 def request_address_change(request):
-    new_address = request.data["new_address"]
-
-    if not new_address.strip():
-        return Response({'error': "Address field can't be empty"})
-
     admin_email = settings.ADMIN_EMAIL
+    user = request.user
     context = {
-        'new_address': new_address,
-        'old_address': request.user.profile.address,
-        'client_email': request.user.email,
-        'link': f"{settings.DOMAIN}/api/users/{request.user.id}",
+        'phone': user.profile.phone_number,
+        'address': user.profile.address,
+        'street_number': user.profile.street_number,
+        'city': user.profile.city,
+        'state': user.profile.state,
+        'zip_code': user.profile.zip_code,
+        'client_email': user.email,
+        'client_name': user.first_name + ' ' + user.last_name,
+        'full_name': "Qrisq Admin",
+        'domain': settings.DOMAIN
+    }
+
+    ctx = {
+        'full_name': user.first_name + ' ' + user.last_name,
         'domain': settings.DOMAIN
     }
     try:
         mail_sender(
             template='user_app/request_address_change.html',
             context=context,
-            subject="Request Address Change",
+            subject="Request for Address Change",
+            recipient_list=[admin_email]
+        )
+        mail_sender(
+            template='user_app/request_address_ack_client.html',
+            context=ctx,
+            subject="Request for Address Change",
             recipient_list=[admin_email]
         )
     except Exception as error:
