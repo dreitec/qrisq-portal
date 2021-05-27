@@ -16,8 +16,8 @@ class SendMessageView(CreateAPIView):
         try:
             mail_sender(
                 template='user_app/send_message.html',
-                context= serializer.data,
-                subject="Contact me",
+                context= {'full_name': 'Qrisq Admin', **serializer.data},
+                subject="Request for Contact Client",
                 recipient_list=['admin@qrisq.com']
             )
             return Response({'message': "Message Sent Successfully"})
