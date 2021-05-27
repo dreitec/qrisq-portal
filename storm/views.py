@@ -17,7 +17,6 @@ from .serializers import StormDataSerializer
 
 
 class StormDataView(APIView):
-    @method_decorator(cache_page(60*5))
     def get(self, request, *args, **kwargs):
         # check and download latest storm data files
         get_latest_files()
@@ -25,8 +24,8 @@ class StormDataView(APIView):
         storm = None
         user = request.user
         if user:
-            user_profile = getattr(user, 'profile', {})
-            user_address = user_profile.get('address', {})
+            user_profile = getattr(user, 'profile', None)
+            user_address = getattr(user_profile, 'address', {})
             storm_data = StormData.objects.filter(qid=user.id)[:1]
 
             if storm_data.__len__():
