@@ -20,7 +20,7 @@ class UserSubscriptionSerializer(serializers.ModelSerializer):
 
 
 class AddPaymentInfoSerializer(serializers.Serializer):
-    payment_id = serializers.CharField(max_length=30)
+    payment_id = serializers.CharField(max_length=30, allow_null=True, required=False)
     payment_gateway = serializers.ChoiceField(choices=UserPayment.PAYMENT_CHOICES)
 
     def validate(self, data):

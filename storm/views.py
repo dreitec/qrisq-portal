@@ -22,16 +22,17 @@ class StormDataView(APIView):
         # check and download latest storm data files
         get_latest_files()
 
+        storm = None
         user = request.user
-        user_profile = getattr(user, 'profile', {})
-        user_address = user_profile.get('address', {})
-        storm_data = StormData.objects.filter(qid=17)[:1]
+        if user:
+            user_profile = getattr(user, 'profile', {})
+            user_address = user_profile.get('address', {})
+            storm_data = StormData.objects.filter(qid=user.id)[:1]
 
-        if storm_data.__len__():
-            storm_data = storm_data[0]
-        else:
-            storm_data = None
-        storm_data = StormDataSerializer(storm_data).data
+            if storm_data.__len__():
+                storm = storm_data[0]
+
+        storm_data = StormDataSerializer(storm).data
 
         files = os.listdir('storm_files')
         storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])

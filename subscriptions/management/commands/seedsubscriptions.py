@@ -5,11 +5,13 @@ from django.db import IntegrityError
 PLANS = [
     {
         "name": "Monthly",
-        "price": 5.0
+        "price": 5.0,
+        "duration": 1
     },
     {
         "name": "Seasonal",
-        "price": 25.0
+        "price": 25.0,
+        "duration": 5
     }
 ]
 

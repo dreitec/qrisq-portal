@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from django.contrib.gis.db import models
 from user_app.models import User
@@ -25,7 +26,7 @@ class UserSubscription(models.Model):
 
     def cancel_subscription(self):
         self.is_cancelled = True
-        self.cancelled_at = datetime.datetime.now()
+        self.cancelled_at = datetime.now()
         self.save()
 
 
@@ -36,14 +37,24 @@ class UserPayment(models.Model):
                 ('fluidpay', 'FluidPay'),
             )
             
-    payment_id = models.CharField(max_length=20, unique=True)
+    payment_id = models.CharField(max_length=20, null=True, default=None)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="payment")
     payment_gateway = models.CharField(max_length=30, choices=PAYMENT_CHOICES)
     price = models.FloatField(default=0)
-    paid_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField()
+    expires_at = models.DateTimeField()
 
     def __str__(self):
         return self.payment_id
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            now_time = datetime.now()
+            plan_duration = self.user.subscription_plan.plan.duration
+            self.paid_at = now_time
+            self.expires_at = now_time + relativedelta(months=plan_duration)
+        
+        super().save(*args, **kwargs)
 
 
 class PaymentRefund(models.Model):

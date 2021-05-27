@@ -5,7 +5,8 @@ from rest_framework.routers import SimpleRouter
 from user_app.views import LoginView, LogoutView, RefreshTokenView, check_token, \
     ResetPasswordView, ForgotPasswordView, SignupView, AccountProfileView, \
     UserViewSet, list_admin_users, list_client_users, \
-    request_address_change, VerifyEmail, PingDragAddressView, SendMessageView
+    request_address_change, VerifyEmail, PingDragAddressView, SendMessageView, \
+    PinDragAttemptCounterView
 
 
 router = SimpleRouter(trailing_slash=False)
@@ -28,6 +29,7 @@ urlpatterns += [
     path('clients', list_client_users, name="client-users"),
 
     path('pin-drag-address', PingDragAddressView.as_view(), name="pin-drag-address"),
+    path('pin-drag-attempt', PinDragAttemptCounterView.as_view(), name="pin-drag-counter"),
     path('request-address-change', request_address_change, name="request-address-change"),
     path('verify-email', VerifyEmail.as_view(), name="verify-email"),
 

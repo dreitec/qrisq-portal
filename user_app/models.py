@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.validators import MaxValueValidator
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from core.validators import NUMERIC_VALIDATOR
@@ -52,3 +54,18 @@ class UserProfile(models.Model):
     zip_code = models.CharField(max_length=5, validators=[NUMERIC_VALIDATOR], blank=True, default="")
     is_preprocessed = models.BooleanField(default=False)
     address_updated = models.IntegerField(default=0)
+
+
+class UserPingDragAttempt(models.Model):
+    user = models.OneToOneField(User, related_name="pin_drag_attempt", on_delete=models.CASCADE)
+    attempts = models.IntegerField(default=0, validators=[MaxValueValidator(5),])
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.attempts = 1
+        else:
+            self.attempts += 1
+            if self.attempts > 5:
+                raise ValidationError("The attempt limit has exceeded.")
+        
+        super().save(*args, **kwargs)

@@ -1,11 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 
 from user_app.utils import mail_sender
 from user_app.serializers import SendMessageSerializer
 
-class SendMessageView(APIView):
+
+class SendMessageView(CreateAPIView):
     serializer_class = SendMessageSerializer
 
     def post(self, request, *args, **kwargs):
