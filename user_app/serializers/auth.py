@@ -17,12 +17,14 @@ class LoginTokenSerializer(TokenObtainPairSerializer):
         subscribed_plan = getattr(user, "subscription_plan", None)
         response['user']['subscription'] = UserSubscriptionSerializer(subscribed_plan).data
 
+        # check payment expired or has user paid for service
         user_payment = user.payment.last()
         has_paid = False
         payment_expired = True
         if user_payment:
-            payment_expired = user_payment.expires_at <= datetime.now()
+            payment_expired = user_payment.expires_at.timestamp() <= datetime.now().timestamp()
             has_paid = not payment_expired
+
         response['user']['has_paid'] = True if has_paid and not subscribed_plan.is_cancelled else False
         response['user']['payment_expired'] = payment_expired
         return response
