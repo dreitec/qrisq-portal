@@ -165,7 +165,7 @@ class AccountProfileSerializer(serializers.Serializer):
             user = _EmailUpdateSerializer(context=self.context).create(validated_data.pop('email'))
         
         if validated_data.get('phone_number'):
-            profile = _PhoneUpdateSerializer(context=self.context).create(validated_data.pop('phone_number'))
+            user = _PhoneUpdateSerializer(context=self.context).create(validated_data.pop('phone_number'))
 
         if validated_data.get('password'):
             user = _PasswordUpdateSerializer(context=self.context).create(validated_data.pop('password'))

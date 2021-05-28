@@ -64,6 +64,7 @@ celerybeat-schedule
 # dotenv
 .env
 .env.local
+.env.staging
 .env.production
 
 # virtualenv
