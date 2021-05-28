@@ -3,7 +3,6 @@ from django.db import transaction
 
 from rest_framework import serializers
 
-from core.validators import NUMERIC_VALIDATOR
 from user_app.models import User, UserProfile
 from subscriptions.serializers import UserSubscriptionSerializer
 
@@ -98,9 +97,9 @@ class _EmailUpdateSerializer(serializers.Serializer):
 
 
 class _PhoneUpdateSerializer(serializers.Serializer):
-    current_phone = serializers.CharField(max_length=15, validators=[NUMERIC_VALIDATOR])
-    new_phone = serializers.CharField(max_length=15, validators=[NUMERIC_VALIDATOR])
-    confirm_phone = serializers.CharField(max_length=15, validators=[NUMERIC_VALIDATOR])
+    current_phone = serializers.CharField(max_length=15)
+    new_phone = serializers.CharField(max_length=15)
+    confirm_phone = serializers.CharField(max_length=15)
 
     def validate(self, data):
         error = {}
