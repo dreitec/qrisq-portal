@@ -46,6 +46,7 @@ class StormDataView(APIView):
         next_advdate = advdate + next_adv
 
         response = {
+            'has_data': storm is not None,
             'client_id': user.id,
             'storm_name': storm_info.get('STORMNAME'),
             'latitude': user_address.get('lat'),
