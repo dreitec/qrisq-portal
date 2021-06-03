@@ -25,7 +25,7 @@ class SendMessageView(CreateAPIView):
                 template='user_app/send_message.html',
                 context=context,
                 subject="Request for Contact Client",
-                recipient_list=['ssumedhiw@gmail.com']
+                recipient_list=[settings.ADMIN_EMAIL]
             )
             return Response({'message': "Message Sent Successfully"})
             

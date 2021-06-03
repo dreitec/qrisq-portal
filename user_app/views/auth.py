@@ -77,7 +77,7 @@ class ForgotPasswordView(CreateAPIView):
         context = {
             'email': email,
             'full_name': user.first_name + ' ' + user.last_name,
-            'domain': f"{settings.DOMAIN}",
+            'domain': settings.DOMAIN,
             'reset_link': f"{settings.FRONTEND_DOMAIN}/identity/reset-password/?uid={uid}&token={token}",
         }
         try:
