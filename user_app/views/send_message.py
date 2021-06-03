@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.generics import CreateAPIView
@@ -14,11 +16,16 @@ class SendMessageView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
        
         try:
+            context = {
+                'full_name': 'Qrisq Admin',
+                'domain': settings.DOMAIN,
+                **serializer.data
+            }
             mail_sender(
                 template='user_app/send_message.html',
-                context= {'full_name': 'Qrisq Admin', **serializer.data},
+                context=context,
                 subject="Request for Contact Client",
-                recipient_list=['admin@qrisq.com']
+                recipient_list=['ssumedhiw@gmail.com']
             )
             return Response({'message': "Message Sent Successfully"})
             
