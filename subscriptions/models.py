@@ -50,9 +50,13 @@ class UserPayment(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             now_time = datetime.now()
-            plan_duration = self.user.subscription_plan.plan.duration
             self.paid_at = now_time
-            self.expires_at = now_time + relativedelta(months=plan_duration)
+            plan = self.user.subscription_plan.plan
+            if plan.duration == 1:
+                self.expires_at = now_time + relativedelta(months=1)
+            else:
+                year = now_time.year
+                self.expires_at = datetime.strptime(f"{year}-11-30 11:59:59PM", "%Y-%m-%d %I:%M:%S%p")
         
         super().save(*args, **kwargs)
 
