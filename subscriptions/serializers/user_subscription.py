@@ -40,10 +40,14 @@ class AddPaymentInfoSerializer(serializers.Serializer):
         payment_gateway = validated_data.get('payment_gateway')
         user = self.context['request'].user
 
-        price = user.subscription_plan.plan.price
+        subscribed_plan = user.subscription_plan
+        subscribed_plan.is_cancelled = False
+        subscribed_plan.cancelled_at = None
+        subscribed_plan.save()
+
         UserPayment.objects.create(
             user=user, payment_id=payment_id,
-            payment_gateway=payment_gateway, price=price
+            payment_gateway=payment_gateway, price=subscribed_plan.plan.price
         )
             
         return user.subscription_plan
