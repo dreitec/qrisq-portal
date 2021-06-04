@@ -20,7 +20,7 @@ class LoginTokenSerializer(TokenObtainPairSerializer):
         # check payment expired or has user paid for service
         user_payment = user.payment.last()
         has_paid = False
-        payment_expired = True
+        payment_expired = False
         if user_payment:
             payment_expired = user_payment.expires_at.timestamp() <= datetime.now().timestamp()
             has_paid = not payment_expired
