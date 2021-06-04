@@ -6,7 +6,7 @@ import os
 from os.path import basename
 from pprint import pprint
 import re
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 import concurrent.futures as c_futures
 import time
 
@@ -109,7 +109,7 @@ def surge_zip_creator():
             with ZipFile(zipname, 'w') as zipobj:
                 for filename in surge_files:
                     filepath = os.path.join('storm_files', filename)
-                    zipobj.write(filepath, basename(filepath))
+                    zipobj.write(filepath, basename(filepath), compress_type=ZIP_DEFLATED)
         logger.debug(f"{zipname} file created successfully")
         return zipname 
     
