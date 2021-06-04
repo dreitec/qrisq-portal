@@ -21,6 +21,12 @@ class StormData(models.Model):
     storm_distance = models.DecimalField(max_digits=10, decimal_places=5, null=True)
     maxflood_datetime = models.DateTimeField(null=True)
     maxwind_datetime = models.DateTimeField(null=True)
+    landfall_datetime_local = models.DateTimeField(null=True)
+    maxflood_datetime_local = models.DateTimeField(null=True)
+    maxwind_datetime_local = models.DateTimeField(null=True)
+    landfall_datetime_local_string = models.CharField(max_length=255, null=True)
+    maxflood_datetime_local_string = models.CharField(max_length=255, null=True)
+    maxwind_datetime_local_string = models.CharField(max_length=255, null=True)
 
     objects = StormManager()
 
