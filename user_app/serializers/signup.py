@@ -5,6 +5,8 @@ from django.db import transaction
 
 from rest_framework import serializers
 
+from core.boto_client import send_message_to_sqs_queue
+
 from subscriptions.models import UserSubscription, SubscriptionPlan, UserPayment
 from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
@@ -66,7 +68,7 @@ class SignupSerializer(serializers.Serializer):
             logger.info("Creating User Instance for email " + email)
             user = User.objects.create_user(email=email, password=password,
                                             first_name=first_name, last_name=last_name)
-            UserProfile.objects.create(user=user, **validated_data)
+            user_profile = UserProfile.objects.create(user=user, **validated_data)
             UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
 
         except Exception as err:
