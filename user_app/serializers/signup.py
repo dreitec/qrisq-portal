@@ -72,7 +72,15 @@ class SignupSerializer(serializers.Serializer):
         except Exception as err:
             logger.warning(f"FailNo Environmented User instance; Error: {str(err)}")
             raise err
+            
+        # send message to SQS on user signup
+        try:
+            send_message_to_sqs_queue(str(user.id), user_profile.address)
+        except Exception as err:
+            logger.warning(f"Failed sending message to SQS queue; Error: {str(err)}")
+            raise Exception("Error sending message to SQS queue.")
         
+        # Send user registration email
         context = {
             'full_name': f"{first_name} {last_name}",
             'domain': settings.DOMAIN
@@ -85,7 +93,7 @@ class SignupSerializer(serializers.Serializer):
                 recipient_list=[email]
             )
         except Exception as error:
-            logger.warning("Failed sending email to user; Error: {str(error)}")
+            logger.warning(f"Failed sending email to user; Error: {str(error)}")
             raise Exception("Error sending email to User.")
         
         logger.info(f"User {email} created successfully.")

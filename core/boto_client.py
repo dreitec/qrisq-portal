@@ -95,7 +95,7 @@ def __sqs_client():
 
 
 def __generate_unique_message_deduplicationid(user_id):
-    time_now    = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S')
+    time_now = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S')
     uuid4 = str(uuid.uuid4())
     return f"{user_id}-{time_now}-{uuid4}"
 
