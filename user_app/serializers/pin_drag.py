@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from core.boto_client import send_message_to_sqs_queue
 from user_app.models import UserProfile
 
 
@@ -35,5 +37,12 @@ class PinDragAddressSerializer(serializers.ModelSerializer):
             user_profile.save()
         except Exception as err:
             raise err
+        
+        # send message to SQS on user signup
+        try:
+            send_message_to_sqs_queue(str(user.id), user_profile.address)
+        except Exception as err:
+            logger.warning(f"Failed sending message to SQS queue; Error: {str(err)}")
+            raise Exception("Error sending message to SQS queue.")
 
         return user_profile

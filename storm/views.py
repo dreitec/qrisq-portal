@@ -23,6 +23,7 @@ class StormDataView(APIView):
 
         storm = None
         user = request.user
+
         if user:
             user_profile = getattr(user, 'profile', None)
             user_address = getattr(user_profile, 'address', {})
