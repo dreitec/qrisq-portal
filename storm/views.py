@@ -42,9 +42,17 @@ class StormDataView(APIView):
 
         storm_info = points_data.get('features')[0].get('properties')
         adv_datestring = storm_info.get('ADVDATE')
-        advdate = datetime.datetime.strptime(adv_datestring, '%I%M %p CDT %a %b %d %Y')
+
+        # strip timezone
+        hr_min, am_pm, timezone, *date_year = adv_datestring.split(" ")
+        advdatetime_with_no_timezone = f"{hr_min} {am_pm} {(' '.join(date_year))}"
+        advdate = datetime.datetime.strptime(advdatetime_with_no_timezone, '%I%M %p %a %b %d %Y')
         next_adv = datetime.timedelta(hours=7, minutes=30)
         next_advdate = advdate + next_adv
+
+        # add timezone
+        advisory_dtstring = advdate.strftime(f"%I:%M %p {timezone} %a %b %d %Y")
+        next_advisory_dtstring = next_advdate.strftime(f"%I:%M %p {timezone} %a %b %d %Y")
 
         response = {
             'has_data': storm is not None,
@@ -53,8 +61,8 @@ class StormDataView(APIView):
             'latitude': user_address.get('lat'),
             'longitude': user_address.get('lng'),
             'address': user_address.get('displayText'),
-            'advisory_date': advdate.strftime('%I:%M %p CDT %a %b %d %Y'),
-            'next_advisory_date': next_advdate.strftime('%I:%M %p CDT %a %b %d %Y'),
+            'advisory_date': advisory_dtstring,
+            'next_advisory_date': next_advisory_dtstring,
             'line_data': json.dumps(line_data),
             'points_data': json.dumps(points_data),
             'polygon_data': json.dumps(polygon_data),
@@ -64,7 +72,6 @@ class StormDataView(APIView):
 
 
 class SurgeDataView(APIView):
-    @method_decorator(cache_page(60*5))
     def get(self, request, *args, **kwargs):
         # check and download latest storm data files
         get_latest_files()
@@ -74,7 +81,6 @@ class SurgeDataView(APIView):
 
 
 class WindDataView(APIView):
-    @method_decorator(cache_page(60*5))
     def get(self, request, *args, **kwargs):
         # check and download latest storm data files
         get_latest_files()
