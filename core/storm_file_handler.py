@@ -13,19 +13,22 @@ import time
 from django.conf import settings
 
 from core.boto_client import read_file, list_folder_files, download_file
+from .models import StormFiles
 
 logger = logging.getLogger(__name__)
 
 
 def get_latest_files():
 
-    def download(filename):
-        start = time.time()
+    def download(file_map):
+        filename = file_map.get('filename')
         download_file(
             bucket=settings.AWS_STORM_BUCKET,
             source_filename=f"{latest_folder}/{filename}",
             dest_filename=f"storm_files/{filename}"
         )
+        etag = file_map.pop('etag', '')
+        StormFiles.objects.update_or_create(**file_map, defaults={'etag': etag})
         logger.info(f"Downloaded '{filename}' file   --- Download time: {time.time() - start}")
 
     logger.info("Checking for 'storm_files' folder existence")
@@ -42,20 +45,52 @@ def get_latest_files():
     # list the storm files
     result = list_folder_files(prefix=latest_folder)
     file_list = result.get('Contents', [])
-    s3_files = {fl.get('Key').split('/')[-1] for fl in file_list if fl.get('Key').replace(latest_folder, '') != '/'}  # conditional statement to remove folder name from the list
+
+    s3_files = set()
+    s3_files_map = []
+    for fl in file_list:
+        # conditional statement to remove folder name from the list
+        key = fl.get('Key').replace(latest_folder, '')
+        if key != '/':
+            filename = fl.get('Key').split('/')[-1]
+            s3_files.add(filename)
+            s3_files_map.append({
+                'folder': latest_folder,
+                'etag': fl.get('ETag', "").strip('"'),
+                'filename': filename
+            })
     logger.info(f"Latest Storm data files in bucket: '{s3_files}'")
 
     logger.info("Downloading the missing files")
     existing_files = set(os.listdir('storm_files'))
-    download_files = s3_files - existing_files
 
-    # delete outdated files
+    # missing files
+    missing_files = [filemap for filemap in s3_files_map if filemap.get('filename') in s3_files - existing_files]
+
+    # updated files
+    common_files = [
+        filemap for filemap in s3_files_map if filemap.get('filename') in s3_files.intersection(existing_files)
+    ]
+    
+    updated_files = []
+    for fm in common_files:
+        obj = StormFiles.objects.filter(folder=latest_folder, filename=fm.get('filename')).last()
+        # compare ETag of file
+        if not (obj and obj.etag == fm.get('etag')):
+            # file updated --> delete old file and download new file
+            try:
+                os.remove(f"storm_files/{fm.get('filename')}")
+            except AttributeError as _:
+                pass
+            updated_files.append(fm)
+
+
+    # delete older files
     [os.remove(f"storm_files/{_file}") for _file in (existing_files - s3_files)]
 
-    # download missing files
-    start = time.time()
+    # download  and updated files
     with c_futures.ThreadPoolExecutor(max_workers=32) as executor:
-        executor.map(download, download_files)  
+        executor.map(download, [*missing_files, *updated_files])  
 
 
 def compressed_geojson_parser(geojson_compressed_filename):
@@ -103,13 +138,13 @@ def surge_zip_creator():
         zipname = f"zip/{surge_files[0].split('.')[0]}.zip"
         logger.info(f"Zip file name: {zipname}")
 
-        if not os.path.exists(zipname):
-            # remove all other old zip files
-            [os.remove(f) for f in glob.glob('zip/*', recursive=True)]
-            with ZipFile(zipname, 'w') as zipobj:
-                for filename in surge_files:
-                    filepath = os.path.join('storm_files', filename)
-                    zipobj.write(filepath, basename(filepath), compress_type=ZIP_DEFLATED)
+        # if not os.path.exists(zipname):
+        # remove all other old zip files
+        [os.remove(f) for f in glob.glob('zip/*', recursive=True)]
+        with ZipFile(zipname, 'w') as zipobj:
+            for filename in surge_files:
+                filepath = os.path.join('storm_files', filename)
+                zipobj.write(filepath, basename(filepath), compress_type=ZIP_DEFLATED)
         logger.debug(f"{zipname} file created successfully")
         return zipname 
     
