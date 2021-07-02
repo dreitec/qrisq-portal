@@ -27,10 +27,7 @@ class StormDataView(APIView):
         if user:
             user_profile = getattr(user, 'profile', None)
             user_address = getattr(user_profile, 'address', {})
-            storm_data = StormData.objects.filter(qid=user.id)[:1]
-
-            if storm_data.__len__():
-                storm = storm_data[0]
+            storm = StormData.objects.filter(qid=user.id).order_by('id').last()
 
         storm_data = StormDataSerializer(storm).data
 
