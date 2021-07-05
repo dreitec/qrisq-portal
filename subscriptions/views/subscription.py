@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionPlanSerializer
-    queryset = SubscriptionPlan.objects.all().order_by('price')
+    queryset = SubscriptionPlan.objects.all().order_by('id')
     permission_classes = (IsAdminUser,)
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)

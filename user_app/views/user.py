@@ -90,7 +90,7 @@ class AdminUserListView(ListAPIView):
     permission_classes = [IsAdminUser,]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ['email', 'first_name', 'last_name', 'id', 'date_joined']
-    queryset = User.objects.filter(is_admin=True, is_deleted=False).order_by('-id')
+    queryset = User.objects.filter(is_admin=True, is_deleted=False).order_by('id')
 
 
 class ClientUserListView(ListAPIView):
@@ -99,7 +99,7 @@ class ClientUserListView(ListAPIView):
     permission_classes = [IsAdminUser,]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ['email', 'first_name', 'last_name', 'id', 'date_joined']
-    queryset = User.objects.filter(is_admin=False, is_deleted=False).order_by('-id')
+    queryset = User.objects.filter(is_admin=False, is_deleted=False).order_by('id')
  
 
 @api_view(["POST"])
