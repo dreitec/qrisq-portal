@@ -3,12 +3,14 @@ import logging
 
 from django.conf import settings
 
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
+
+from qrisq_api.pagination import CustomPagination
 
 from user_app.permissions import IsAdminUser
 from user_app.models import User
@@ -22,8 +24,11 @@ logger = logging.getLogger(__name__)
 
 class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionPlanSerializer
-    queryset = SubscriptionPlan.objects.all()
+    queryset = SubscriptionPlan.objects.all().order_by('price')
     permission_classes = (IsAdminUser,)
+    pagination_class = CustomPagination
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ['name', 'price',]
     http_method_names = ('get', 'post', 'put', 'delete', 'head', 'options')
 
     def get_permissions(self):

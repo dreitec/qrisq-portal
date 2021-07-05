@@ -4,7 +4,7 @@ from rest_framework.routers import SimpleRouter
 
 from user_app.views import LoginView, LogoutView, RefreshTokenView, check_token, \
     ResetPasswordView, ForgotPasswordView, SignupView, AccountProfileView, \
-    UserViewSet, list_admin_users, list_client_users, \
+    UserViewSet, AdminUserListView, ClientUserListView, \
     request_address_change, VerifyEmail, PingDragAddressView, SendMessageView, \
     PinDragAttemptCounterView
 
@@ -25,8 +25,8 @@ urlpatterns += [
     path('auth/signup', SignupView.as_view(), name="signup"),
 
     path('auth/account-profile', AccountProfileView.as_view(), name='account-profile'),
-    path('admins', list_admin_users, name="admin-users"),
-    path('clients', list_client_users, name="client-users"),
+    path('admins', AdminUserListView.as_view(), name="admin-users"),
+    path('clients', ClientUserListView.as_view(), name="client-users"),
 
     path('pin-drag-address', PingDragAddressView.as_view(), name="pin-drag-address"),
     path('pin-drag-attempt', PinDragAttemptCounterView.as_view(), name="pin-drag-counter"),
