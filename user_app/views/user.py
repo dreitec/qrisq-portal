@@ -2,12 +2,14 @@ import json
 
 from django.conf import settings
 
-from rest_framework import viewsets, mixins, filters
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView, CreateAPIView, ListCreateAPIView, ListAPIView
 from rest_framework.status import HTTP_400_BAD_REQUEST
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from qrisq_api.pagination import CustomPagination
 
@@ -86,8 +88,8 @@ class AdminUserListView(ListAPIView):
     serializer_class = UserSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAdminUser,]
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ['email', 'first_name', 'last_name']
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ['email', 'first_name', 'last_name', 'id', 'date_joined']
     queryset = User.objects.filter(is_admin=True, is_deleted=False).order_by('-id')
 
 
@@ -95,8 +97,8 @@ class ClientUserListView(ListAPIView):
     serializer_class = ClientUserSerializer
     pagination_class = CustomPagination
     permission_classes = [IsAdminUser,]
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ['email', 'first_name', 'last_name']
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ['email', 'first_name', 'last_name', 'id', 'date_joined']
     queryset = User.objects.filter(is_admin=False, is_deleted=False).order_by('-id')
  
 
