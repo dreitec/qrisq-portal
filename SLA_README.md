@@ -39,6 +39,7 @@ AWS EC2
 - `brew install gdal`
 - `brew install python3`
 - Create a local postgres DB called `q-risq_db` and add those creds to your .env file
+  - Copy .env.example as .env and update the DB credentials to match the local DB you created
 
 ### Instructions
 1. Clone the repo
@@ -51,13 +52,13 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-4. Copy .env.example as .env and update the DB credentials to match the local DB you created
-5. Migrate database tables and run server
+
+4. Migrate database tables and run server
 ```
 python manage.py migrate
 python manage.py runserver
 ```
-6. You can then view the API docs at `http://localhost:8000/api/swagger`
+5. You can then view the API docs at `http://localhost:8000/api/swagger`
 
 ### Optional
 Seed Subscription Plan:
