@@ -5,7 +5,7 @@ Backend API code for the Q-Risq Analytics website.
 https://github.com/qrisq-analytics/QRisq-Backend
 
 ## Production Site
-https://qrisq.com/
+https://portal.qrisq.com/
 
 ## Staging Site
 
