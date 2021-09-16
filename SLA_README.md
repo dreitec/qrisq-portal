@@ -28,6 +28,7 @@ https://portal.qrisq.com/
 Python
 
 ## Hosting
+AWS EC2
 
 ## Logs/Reports/Metrics
 
