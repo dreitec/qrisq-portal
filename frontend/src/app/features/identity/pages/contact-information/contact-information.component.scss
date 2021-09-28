@@ -1,0 +1,88 @@
+.wrapper {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 100px;
+  padding: 0px 10%;
+}
+
+.contact-information-form {
+  padding: 0px 60px;
+  display: flex;
+  justify-content: center;
+
+  .form-card {
+    background-color: #ebebeb;
+    padding: 20px;
+    width: 450px;
+    max-width: 450px;
+
+    .form-section {
+      .form-section-header {
+        display: flex;
+        justify-content: space-between;
+
+        .title {
+          font-size: 1.2rem;
+          color: #8c8c8c;
+        }
+
+        .switch {
+        }
+      }
+
+      .form-section-content {
+        margin-bottom: 20px;
+      }
+    }
+
+    .form-title {
+      color: #8c8c8c;
+      font-size: 1.2rem;
+    }
+  }
+
+  .button-wrapper {
+    text-align: center;
+    button {
+      margin-top: 10px;
+      width: 250px;
+    }
+  }
+}
+
+.contact-info {
+  .email {
+    .label {
+      color: #595959;
+      font-size: 1.1rem;
+      font-weight: 650;
+      padding: 0;
+      margin-bottom: 4px;
+    }
+
+    .link {
+      color: #f5222d;
+      font-weight: 700;
+    }
+  }
+
+  .addresses {
+    .label {
+      color: #595959;
+      font-size: 1.1rem;
+      font-weight: 650;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .address {
+      color: #595959;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.section-footer {
+  width: 100%;
+}

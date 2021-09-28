@@ -1,0 +1,34 @@
+<div class="main-container">
+  <qr-banner [imageUrl]="'/assets/images/main-banner-forcast.jpg'">
+    <div class="banner-content">
+      <h1>Account Created!</h1>
+    </div>
+  </qr-banner>
+
+  <p>Thank you! You will receive an email confirmation shortly.</p>
+  <button
+    nz-button
+    nzType="primary"
+    nzDanger
+    nzSize="large"
+    (click)="toStorm()"
+  >
+    Continue
+  </button>
+  <nz-divider></nz-divider>
+
+  <!-- footer -->
+  <div nz-row class="section-footer">
+    <div nz-col nzSpan="8" class="section-footer-ourservices">
+      <qr-our-services-card></qr-our-services-card>
+    </div>
+
+    <div nz-col nzSpan="8" class="section-footer-trackstorm">
+      <qr-track-storm-card></qr-track-storm-card>
+    </div>
+
+    <div nz-col nzSpan="8" class="section-footer-messageform">
+      <qr-contact-us-form></qr-contact-us-form>
+    </div>
+  </div>
+</div>

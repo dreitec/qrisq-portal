@@ -1,0 +1,52 @@
+<div class="container">
+  <h3><strong>Send us a message</strong></h3>
+  <nz-spin [nzSpinning]="isLoading">
+    <div class="form-container">
+      <form
+        nz-form
+        [formGroup]="contactUsForm"
+        [nzLayout]="'vertical'"
+        (ngSubmit)="onSubmitForm($event)"
+      >
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Name is required!">
+            <input
+              nz-input
+              formControlName="name"
+              placeholder="Name (Required)"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Email is required!">
+            <input
+              nz-input
+              formControlName="email"
+              placeholder="Email (Required)"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Message is required!">
+            <textarea
+              nz-input
+              formControlName="message"
+              rows="10"
+              placeholder="Message (Required)"
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+
+        <button nz-button nzBlock nzType="primary" nzDanger nzSize="large">
+          Submit
+        </button>
+
+        <p>
+          *Please excuse slower than normal response time during a storm event.
+        </p>
+      </form>
+    </div>
+  </nz-spin>
+</div>

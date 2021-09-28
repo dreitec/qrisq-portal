@@ -1,0 +1,17 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+p {
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+[nz-button] {
+  min-width: 300px;
+}

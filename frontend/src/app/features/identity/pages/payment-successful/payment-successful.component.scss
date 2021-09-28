@@ -1,0 +1,141 @@
+/*  */
+/* main-container */
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+/*  */
+/* qr-banner */
+
+qr-banner .banner-content {
+  padding-right: 50%;
+}
+
+qr-banner h1 {
+  color: #fff;
+  font-size: 3rem;
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/*  */
+/* page-content */
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 92%;
+  margin: auto;
+  padding-bottom: 1%;
+}
+
+/*  */
+/* section-content-1 */
+
+.section-content-1 {
+  width: 100%;
+  padding-top: 1%;
+  padding-bottom: 4%;
+  background-color: #fff;
+}
+
+/*  */
+/* col-1 */
+
+.section-content-1 .column-1 {
+  width: 100%;
+}
+
+/*  */
+/* inner-container */
+
+.section-content-1 .column-1 .inner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-content-1 .column-1 .inner-container .button-wrapper {
+  max-width: 280px;
+}
+
+.section-content-1 .column-1 .inner-container p {
+  font-size: 28px;
+  line-height: 1.4em;
+}
+
+.section-content-1 .column-1 .inner-container img {
+  max-width: 100%;
+  height: auto;
+  max-height: 40px;
+  margin-top: 5px;
+  margin-bottom: auto;
+  margin-right: 30px;
+}
+
+.section-content-1 .image-container {
+  margin-left: 20px;
+}
+
+/*  */
+/* footer */
+
+.section-footer {
+  width: 100%;
+  padding-top: 65px;
+  margin-top: -24px;
+}
+
+.section-footer-trackstorm h3,
+.section-footer-messageform h3 {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: #2f5597;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.section-footer-trackstorm img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.section-footer-trackstorm p {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 450;
+}
+
+.section-footer-trackstorm button,
+.section-footer-messageform button {
+  font-weight: 500;
+}
+
+.section-footer-trackstorm,
+.section-footer-messageform {
+  padding: 0px 24px;
+}
+
+.section-footer-messageform .form-container {
+  background-color: #ebebeb;
+  padding: 1.5em;
+}
+
+.section-footer-messageform .form-container button {
+  margin-bottom: 20px;
+}
+
+nz-divider {
+  border-top: 2px solid #000;
+}

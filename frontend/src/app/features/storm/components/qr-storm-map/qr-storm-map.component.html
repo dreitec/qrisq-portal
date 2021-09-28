@@ -1,0 +1,260 @@
+<div>
+  <ng-container *ngIf="userDataAvailable">
+    <agm-map
+      [restriction]="restriction"
+      [zoom]="zoom"
+      [disableDefaultUI]="true"
+      (mapReady)="mapReady($event)"
+    >
+      <ng-container *ngIf="isTrackAndConeChecked">
+        <!-- ------------------------- storm center marker ------------------------- -->
+
+        <ng-container *ngIf="freeMode === false">
+          <ng-container *ngIf="userDataAvailable">
+            <agm-polyline strokeColor="#fff" [strokeWeight]="3" [zIndex]="40">
+              <agm-polyline-point
+                [latitude]="userLattitude"
+                [longitude]="userLongitude"
+              >
+              </agm-polyline-point>
+              <agm-polyline-point
+                [latitude]="stormLattitude"
+                [longitude]="stormLongitude"
+              >
+              </agm-polyline-point>
+            </agm-polyline>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- <ng-container *ngIf="mode === 'surge'">
+      <agm-data-layer
+        [geoJson]="surgeGeoJSON"
+        [style]="surgeStyleFunc"
+      ></agm-data-layer>
+    </ng-container> -->
+
+      <ng-container *ngIf="mode === 'wind'">
+        <ng-container *ngIf="userDataAvailable">
+          <agm-data-layer
+            [geoJson]="windGeoJSON"
+            [style]="windStyleFunc"
+          ></agm-data-layer>
+        </ng-container>
+      </ng-container>
+
+      <!-- <div id="legend-water-depth">
+      <img src="assets/images/legend-water-depth.png" />
+    </div> -->
+
+      <div id="property-surge-risk">
+        <ng-container *ngIf="userDataAvailable">
+          <ng-container *ngIf="mode === 'surge'">
+            <div class="legend-card">
+              <img src="assets/images/property-surge-risk.png" />
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div id="legend-water-depth">
+        <ng-container *ngIf="userDataAvailable">
+          <ng-container *ngIf="mode === 'surge'">
+            <div class="legend-card">
+              <img src="assets/images/legend-water-depth.png" />
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div id="property-wind-risk">
+        <ng-container *ngIf="userDataAvailable">
+          <ng-container *ngIf="mode !== 'surge'">
+            <div class="legend-card">
+              <img src="assets/images/property-wind-risk.png" />
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <!-- <ng-container *ngIf="mode === 'vortex'">
+      <img src="assets/images/property-wind-risk.png" />
+    </ng-container> -->
+
+      <!-- <div
+      [hidden]="!(mode === 'wind' || mode === 'vortex')"
+      id="property-wind-risk"
+    >
+      <img src="assets/images/property-wind-risk.png" />
+    </div> -->
+
+      <ng-container *ngIf="userDataAvailable">
+        <ng-container *ngIf="mode === 'surge'">
+          <agm-marker
+            [latitude]="userLattitude"
+            [longitude]="userLongitude"
+            [iconUrl]="levels[surgeRisk].iconUrl"
+          >
+          </agm-marker>
+        </ng-container>
+
+        <ng-container *ngIf="mode === 'wind' || mode === 'vortex'">
+          <agm-marker
+            [latitude]="userLattitude"
+            [longitude]="userLongitude"
+            [iconUrl]="categories[windRisk].iconUrl"
+          ></agm-marker>
+        </ng-container>
+      </ng-container>
+
+      <div id="forecast-advisory">
+        Forecast Advisory: {{ forecastAdvisory }}
+      </div>
+
+      <!-- [iconUrl]="getUserLocationIcon(surgeRisk)" -->
+
+      <div id="select-map-layer">
+        <h1>Select Map Layer</h1>
+        <label
+          nz-checkbox
+          [(ngModel)]="isTrackAndConeChecked"
+          [nzDisabled]="activeLayer === 'vortex'"
+          >Track and Cone</label
+        >
+        <nz-radio-group [(ngModel)]="activeLayer">
+          <label nz-radio nzValue="surge">Storm Surge</label>
+          <label nz-radio nzValue="wind">Max Winds</label>
+          <label nz-radio nzValue="vortex">Wind Vortex</label>
+        </nz-radio-group>
+      </div>
+      <!-- 
+    <div id="map-settings" *ngIf="false">
+      <div
+        class="button"
+        *ngIf="activeLayer === 'vortex' && isSettingsVisible === false"
+      >
+        <button
+          nz-button
+          nzType="primary"
+          nzShape="circle"
+          nzSize="large"
+          (click)="onSettingsClick($event)"
+        >
+          <i nz-icon nzType="setting" nzTheme="outline"></i>
+        </button>
+      </div>
+
+      <div
+        class="form"
+        *ngIf="activeLayer === 'vortex' && isSettingsVisible === true"
+      >
+        <div class="form-item">
+          <h4>Velocity Scale</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.velocityScale"
+            (nzOnAfterChange)="onVelocityScaleAfterChange($event)"
+            [nzMin]="0.01"
+            [nzMax]="0.05"
+            [nzStep]="0.01"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Intensity Scale Step</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.intensityScaleStep"
+            (nzOnAfterChange)="onIntensityScaleStepAfterChange($event)"
+            [nzStep]="1"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Max Wind Intensity</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.maxWindIntensity"
+            (nzOnAfterChange)="onMaxWindIntensityAfterChange($event)"
+            [nzStep]="1"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Max Particle Age</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.maxParticleAge"
+            (nzOnAfterChange)="onMaxParticleAgeAfterChange($event)"
+            [nzStep]="1"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Particle Line Width</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.particleLineWidth"
+            (nzOnAfterChange)="onParticleLineWidthAfterChange($event)"
+            [nzStep]="0.01"
+            [nzMin]="0.01"
+            [nzMax]="1"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Particle Multiplier 1/x</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.particleMultiplier"
+            (nzOnAfterChange)="onParticleMultiplierAfterChange($event)"
+            [nzStep]="1"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Particle Reduction</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.particleReduction"
+            (nzOnAfterChange)="onParticleReductionAfterChange($event)"
+            [nzStep]="0.1"
+          ></nz-slider>
+        </div>
+
+        <div class="form-item">
+          <h4>Frame Rate</h4>
+          <nz-slider
+            [(ngModel)]="vortexConfig.frameRate"
+            (nzOnAfterChange)="onFrameRateAfterChange($event)"
+            [nzStep]="1"
+          ></nz-slider>
+        </div>
+      </div>
+    </div>
+     -->
+    </agm-map>
+  </ng-container>
+  <ng-container *ngIf="userDataAvailable === false">
+    <agm-map
+      [restriction]="restriction"
+      [zoom]="zoom"
+      [disableDefaultUI]="true"
+      (mapReady)="mapReadyNoData($event)"
+    >
+      <div id="user-data-not-available-message">
+        <div class="message-card">
+          <p>
+            Your information is being processed, check back soon for address
+            specific data.
+          </p>
+        </div>
+      </div>
+    </agm-map>
+  </ng-container>
+
+  <div class="map-help-wrapper">
+    <button
+      class="map-help-button"
+      nz-button
+      nzType="link"
+      nzDanger
+      (click)="onMapHelpClick($event)"
+    >
+      Help
+    </button>
+  </div>
+</div>

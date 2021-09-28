@@ -1,0 +1,53 @@
+<div class="table-data-action-card">
+  <h4 class="form-title">Update</h4>
+  <!-- form -->
+  <form
+    nz-form
+    [formGroup]="formGroup"
+    [nzLayout]="'vertical'"
+    (ngSubmit)="onSubmit($event)"
+  >
+    <!-- name -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Name is required!">
+        <input nz-input formControlName="name" placeholder="Name" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- price -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Price is required!">
+        <input nz-input formControlName="price" placeholder="Price" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- duration -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Duration is required!">
+        <input nz-input formControlName="duration" placeholder="Duration" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- submit -->
+    <div class="action-form-button-wrapper">
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        nzSize="large"
+        [disabled]="formGroup.valid === false"
+      >
+        Update
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        nzSize="large"
+        (click)="onCancel($event)"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

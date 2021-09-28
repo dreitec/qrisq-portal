@@ -1,0 +1,86 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+qr-banner h1 {
+  color: #fff;
+  font-size: 3.4rem;
+  font-family: Oswald, Arial, Helvetica, sans-serif;
+  font-weight: 520;
+  line-height: 1em;
+}
+
+qr-banner p {
+  color: #fff;
+  font-size: 1.4rem;
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  line-height: 1.5em;
+}
+
+/* page-content */
+.page-content {
+  padding: 0px 2%;
+  margin-bottom: 50px;
+}
+
+/* footer */
+
+.section-footer {
+  width: 100%;
+  padding-top: 65px;
+  margin-top: -24px;
+}
+
+.section-footer-ourservices h3,
+.section-footer-trackstorm h3,
+.section-footer-messageform h3 {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: #2f5597;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.section-footer-ourservices img,
+.section-footer-trackstorm img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.section-footer-ourservices p,
+.section-footer-trackstorm p {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 450;
+}
+
+.section-footer-ourservices button,
+.section-footer-trackstorm button,
+.section-footer-messageform button {
+  font-weight: 500;
+}
+
+.section-footer-ourservices,
+.section-footer-trackstorm,
+.section-footer-messageform {
+  padding: 0px 24px;
+}
+
+.section-footer-messageform .form-container {
+  background-color: #ebebeb;
+  padding: 1.5em;
+}
+
+.section-footer-messageform .form-container button {
+  margin-bottom: 20px;
+}
+
+nz-divider {
+  border-top: 2px solid #000;
+}

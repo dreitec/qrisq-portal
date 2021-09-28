@@ -1,0 +1,20 @@
+#!/bin/bash
+
+$ERRORSTRING="Error. Please make sure you've indicated correct parameters"
+if [ $# -eq 0 ]
+    then
+        echo $ERRORSTRING;
+elif [ $1 == "live" ]
+    then
+        if [[ -z $2 ]]
+            then
+                echo "Running dry-run"
+                rsync --dry-run -az --force --delete --progress -e "ssh -i ~/.ssh/sumedh-qrisq-frontend-staging.pem" ./dist ubuntu@ec2-54-211-117-111.compute-1.amazonaws.com:/home/ubuntu/Qrisq/QRisq-Frontend
+        elif [ $2 == "go" ]
+            then
+                echo "Running actual deploy"
+                rsync -az --force --delete --progress -e "ssh -i ~/.ssh/sumedh-qrisq-frontend-staging.pem" ./dist ubuntu@ec2-54-211-117-111.compute-1.amazonaws.com:/home/ubuntu/Qrisq/QRisq-Frontend
+        else
+            echo $ERRORSTRING;
+        fi
+fi

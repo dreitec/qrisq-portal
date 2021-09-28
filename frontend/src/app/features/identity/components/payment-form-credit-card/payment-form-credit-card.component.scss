@@ -1,0 +1,30 @@
+
+.form [nz-input] {
+  margin-bottom: 5px;
+}
+
+.form-section {
+  background-image: url('/assets/images/bg-graph.png');
+  background-repeat: no-repeat;
+  background-size:contain;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+nz-card.form {
+  background-color: #ebebeb;
+  width: 500px;
+  max-width: 500px;
+}
+
+nz-card.form h3{
+  color: #595959;  
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
+}

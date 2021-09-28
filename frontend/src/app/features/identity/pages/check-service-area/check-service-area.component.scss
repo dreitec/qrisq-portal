@@ -1,0 +1,137 @@
+.section-content-1 {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.section-content-1 .nzcol-1 .container {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-content-1 .nzcol-1 .container .text-wrapper {
+  display: flex;
+  padding-top: 20px;
+}
+
+.section-content-1 .nzcol-1 .container .text-wrapper p {
+  font-size: 1.2rem;
+  line-height: 1.4em;
+}
+
+.section-content-1 .nzcol-1 .container .text-wrapper img {
+  max-width: 100%;
+  height: auto;
+  max-height: 30px;
+  margin-top: 5px;
+  margin-bottom: auto;
+  margin-right: 10px;
+}
+
+.section-content-1 .nzcol-1 .container .text-wrapper .image-container {
+  margin-left: 20px;
+}
+
+.section-content-1 .nzcol-1 .container .form-wrapper {
+  padding: 0px 20px;
+}
+
+.section-content-1 .nzcol-1 .container .form-wrapper .form {
+  background-color: #ebebeb;
+}
+
+.section-content-1 .nzcol-1 .container .form-wrapper .form input {
+  margin-bottom: 10px;
+  height: 50px;
+}
+
+.section-content-1 .nzcol-1 .container .form-wrapper .form button {
+  height: 50px;
+}
+
+.section-content-1 .nzcol-2 {
+  padding: 20px 0px;
+}
+
+.section-content-1 .nzcol-2 .legend-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  line-height: 1rem;
+  font-weight: bold;
+  padding: 0 20px;
+}
+
+.section-content-1 .nzcol-2 .legend-wrapper .text-blue {
+  color: #0050b3;
+}
+
+.section-content-1 .nzcol-2 .legend-wrapper .text-red {
+  color: #cf1322;
+}
+
+.section-content-1 .nzcol-2 .map-wrapper img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* footer */
+
+.section-footer {
+  width: 100%;
+  padding-top: 65px;
+  margin-top: -24px;
+}
+
+.section-footer-ourservices h3,
+.section-footer-trackstorm h3,
+.section-footer-messageform h3 {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: #2f5597;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.section-footer-ourservices img,
+.section-footer-trackstorm img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.section-footer-ourservices p,
+.section-footer-trackstorm p {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 450;
+}
+
+.section-footer-ourservices button,
+.section-footer-trackstorm button,
+.section-footer-messageform button {
+  font-weight: 500;
+}
+
+.section-footer-ourservices,
+.section-footer-trackstorm,
+.section-footer-messageform {
+  padding: 0px 24px;
+}
+
+.section-footer-messageform .form-container {
+  background-color: #ebebeb;
+  padding: 1.5em;
+}
+
+.section-footer-messageform .form-container button {
+  margin-bottom: 20px;
+}
+
+nz-divider {
+  border-top: 2px solid #000;
+}

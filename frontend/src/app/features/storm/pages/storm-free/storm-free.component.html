@@ -1,0 +1,23 @@
+<div class="main-container">
+  <!-- banner -->
+  <qr-banner [imageUrl]="'/assets/images/main-background.jpg'">
+    <div class="banner-content">
+      <h1>Q-risq Hurricane Viewer</h1>
+      <p>Free Version</p>
+    </div>
+  </qr-banner>
+  <div class="page-content">
+    <div class="storm-section">
+      <h1>{{ stormName }}</h1>
+      <h3>{{ stormAdv }}</h3>
+      <iframe
+        [frameBorder]="0"
+        src="/assets/iframes/qrisq-livestorm-iframe-v11.html"
+        height="725"
+      >
+      </iframe>
+    </div>
+
+    <nz-divider></nz-divider>
+  </div>
+</div>

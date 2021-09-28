@@ -1,0 +1,128 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-government.jpg'">
+    <div class="banner-content">
+      <h1>Contact Q-risq</h1>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <div class="wrapper">
+      <div nz-row nzGutter="48" nzJustify="center">
+        <div class="contact-form" nz-col nzSpan="16">
+          <nz-spin [nzSpinning]="isLoading">
+            <div class="form-card">
+              <h4 class="form-title">Contact us</h4>
+              <!-- form -->
+              <form
+                nz-form
+                [formGroup]="contactUsForm"
+                [nzLayout]="'vertical'"
+                (ngSubmit)="onSubmitForm($event)"
+              >
+                <!-- firstName -->
+                <nz-form-item>
+                  <nz-form-control nzErrorTip="First name is required!">
+                    <input
+                      nz-input
+                      formControlName="firstName"
+                      placeholder="First Name"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+
+                <!-- lastName -->
+                <nz-form-item>
+                  <nz-form-control nzErrorTip="Last name is required!">
+                    <input
+                      nz-input
+                      formControlName="lastName"
+                      placeholder="Last Name"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+
+                <!-- email -->
+                <nz-form-item>
+                  <nz-form-control nzErrorTip="The input is not a valid email!">
+                    <input
+                      nz-input
+                      formControlName="email"
+                      placeholder="Email"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+
+                <!-- message -->
+                <nz-form-item>
+                  <nz-form-control nzErrorTip="Message is required!">
+                    <textarea
+                      rows="10"
+                      nz-input
+                      formControlName="message"
+                      placeholder="Message for Q-risq"
+                    ></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <!-- submit -->
+                <div class="button-wrapper">
+                  <button nz-button nzType="primary" nzDanger nzSize="large">
+                    Continue
+                  </button>
+                </div>
+              </form>
+            </div>
+          </nz-spin>
+        </div>
+
+        <!-- contact-info -->
+
+        <div class="contact-info" nz-col nzSpan="8">
+          <nz-space nzDirection="vertical" [nzSize]="40">
+            <!-- email -->
+            <div class="email" *nzSpaceItem>
+              <h4 class="label">Email us:</h4>
+              <a class="link" href="emailto:info@qrisq.com">info@qrisq.com</a>
+            </div>
+
+            <!-- addresses -->
+            <div class="addresses" *nzSpaceItem>
+              <h4 class="label">Q-risq's Addresses:</h4>
+              <p class="address">
+                13131 Highway 603, Suite 101 <br />
+                Bay St Louis, MS 39520
+              </p>
+              <p class="address">
+                1030 Gause Boulevard <br />
+                Slideli, LA 70458
+              </p>
+              <p class="address">
+                PO Box 91206 <br />
+                Mobile, AL 36691-1206
+              </p>
+            </div>
+          </nz-space>
+        </div>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="8" class="section-footer-ourservices">
+        <qr-our-services-card></qr-our-services-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

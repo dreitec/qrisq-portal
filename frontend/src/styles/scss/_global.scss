@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  font-size: 18px;
+  font-family: 'Roboto', Helvetica, Arial, Lucida, sans-serif;
+  font-weight: normal;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #333;
+  padding-bottom: 10px;
+  line-height: 1em;
+  font-weight: 500;
+}
+@media (max-width: 980px) {
+  .page-content {
+    max-width: 100% !important;
+  }
+  .ant-col {
+    flex: 0 0 100%;
+    margin-bottom: 30px;
+    max-width: 100%;
+    &-offset-8 {
+      max-width: 94%;
+      margin: 0 auto 30px;
+    }
+  }
+}
+
+.distance-label {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}

@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://174.129.152.244/qrisq-livestorm-iframe-v1.html -->
+<html id="html">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>Qrisq Livestorm Iframe Version 1.0</title>
+
+    <link
+      rel="stylesheet"
+      href="./Qrisq Livestorm Iframe Version 1.0_files/leaflet.css"
+    />
+    <script src="./Qrisq Livestorm Iframe Version 1.0_files/aws-sdk-2.2.32.min.js.download"></script>
+    <script src="./Qrisq Livestorm Iframe Version 1.0_files/leaflet.js.download"></script>
+    <script src="./Qrisq Livestorm Iframe Version 1.0_files/js/jquery-1.6.3.min.js"></script>
+    <script src="./Qrisq Livestorm Iframe Version 1.0_files/js/pako.js"></script>
+
+    <script>
+      //This webpage is hosted at the following site: http://ec2-3-84-30-229.compute-1.amazonaws.com/qrisq-livestorm-iframe-v1.html
+      //Global Variable for map object
+      var map = null;
+      var leaflet_bounds = null;
+      var esri_map_layer = null;
+      var esri_places_layer = null;
+      var esri_transportation_layer = null;
+      var geojson_layer = null;
+
+      var geojson_layer_point = null;
+      var geojson_layer_line = null;
+      var geojson_layer_polygon = null;
+
+      var surge_legend = null;
+      var wind_legend = null;
+
+      var year_storm_advisory_utc_array = null;
+      var most_recent_year_storm_advisory_utc_index = null;
+
+      AWS.config.region = 'us-east-1'; // Region
+      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-east-1:eb7e5361-02a5-4b2a-b8e0-786f0f24a850',
+      });
+
+      var lambda = new AWS.Lambda();
+
+      class TempScrollBox {
+        constructor() {
+          this.scrollBarWidth = 0;
+
+          this.measureScrollbarWidth();
+        }
+
+        measureScrollbarWidth() {
+          // Add temporary box to wrapper
+          let scrollbox = document.createElement('div');
+
+          // Make box scrollable
+          scrollbox.style.overflow = 'scroll';
+
+          // Append box to document
+          document.body.appendChild(scrollbox);
+
+          // Measure inner width of box
+          this.scrollBarWidth = scrollbox.offsetWidth - scrollbox.clientWidth;
+
+          // Remove box
+          document.body.removeChild(scrollbox);
+        }
+
+        get width() {
+          return this.scrollBarWidth;
+        }
+      }
+
+      $(document).ready(function () {
+        //Call function for the first time; after document is ready
+        displayWindowSize();
+
+        map = new L.map('map', {
+          center: new L.LatLng(30.0, -90.0),
+          zoom: 5,
+          minZoom: 5,
+          maxZoom: 11,
+        });
+
+        map.createPane('pointPane');
+        map.getPane('pointPane').style.zIndex = 450;
+
+        esri_map_layer = new L.TileLayer(
+          '//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        );
+        esri_map_layer.addTo(map);
+
+        esri_places_layer = new L.TileLayer(
+          '//server.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+        );
+        esri_places_layer.addTo(map);
+
+        esri_transportation_layer = new L.TileLayer(
+          '//server.arcgisonline.com/arcgis/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'
+        );
+        esri_transportation_layer.addTo(map);
+
+        //Add legends
+        surge_legend = new L.control({ position: 'topright' }); //407 rows X 93 columns
+        wind_legend = new L.control({ position: 'topright' }); //411 rows X 157 colums
+
+        surge_legend.onAdd = function (map) {
+          var div = L.DomUtil.create('div', 'surge legend');
+          div.innerHTML +=
+            '<img src="./Qrisq Livestorm Iframe Version 1.0_files/img/surge_legend.png" alt="surge legend" width="200" height="220">';
+          return div;
+        };
+
+        wind_legend.onAdd = function (map) {
+          var div = L.DomUtil.create('div', 'wind legend');
+          div.innerHTML +=
+            '<img src="./Qrisq Livestorm Iframe Version 1.0_files/img/wind_legend.png" alt="wind legend" width="287" height="304">';
+          return div;
+        };
+
+        console.log('Leaflet (Map)  : ' + map);
+        console.log('Leaflet (ESRI) : ' + esri_map_layer);
+        map.on('zoomlevelschange', onZoomLevelsChangeLeaflet);
+        map.on('resize', onResizeLeaflet);
+        map.on('unload', onUnloadLeaflet);
+        map.on('viewreset', onViewResetLeaflet);
+        map.on('load', onLoadLeaflet);
+        map.on('zoomstart', onZoomStartLeaflet);
+        map.on('movestart', onMoveStartLeaflet);
+        map.on('zoom', onZoomLeaflet);
+        map.on('move', onMoveLeaflet);
+        map.on('zoomend', onZoomEndLeaflet);
+        map.on('moveend', onMoveEndLeaflet);
+
+        //Add Event Listener for window resize events.
+        window.addEventListener('resize', displayWindowSize);
+
+        //Remove all layers
+        remove_all_layers();
+
+        //Fill the array that has the year storm advisory utc values from AWS
+        //Since this is an AWS Lambda Function; it is asynchronos, the loading
+        //of the default layer occurs in the invkode callback.
+        fill_year_storm_adv_array();
+      }); //$(document).ready(function())
+
+      function fill_year_storm_adv_array() {
+        //This Javascript function will call an AWS Lambda function that retrieves every
+        //Viewable GeoJSON file stored in S3 bucket: qrisq-webapp-data
+
+        //This Javascript function will fill the array: year_storm_advisory_utc_array with values
+
+        var input;
+
+        input = {
+          utc: 'None',
+        };
+
+        lambda.invoke(
+          {
+            FunctionName: 'aws-lambda-list-objects',
+            Payload: JSON.stringify(input),
+          },
+          function (err, data) {
+            //var result = document.getElementById('result');
+            if (err) {
+              console.log(err, err.stack);
+              //result.innerHTML = err;
+            } else {
+              //Return is not base64 encoded string
+              var data_response = data.Payload;
+
+              var data_response_values = data_response.split('|');
+
+              year_storm_advisory_utc_array = new Array(
+                data_response_values.length
+              );
+
+              for (
+                var index = 0;
+                index < data_response_values.length;
+                index++
+              ) {
+                var year_storm_adv_points_filename = data_response_values[index]
+                  .replace('"', '')
+                  .replace('.json', '');
+
+                //Example: points-2020-al19-03-202009120900
+                console.log(year_storm_adv_points_filename);
+
+                //Example: 2020; al19; 03; 202009120900
+                var year_storm_adv_points_values = year_storm_adv_points_filename.split(
+                  '-'
+                );
+                var year_storm_adv_points_text =
+                  year_storm_adv_points_values[1] +
+                  '; ' +
+                  year_storm_adv_points_values[2] +
+                  '; ' +
+                  year_storm_adv_points_values[3] +
+                  '; ' +
+                  year_storm_adv_points_values[4];
+
+                year_storm_advisory_utc_array[
+                  index
+                ] = year_storm_adv_points_text;
+              }
+
+              //The AWS method returns a sorted list of year-storm-advisory-utc values such that the last one in the array is the most recent
+              most_recent_year_storm_advisory_utc_index =
+                data_response_values.length - 1;
+
+              //result.innerHTML	= output['statusCode'];
+              //result.innerHTML	= 'GeoJSON available...';
+
+              //Team will advise on which to default to display
+              display_geoJSON_layer('surge');
+
+              //Set the initial radio selection to; 'Surge'
+              document.getElementById('radio_btn_surge').checked = true;
+            }
+          }
+        );
+      }
+
+      function remove_all_layers() {
+        //Remove all layers from Leaflet map
+        if (geojson_layer != null) {
+          map.removeLayer(geojson_layer);
+          geojson_layer = null;
+        }
+
+        if (geojson_layer_point != null) {
+          map.removeLayer(geojson_layer_point);
+          geojson_layer_point = null;
+        }
+
+        if (geojson_layer_line != null) {
+          map.removeLayer(geojson_layer_line);
+          geojson_layer_line = null;
+        }
+
+        if (geojson_layer_polygon != null) {
+          map.removeLayer(geojson_layer_polygon);
+          geojson_layer_polygon = null;
+        }
+
+        if (wind_legend != null) {
+          map.removeControl(wind_legend);
+        }
+
+        if (surge_legend != null) {
+          map.removeControl(surge_legend);
+        }
+      }
+
+      function display_geoJSON_layer(selection_layer_str) {
+        //Example: 2020; al19; 21; 202009160900 (This is the most recent; year,storm,advisory)
+        var selection_year_storm_adv_str =
+          year_storm_advisory_utc_array[
+            most_recent_year_storm_advisory_utc_index
+          ];
+
+        selection_year_storm_adv_str = selection_year_storm_adv_str.replace(
+          '"',
+          ''
+        );
+
+        var progress_container_div_element = document.getElementById(
+          'progress_container_div'
+        );
+
+        console.log(selection_layer_str);
+
+        var input;
+
+        input = {
+          year_tcid_adv: selection_year_storm_adv_str,
+        };
+
+        if (selection_layer_str == 'maxwind') {
+          progress_container_div_element.style.visibility = 'visible';
+          lambda.invoke(
+            {
+              FunctionName: 'aws-lambda-maxwind-swath-year-tcid-adv',
+              Payload: JSON.stringify(input),
+            },
+            function (err, data) {
+              //var result = document.getElementById('result');
+              if (err) {
+                console.log(err, err.stack);
+                //result.innerHTML = err;
+              } else {
+                //Return is base64 encoded string
+                var data_decode = atob(data.Payload);
+
+                var data_bin_gzd = pako.inflate(data_decode);
+                console.log('pako passed.');
+
+                var data_str = new TextDecoder('utf-8').decode(data_bin_gzd);
+                console.log('TextDecoder passed.');
+
+                var geojson_obj = JSON.parse(data_str);
+                console.log('JSON parse passed.');
+
+                //Add layer to Leaflet map
+                if (geojson_layer != null) {
+                  map.removeLayer(geojson_layer);
+                  geojson_layer = null;
+                }
+
+                if (geojson_layer_point != null) {
+                  map.removeLayer(geojson_layer_point);
+                  geojson_layer_point = null;
+                }
+
+                if (geojson_layer_line != null) {
+                  map.removeLayer(geojson_layer_line);
+                  geojson_layer_line = null;
+                }
+
+                if (geojson_layer_polygon != null) {
+                  map.removeLayer(geojson_layer_polygon);
+                  geojson_layer_polygon = null;
+                }
+
+                geojson_layer = new L.geoJSON(geojson_obj, {
+                  smoothFactor: 0,
+                  style: function (feature) {
+                    return {
+                      fillColor: feature['properties']['fill'],
+                      fillOpacity: feature['properties']['fill-opacity'],
+                      color: feature['properties']['stroke'],
+                      opacity: feature['properties']['stroke-opacity'],
+                      weight: feature['properties']['stroke-width'],
+                    };
+                  },
+                  onEachFeature: function (feature, layer) {
+                    var popUpContent =
+                      '<p> Level  :  ' +
+                      parseFloat(feature['properties']['level']).toFixed(2) +
+                      ' [mph]</p>';
+
+                    //Uncomment to allow the user to query the data.
+                    //layer.bindPopup(popUpContent);
+                  },
+                });
+                geojson_layer.addTo(map);
+
+                //result.innerHTML	= output['statusCode'];
+                //result.innerHTML	= 'GeoJSON available...';
+              }
+              //document.getElementById('submitButton').disabled = false;
+              progress_container_div_element.style.visibility = 'hidden';
+            }
+          );
+
+          //Activate the legend
+          if (selection_layer_str == 'maxwind') {
+            if (surge_legend != null) {
+              map.removeControl(surge_legend);
+            }
+            wind_legend.addTo(map);
+          }
+        }
+
+        if (selection_layer_str == 'surge') {
+          progress_container_div_element.style.visibility = 'visible';
+          lambda.invoke(
+            {
+              FunctionName: 'aws-lambda-surge-year-tcid-adv',
+              Payload: JSON.stringify(input),
+            },
+            function (err, data) {
+              //var result = document.getElementById('result');
+              if (err) {
+                console.log(err, err.stack);
+                //result.innerHTML = err;
+              } else {
+                //var output = data.Payload;
+                //console.log(data.Payload);
+
+                //var data_bin = new Uint8Array(data.Payload);
+                //console.log('Uint8Array passed.');
+
+                //Return is base64 encoded string
+                var data_decode = atob(data.Payload);
+
+                var data_bin_gzd = pako.inflate(data_decode);
+                console.log('pako passed.');
+
+                var data_str = new TextDecoder('utf-8').decode(data_bin_gzd);
+                console.log('TextDecoder passed.');
+
+                var geojson_obj = JSON.parse(data_str);
+                console.log('JSON parse passed.');
+
+                //Add layer to Leaflet map
+                if (geojson_layer != null) {
+                  map.removeLayer(geojson_layer);
+                  geojson_layer = null;
+                }
+
+                if (geojson_layer_point != null) {
+                  map.removeLayer(geojson_layer_point);
+                  geojson_layer_point = null;
+                }
+
+                if (geojson_layer_line != null) {
+                  map.removeLayer(geojson_layer_line);
+                  geojson_layer_line = null;
+                }
+
+                if (geojson_layer_polygon != null) {
+                  map.removeLayer(geojson_layer_polygon);
+                  geojson_layer_polygon = null;
+                }
+
+                geojson_layer = new L.geoJSON(geojson_obj, {
+                  smoothFactor: 0,
+                  style: function (feature) {
+                    return {
+                      fillColor: feature['properties']['fill'],
+                      fillOpacity: feature['properties']['fill-opacity'],
+                      color: feature['properties']['stroke'],
+                      opacity: feature['properties']['stroke-opacity'],
+                      weight: feature['properties']['stroke-width'],
+                    };
+                  },
+                  onEachFeature: function (feature, layer) {
+                    var popUpContent =
+                      '<p> Surge  :  ' +
+                      parseFloat(feature['properties']['level']).toFixed(2) +
+                      ' [ft.] AGL</p>';
+
+                    //Uncomment to allow the user to query the data
+                    //layer.bindPopup(popUpContent);
+                  },
+                });
+                geojson_layer.addTo(map);
+
+                //result.innerHTML	= output['statusCode'];
+                //result.innerHTML	= 'GeoJSON available...';
+              }
+              //document.getElementById('submitButton').disabled = false;
+              progress_container_div_element.style.visibility = 'hidden';
+            }
+          );
+
+          if (selection_layer_str == 'surge') {
+            if (wind_legend != null) {
+              map.removeControl(wind_legend);
+            }
+            surge_legend.addTo(map);
+          }
+        }
+
+        if (selection_layer_str == 'location') {
+          if (geojson_layer_point != null) {
+            map.removeLayer(geojson_layer_point);
+            geojson_layer_point = null;
+          }
+
+          if (geojson_layer_line != null) {
+            map.removeLayer(geojson_layer_line);
+            geojson_layer_line = null;
+          }
+
+          if (geojson_layer_polygon != null) {
+            map.removeLayer(geojson_layer_polygon);
+            geojson_layer_polygon = null;
+          }
+
+          if (wind_legend != null) {
+            map.removeControl(wind_legend);
+          }
+
+          if (surge_legend != null) {
+            map.removeControl(surge_legend);
+          }
+
+          lambda.invoke(
+            {
+              FunctionName: 'aws-lambda-polygon-year-tcid-adv',
+              Payload: JSON.stringify(input),
+            },
+            function (err, data) {
+              //var result = document.getElementById('result');
+              if (err) {
+                console.log(err, err.stack);
+                //result.innerHTML = err;
+              } else {
+                //var output = data.Payload;
+                //console.log(data.Payload);
+
+                //var data_bin = new Uint8Array(data.Payload);
+                //console.log('Uint8Array passed.');
+
+                //Return is base64 encoded string
+                var data_decode = atob(data.Payload);
+
+                var data_bin_gzd = pako.inflate(data_decode);
+                console.log('pako passed.');
+
+                var data_str = new TextDecoder('utf-8').decode(data_bin_gzd);
+                console.log('TextDecoder passed.');
+
+                var geojson_obj = JSON.parse(data_str);
+                console.log('JSON parse passed.');
+
+                //Add layer to Leaflet map
+                if (geojson_layer != null) {
+                  map.removeLayer(geojson_layer);
+                  geojson_layer = null;
+                }
+
+                geojson_layer_polygon = new L.geoJSON(geojson_obj, {
+                  smoothFactor: 0,
+                  style: function (feature) {
+                    return {
+                      fillColor: feature['properties']['fill'],
+                      fillOpacity: feature['properties']['fill-opacity'],
+                      color: feature['properties']['stroke'],
+                      opacity: feature['properties']['stroke-opacity'],
+                      weight: feature['properties']['stroke-width'],
+                    };
+                  },
+                  onEachFeature: function (feature, layer) {
+                    var popUpContent =
+                      '<p> ADV. Date  :  ' +
+                      feature['properties']['ADVDATE'] +
+                      '</p>' +
+                      '<p> Storm. Num :  ' +
+                      feature['properties']['STORMNUM'] +
+                      '</p>' +
+                      '<p> ADV. Num   :  ' +
+                      feature['properties']['ADVISNUM'] +
+                      '</p>';
+
+                    //Uncomment to allow the user to query the data
+                    //layer.bindPopup(popUpContent);
+                  },
+                });
+                geojson_layer_polygon.addTo(map);
+
+                //result.innerHTML	= output['statusCode'];
+                //result.innerHTML	= 'GeoJSON available...';
+              }
+              //document.getElementById('submitButton').disabled = false;
+            }
+          );
+
+          lambda.invoke(
+            {
+              FunctionName: 'aws-lambda-line-year-tcid-adv',
+              Payload: JSON.stringify(input),
+            },
+            function (err, data) {
+              //var result = document.getElementById('result');
+              if (err) {
+                console.log(err, err.stack);
+                //result.innerHTML = err;
+              } else {
+                //var output = data.Payload;
+                //console.log(data.Payload);
+
+                //var data_bin = new Uint8Array(data.Payload);
+                //console.log('Uint8Array passed.');
+
+                //Return is base64 encoded string
+                var data_decode = atob(data.Payload);
+
+                var data_bin_gzd = pako.inflate(data_decode);
+                console.log('pako passed.');
+
+                var data_str = new TextDecoder('utf-8').decode(data_bin_gzd);
+                console.log('TextDecoder passed.');
+
+                var geojson_obj = JSON.parse(data_str);
+                console.log('JSON parse passed.');
+
+                //Add layer to Leaflet map
+                if (geojson_layer != null) {
+                  map.removeLayer(geojson_layer);
+                  geojson_layer = null;
+                }
+
+                geojson_layer_line = new L.geoJSON(geojson_obj, {
+                  smoothFactor: 0,
+                  style: function (feature) {
+                    return {
+                      fillColor: feature['properties']['fill'],
+                      fillOpacity: feature['properties']['fill-opacity'],
+                      color: feature['properties']['stroke'],
+                      opacity: feature['properties']['stroke-opacity'],
+                      weight: feature['properties']['stroke-width'],
+                    };
+                  },
+                  onEachFeature: function (feature, layer) {
+                    var popUpContent =
+                      '<p> ADV. Date  :  ' +
+                      feature['properties']['ADVDATE'] +
+                      '</p>' +
+                      '<p> Storm. Num :  ' +
+                      feature['properties']['STORMNUM'] +
+                      '</p>' +
+                      '<p> ADV. Num   :  ' +
+                      feature['properties']['ADVISNUM'] +
+                      '</p>';
+
+                    //Uncomment to allow the user to query the data
+                    //layer.bindPopup(popUpContent);
+                  },
+                });
+                geojson_layer_line.addTo(map);
+
+                //result.innerHTML	= output['statusCode'];
+                //result.innerHTML	= 'GeoJSON available...';
+              }
+              //document.getElementById('submitButton').disabled = false;
+            }
+          );
+
+          lambda.invoke(
+            {
+              FunctionName: 'aws-lambda-point-year-tcid-adv',
+              Payload: JSON.stringify(input),
+            },
+            function (err, data) {
+              //var result = document.getElementById('result');
+              if (err) {
+                console.log(err, err.stack);
+                //result.innerHTML = err;
+              } else {
+                //var output = data.Payload;
+                //console.log(data.Payload);
+
+                //var data_bin = new Uint8Array(data.Payload);
+                //console.log('Uint8Array passed.');
+
+                //Return is base64 encoded string
+                var data_decode = atob(data.Payload);
+
+                var data_bin_gzd = pako.inflate(data_decode);
+                console.log('pako passed.');
+
+                var data_str = new TextDecoder('utf-8').decode(data_bin_gzd);
+                console.log('TextDecoder passed.');
+
+                var geojson_obj = JSON.parse(data_str);
+                console.log('JSON parse passed.');
+
+                //Add layer to Leaflet map
+                if (geojson_layer != null) {
+                  map.removeLayer(geojson_layer);
+                  geojson_layer = null;
+                }
+
+                geojson_layer_point = new L.geoJSON(geojson_obj, {
+                  smoothFactor: 0,
+                  pane: 'pointPane',
+                  style: function (feature) {
+                    return {
+                      fillColor: feature['properties']['fill'],
+                      fillOpacity: feature['properties']['fill-opacity'],
+                      color: feature['properties']['stroke'],
+                      opacity: feature['properties']['stroke-opacity'],
+                      weight: feature['properties']['stroke-width'],
+                    };
+                  },
+                  onEachFeature: function (feature, layer) {
+                    var popUpContent =
+                      '<p> ADV. Date  :  ' +
+                      feature['properties']['ADVDATE'] +
+                      '</p>' +
+                      '<p> Storm. Num :  ' +
+                      feature['properties']['STORMNUM'] +
+                      '</p>' +
+                      '<p> ADV. Num   :  ' +
+                      feature['properties']['ADVISNUM'] +
+                      '</p>';
+
+                    //Uncomment to allow the user to query the layer
+                    //layer.bindPopup(popUpContent);
+                  },
+                  pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                      // Stroke properties
+                      color: '#FF0000',
+                      opacity: 0.75,
+                      weight: 1,
+
+                      // Fill properties
+                      fillColor: '#FF0000',
+                      fillOpacity: 0.75,
+
+                      radius: 10,
+                      pane: 'pointPane',
+                    });
+                  },
+                });
+                geojson_layer_point.addTo(map);
+
+                //result.innerHTML	= output['statusCode'];
+                //result.innerHTML	= 'GeoJSON available...';
+              }
+              //document.getElementById('submitButton').disabled = false;
+            }
+          );
+        }
+      }
+
+      function displayWindowSize() {
+        let scrollbox = new TempScrollBox();
+
+        console.log(scrollbox.width);
+
+        // Get width and height of the window excluding scrollbars
+        var w = document.documentElement.clientWidth;
+        var h = document.documentElement.clientHeight;
+
+        //Remove height of containers
+        var hcontent = h - scrollbox.width; //screen height after subtracting non-map divisions; non-map divisions have been removed
+        var wcontent = w - scrollbox.width;
+
+        //Set the width and height of a div element
+        document.getElementById('map').style.height =
+          hcontent.toString() + 'px';
+        document.getElementById('map').style.width = wcontent.toString() + 'px';
+        document.getElementById('map').style.zIndex = 0;
+
+        document.getElementById('content').style.height =
+          hcontent.toString() + 'px';
+        document.getElementById('content').style.width =
+          wcontent.toString() + 'px';
+
+        //var hcontainer = h - 90; //screen height after subtracting two top containers only
+        document.getElementById('container').style.height =
+          hcontent.toString() + 'px';
+        document.getElementById('container').style.width =
+          wcontent.toString() + 'px';
+
+        //Modify the width=175px of the map text div below
+        var userinterface_top = h - 125 - 50;
+        var userinterface_right = w - 225 - 50 - scrollbox.width;
+        var userinterface_top_search_text = 50;
+        //document.getElementById("search_text").style.top    = userinterface_top_search_text.toString() + "px";
+        //document.getElementById("search_text").style.right = userinterface_right.toString() + "px";
+        //document.getElementById("search_text").style.zIndex = 1;
+
+        document.getElementById('map_text').style.top =
+          userinterface_top.toString() + 'px';
+        document.getElementById('map_text').style.right =
+          userinterface_right.toString() + 'px';
+        document.getElementById('map_text').style.zIndex = 1;
+
+        //Displays the window width and height everytime the window is resized. Used for testing.
+        console.log('displayWindowSize(): Width : ' + w);
+        console.log('displayWindowSize(): Height: ' + h);
+
+        console.log(
+          'map      : Z-index: ' + document.getElementById('map').style.zIndex
+        );
+        console.log(
+          'map_text : Z-index: ' +
+            document.getElementById('map_text').style.zIndex
+        );
+      }
+
+      function onZoomLevelsChangeLeaflet(e) {
+        console.log('onZoomLevelsChangeLeaflet()');
+      }
+
+      function onResizeLeaflet(e) {
+        console.log('onResizeLeaflet()');
+      }
+
+      function onUnloadLeaflet(e) {
+        console.log('onUnloadLeaflet()');
+      }
+
+      function onViewResetLeaflet(e) {
+        console.log('onViewResetLeaflet()');
+      }
+
+      function onLoadLeaflet(e) {
+        console.log('onLoadLeaflet()');
+      }
+
+      function onZoomStartLeaflet(e) {
+        console.log('onZoomStartLeaflet()');
+      }
+
+      function onMoveStartLeaflet(e) {
+        console.log('onMoveStartLeaflet()');
+      }
+
+      function onZoomLeaflet(e) {
+        console.log('onZoomLeaflet()');
+        //bAutoCompleteBounds = true;
+      }
+
+      function onMoveLeaflet(e) {
+        console.log('onMoveLeaflet()');
+        //bAutoCompleteBounds = true;
+      }
+
+      function onZoomEndLeaflet(e) {
+        console.log('onZoomEndLeaflet()');
+      }
+
+      function onMoveEndLeaflet(e) {
+        console.log('onMoveEndLeaflet()');
+        /*
+		if ((leaflet_bounds != null) && (bAutoCompleteBounds == true)){
+			map.fitBounds(leaflet_bounds);
+			bAutoCompleteBounds = false;
+		}
+		*/
+      }
+
+      function getRadioButtonValue(radio) {
+        //The following javascript function will return either:
+        //'surge','maxwind','locaton' as strings
+        console.log(radio.value);
+
+        display_geoJSON_layer(radio.value);
+      }
+    </script>
+
+    <style type="text/css">
+      #container_top {
+        border: 1px none #000;
+        padding: 0;
+        margin: 0;
+        height: 65px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        width: 100%;
+        background-color: #e6e6e6;
+        background-image: url(img/qrisq_container_banner.png);
+        background-repeat: no-repeat;
+      }
+      #container_middle {
+        width: 100%;
+        height: 25px;
+        background-color: #b3ec9a;
+      }
+      #container {
+        border: 4px none #0f0;
+        padding: 0;
+        margin: 0 auto 0 auto;
+        width: 100%;
+        height: 100%;
+        background-color: red;
+      }
+      #progress_container_div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 9999;
+        border: 1px none #0f0;
+        padding: 0;
+        margin: -100px 0 0 -100px;
+        width: 200px;
+        height: 200px;
+        visibility: hidden;
+      }
+      #content {
+        border: 2px none #00f;
+        background-color: #0f0;
+        width: 100%;
+        height: 100%;
+        clear: both;
+        position: relative;
+      }
+      #map {
+        margin: 0;
+        border: 3px none #ff0;
+        width: 100%;
+        height: 100%;
+      }
+      #map_text {
+        padding: 0;
+        margin-top: 0;
+        border-radius: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+        font-style: normal;
+        color: #000;
+        width: 225px;
+        height: 125px;
+        border: 2px solid silver;
+        float: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      #layer_group {
+        width: 250px;
+        height: 150px;
+        border-radius: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none red;
+      }
+      #layer_text {
+        padding: 10px 0 0 10px;
+        margin: 0;
+        width: 125px;
+        height: 25px;
+        border-radius: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+        text-shadow: 2px 2px #000;
+      }
+      #layer_popup_menu_div {
+        padding: 0 0 0 10px;
+        margin: 0;
+        width: 225px;
+        height: 45px;
+        border-radius: 5px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none green;
+      }
+      #layer_surge_div {
+        padding: 0 0 0 0;
+        margin: 0;
+        width: 225px;
+        height: 30px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none red;
+      }
+      #layer_surge_radio_div {
+        padding: 0 0 0 0;
+        margin: 0;
+        width: 20px;
+        height: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none #00f;
+        float: left;
+      }
+      #layer_surge_label_div {
+        padding: 2px 30px 0 0;
+        margin: 0 0 0 0;
+        width: 165px;
+        height: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+        text-shadow: 2px 2px #000;
+        border: 1px none #ff0;
+        float: right;
+      }
+      #radio_btn_surge {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.5);
+        border: 5px solid green;
+      }
+      #layer_maxwind_div {
+        padding: 0 0 0 0;
+        margin: 0;
+        width: 225px;
+        height: 30px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none red;
+      }
+      #layer_maxwind_radio_div {
+        padding: 0 0 0 0;
+        margin: 0;
+        width: 20px;
+        height: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none #00f;
+        float: left;
+      }
+      #layer_maxwind_label_div {
+        padding: 2px 30px 0 0;
+        margin: 0 0 0 0;
+        width: 165px;
+        height: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+        text-shadow: 2px 2px #000;
+        border: 1px none #ff0;
+        float: right;
+      }
+      #radio_btn_maxwind {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+      }
+      #layer_tropcyc_div {
+        padding: 0 0 0 0;
+        margin: 0;
+        width: 225px;
+        height: 30px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none red;
+      }
+      #layer_tropcyc_radio_div {
+        padding: 0 0 0 0;
+        margin: 0;
+        width: 20px;
+        height: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: silver;
+        border: 1px none #00f;
+        float: left;
+      }
+      #layer_tropcyc_label_div {
+        padding: 2px 30px 0 0;
+        margin: 0 0 0 0;
+        width: 165px;
+        height: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+        text-shadow: 2px 2px #000;
+        float: right;
+        border: 1px none #ff0;
+      }
+      #radio_btn_tropcyc {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+        color: #fff;
+      }
+      #footer {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        color: #000;
+        background-color: #f6f6f6;
+        border: 1px none #000;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: auto;
+        clear: both;
+        text-align: center;
+      }
+      #footer_top {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        border: 1px none #001019;
+        width: 100%;
+        height: 10px;
+        background-color: #f6f6f6;
+      }
+      #footer_middle {
+        padding: 0;
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        width: 100%;
+        height: 10px;
+        border: 1px none #000;
+        clear: both;
+        float: none;
+        text-align: center;
+        position: relative;
+      }
+      #footer_bottom {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        border: 1px none #000;
+        width: 100%;
+        height: 25px;
+        clear: both;
+        color: #4d4d4d;
+      }
+      body {
+        overflow: hidden;
+      }
+      .callout {
+        position: fixed;
+        bottom: 35px;
+        right: 20px;
+        margin-left: 20px;
+        max-width: 300px;
+      }
+      .callout-header {
+        padding: 25px 15px;
+        background: #555;
+        font-size: 30px;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+      }
+      .callout-container {
+        padding: 15px;
+        background-color: #ccc;
+        color: #000;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: normal;
+      }
+      .closebtn {
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        color: #fff;
+        font-size: 30px;
+        cursor: pointer;
+      }
+      .closebtn:hover {
+        color: #d3d3d3;
+      }
+      #loader {
+        padding: 0;
+        margin: 0;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 100px;
+        height: 100px;
+        -webkit-animation: spin 2s linear infinit;
+        animation: spin 2s linear infinite;
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #3498db;
+        border-radius: 50%;
+      }
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!--
+	<div id="container_top">
+	</div>
+	
+	<div id="container_middle">
+	</div>
+	-->
+    <div id="container" style="height: 1080px; width: 1034px">
+      <div id="progress_container_div" style="visibility: hidden">
+        <div id="loader"></div>
+      </div>
+      <div id="content" style="height: 1080px; width: 1034px">
+        <div
+          id="map"
+          class="leaflet-container leaflet-fade-anim leaflet-grab leaflet-touch-drag"
+          style="
+            height: 1080px;
+            width: 1034px;
+            z-index: 0;
+            position: relative;
+            outline: none;
+          "
+          tabindex="0"
+        ></div>
+        <div id="map_text">
+          <div id="layer_group">
+            <div id="layer_text">Layer:</div>
+            <div id="layer_popup_menu_div">
+              <div id="layer_surge_div">
+                <div id="layer_surge_radio_div">
+                  <input
+                    type="radio"
+                    id="radio_btn_surge"
+                    name="layer_group"
+                    value="surge"
+                    onchange="getRadioButtonValue(this)"
+                  />
+                </div>
+
+                <div id="layer_surge_label_div">
+                  <label for="radio_btn_surge">Surge</label>
+                </div>
+              </div>
+
+              <div id="layer_maxwind_div">
+                <div id="layer_maxwind_radio_div">
+                  <input
+                    type="radio"
+                    id="radio_btn_maxwind"
+                    name="layer_group"
+                    value="maxwind"
+                    onchange="getRadioButtonValue(this)"
+                  />
+                </div>
+
+                <div id="layer_maxwind_label_div">
+                  <label for="radio_btn_maxwind">Max Wind Swath</label>
+                </div>
+              </div>
+
+              <div id="layer_tropcyc_div">
+                <div id="layer_tropcyc_radio_div">
+                  <input
+                    type="radio"
+                    id="radio_btn_tropcyc"
+                    name="layer_group"
+                    value="location"
+                    onchange="getRadioButtonValue(this)"
+                  />
+                </div>
+                <div id="layer_tropcyc_label_div">
+                  <label id="layer_tropcyc_label">Track and Cone</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout">
+          <div class="callout-header">H O W&nbsp;&nbsp;T O .&nbsp;.&nbsp;.</div>
+          <span
+            class="closebtn"
+            onclick="this.parentElement.style.display=&#39;none&#39;;"
+            >×</span
+          >
+          <div class="callout-container">
+            <p>
+              Select a layer on the left to display Wind, Surge, or Track &amp;
+              Cone Information.
+            </p>
+            <p>
+              <a href="https://qrisq.com/"
+                >Check Qrisq Analytics LLC. for more information.</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--
+		<div id="footer">
+			<div id="footer_top">
+			</div>
+			<div id="footer_middle">
+			</div>
+			<div id="footer_bottom">
+				© 2020 Qrisq Analytics LLC. All Right Reserved.
+			</div>
+		</div>
+		-->
+    </div>
+  </body>
+</html>

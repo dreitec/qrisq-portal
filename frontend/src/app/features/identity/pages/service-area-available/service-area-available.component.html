@@ -1,0 +1,65 @@
+<div class="main-container">
+  <nz-card class="banner">
+    <div class="inner-container">
+      <h2>Success!</h2>
+      <ng-container *ngIf="signUp$ | async as signUp">
+        <div
+          *ngIf="signUp.windServiceOnly; then thenBlock; else elseBlock"
+        ></div>
+        <ng-template #thenBlock
+          ><p>
+            We can provide hurricane wind information for the address you
+            provided.
+          </p></ng-template
+        >
+        <ng-template #elseBlock
+          ><p>
+            We can provide hurricane wind and storm surge information for the
+            address you provided.
+          </p></ng-template
+        >
+
+        <p>Please register below to get started.</p>
+      </ng-container>
+    </div>
+  </nz-card>
+
+  <nz-card class="pricing" nzBorderless>
+    <div nz-row [nzGutter]="32">
+      <ng-container *ngIf="subscriptionPlans$ | async as subscriptionPlans">
+        <div nz-col *ngFor="let subscriptionPlan of subscriptionPlans">
+          <div class="price-section">
+            <h3>${{ subscriptionPlan.price }}</h3>
+            <h4>{{ subscriptionPlan.name }}*</h4>
+          </div>
+          <button
+            nz-button
+            nzBlock
+            nzType="primary"
+            nzDanger
+            nzSize="large"
+            (click)="onRegister(subscriptionPlan.id)"
+          >
+            Register {{ subscriptionPlan.name === 'Monthly' ? '**' : '' }}
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </nz-card>
+  <p class="bottom-text">* Hurricane services are provided Jun 1 - Nov 30</p>
+  <p class="bottom-text">** Auto-renews monthly. Cancel anytime.</p>
+  <nz-divider></nz-divider>
+
+  <!-- footer -->
+  <div nz-row class="section-footer">
+    <div nz-col nzSpan="8" class="section-footer-ourservices">
+      <qr-our-services-card></qr-our-services-card>
+    </div>
+    <div nz-col nzSpan="8" class="section-footer-trackstorm">
+      <qr-track-storm-card></qr-track-storm-card>
+    </div>
+    <div nz-col nzSpan="8" class="section-footer-messageform">
+      <qr-contact-us-form></qr-contact-us-form>
+    </div>
+  </div>
+</div>

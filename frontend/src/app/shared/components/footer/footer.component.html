@@ -1,0 +1,84 @@
+<nz-footer>
+  <div class="menu-container">
+    <!-- Storm Data -->
+    <a
+      class="menu-item"
+      nz-button
+      nzType="link"
+      nz-tooltip
+      [nzTooltipTitle]="stormDataSubMenuTemplate"
+      >Storm Data</a
+    >
+    <ng-template #stormDataSubMenuTemplate>
+      <ul nz-menu nzMode="vertical" nzSelectable="false">
+        <li nz-menu-item>
+          <a
+            class="menu-item"
+            nz-button
+            nzType="link"
+            [routerLink]="['storm-data', 'forecast']"
+            >Forecast</a
+          >
+        </li>
+        <li nz-menu-item>
+          <a
+            class="menu-item"
+            nz-button
+            nzType="link"
+            [routerLink]="['storm-data', 'hindcast']"
+            >Hindcast</a
+          >
+        </li>
+      </ul>
+    </ng-template>
+
+    <!-- services -->
+    <a
+      class="menu-item"
+      nz-button
+      nzType="link"
+      nz-tooltip
+      [nzTooltipTitle]="servicesSubMenuTemplate"
+      >Services</a
+    >
+    <ng-template #servicesSubMenuTemplate>
+      <ul nz-menu nzMode="vertical" nzSelectable="false">
+        <li nz-menu-item>
+          <a
+            class="menu-item"
+            nz-button
+            nzType="link"
+            [routerLink]="['services', 'homeowners']"
+            >Homeowners</a
+          >
+        </li>
+        <li nz-menu-item>
+          <a
+            class="menu-item"
+            nz-button
+            nzType="link"
+            [routerLink]="['services', 'government']"
+            >Government</a
+          >
+        </li>
+        <li nz-menu-item>
+          <a
+            class="menu-item"
+            nz-button
+            nzType="link"
+            [routerLink]="['services', 'insurance']"
+            >Insurance</a
+          >
+        </li>
+      </ul>
+    </ng-template>
+  </div>
+  <div class="logo-container">
+    <a [routerLink]="['home']">
+      <img height="60px" src="/assets/images/qrisq-logo-3d.png" alt="Qrisq" />
+    </a>
+  </div>
+  <div class="contact-container">
+    <a nz-button nzType="link" [routerLink]="['contact-us']">Contact Us</a>
+  </div>
+</nz-footer>

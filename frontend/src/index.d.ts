@@ -1,0 +1,13 @@
+declare var CanvasLayer: any;
+declare var Windy: any;
+declare var PolygonTooltip: any;
+// declare var loadshp: any;
+// declare var loadshp: any;
+declare var loadshp: any;
+declare module 'text2svg';
+declare var ELabel: any;
+declare var lambda: any;
+declare var pako: any;
+// declare var AWS: any;
+declare var storm_name: any;
+declare var advisory_date: any;

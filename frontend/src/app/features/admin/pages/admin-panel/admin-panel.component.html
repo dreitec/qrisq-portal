@@ -1,0 +1,677 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-admin.png'">
+    <div class="banner-content">
+      <h1>Q-risq Admin Page</h1>
+    </div>
+  </qr-banner>
+
+  <div class="section-main">
+    <!-- -------------------------------- title -------------------------------- -->
+
+    <div class="table-title-wrapper">
+      <div nz-row nzJustify="center" class="table-title-row">
+        <div nz-col>
+          <h3 class="table-title-text">
+            <span
+              ><img
+                class="title-title-arrow"
+                height="25px"
+                src="/assets/images/icon-triangle-green.png"
+                alt=""
+            /></span>
+            Admin Panel
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- --------------------------- table-controls ---------------------------- -->
+    <div class="table-header-wrapper">
+      <div nz-row nzGutter="32" class="table-header-row" nzAlign="middle">
+        <!-- table-select -->
+        <div nz-col nzSpan="12">
+          <!-- table-select-row -->
+          <div nz-row nzAlign="middle">
+            <div nz-col nzSpan="8">
+              <h4 class="table-header-select-label">Table:</h4>
+            </div>
+            <div nz-col nzSpan="16">
+              <nz-select
+                class="table-header-select-control"
+                ngModel="selectedTable"
+                (ngModelChange)="onTableSelected($event)"
+              >
+                <nz-option nzValue="admin" nzLabel="Admin"></nz-option>
+                <nz-option nzValue="users" nzLabel="Users"></nz-option>
+                <nz-option
+                  nzValue="subscriptions"
+                  nzLabel="Subscription Plans"
+                ></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+
+        <!-- table-record-count -->
+        <div nz-col nzSpan="12" class="table-record-count">
+          <!-- table-record-count-row -->
+          <div nz-row nzAlign="middle">
+            <div nz-col nzSpan="8">
+              <h4 class="table-header-record-count-label">Record Count</h4>
+            </div>
+            <div nz-col nzSpan="16">
+              <div class="table-header-record-count-text">
+                {{ tableRecordCount }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-data-wrapper">
+      <!-- admin -->
+      <div nz-row *ngIf="selectedTable === 'admin'" class="table-data">
+        <div nz-col nzSpan="24">
+          <!-- insert -->
+
+          <div nz-row *ngIf="selectedAction === 'insert'" nzJustify="center">
+            <div nz-col nzSpan="12">
+              <nz-spin [nzSpinning]="isActionLoading">
+                <div class="table-data-action-card">
+                  <h4 class="form-title">Insert</h4>
+                  <!-- form -->
+                  <form
+                    nz-form
+                    [formGroup]="adminUserInsertForm"
+                    [nzLayout]="'vertical'"
+                    (ngSubmit)="onAdminUserInsertSubmitForm($event)"
+                  >
+                    <!-- email -->
+                    <nz-form-item>
+                      <nz-form-control
+                        nzErrorTip="The input is not a valid email!"
+                      >
+                        <input
+                          nz-input
+                          formControlName="email"
+                          placeholder="Email"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- firstName -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="First name is required!">
+                        <input
+                          nz-input
+                          formControlName="firstName"
+                          placeholder="First Name"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- lastName -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Last name is required!">
+                        <input
+                          nz-input
+                          formControlName="lastName"
+                          placeholder="Last Name"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- password -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Please input your password!">
+                        <input
+                          nz-input
+                          type="password"
+                          formControlName="password"
+                          id="password"
+                          placeholder="Password"
+                          (ngModelChange)="updatePasswordConfirmValidator()"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- confirm password -->
+                    <nz-form-item>
+                      <nz-form-control [nzErrorTip]="errorTpl">
+                        <input
+                          nz-input
+                          type="password"
+                          formControlName="checkPassword"
+                          id="checkPassword"
+                          placeholder="Confirm Password"
+                        />
+                        <ng-template #errorTpl let-control>
+                          <ng-container *ngIf="control.hasError('required')">
+                            Please confirm your password!
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('confirm')">
+                            Two passwords that you enter is inconsistent!
+                          </ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- phoneNumber -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Phone Number is required!">
+                        <input
+                          nz-input
+                          formControlName="phoneNumber"
+                          placeholder="Phone Number"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- streetNumber -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Street Number is required!">
+                        <input
+                          nz-input
+                          formControlName="streetNumber"
+                          placeholder="Street Number"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- city -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="City is required!">
+                        <input
+                          nz-input
+                          formControlName="city"
+                          placeholder="City"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- state -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="State is required!">
+                        <input
+                          nz-input
+                          formControlName="state"
+                          placeholder="State"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- zipCode -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Zip Code is required!">
+                        <input
+                          nz-input
+                          formControlName="zipCode"
+                          placeholder="Zip Code"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- submit -->
+                    <div class="action-form-button-wrapper">
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        nzSize="large"
+                        [disabled]="adminUserInsertForm.valid === false"
+                      >
+                        Insert
+                      </button>
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        nzSize="large"
+                        (click)="onAdminUserInsertCancelForm($event)"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </nz-spin>
+            </div>
+          </div>
+
+          <nz-card class="table-data-card" nzTitle="Admins">
+            <nz-table
+              #adminUsersTable
+              [nzData]="adminUsers.data"
+              [nzFrontPagination]="false"
+              [nzLoading]="loading"
+              [nzTotal]="tableRecordCount"
+              [nzPageSize]="tablePageSize"
+              [nzPageIndex]="tablePageIndex"
+              (nzQueryParams)="onQueryParamsChange($event)"
+            >
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Email</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Is Admin</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of adminUsersTable.data">
+                  <td>{{ data.id }}</td>
+                  <td>{{ data.email }}</td>
+                  <td>{{ data.firstName }}</td>
+                  <td>{{ data.lastName }}</td>
+                  <td>{{ data.isAdmin ? 'Yes' : 'No' }}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <div class="table-actions">
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                (click)="onAdminUserInsertClick($event)"
+              >
+                Insert
+              </button>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+
+      <!-- users -->
+      <div nz-row *ngIf="selectedTable === 'users'" class="table-data">
+        <div nz-col nzSpan="24">
+          <!-- search -->
+          <div nz-row *ngIf="selectedAction === 'search'" nzJustify="center">
+            <div nz-col nzSpan="12">
+              <nz-spin [nzSpinning]="isActionLoading">
+                <qr-admin-panel-client-user-search
+                  [formGroup]="clientUserSearchForm"
+                  (submit)="onClientUserSearchSubmitForm($event)"
+                  (cancel)="onClientUserSearchCancelForm($event)"
+                ></qr-admin-panel-client-user-search>
+              </nz-spin>
+            </div>
+          </div>
+
+          <!-- update -->
+          <div nz-row *ngIf="selectedAction === 'update'" nzJustify="center">
+            <div nz-col nzSpan="12">
+              <nz-spin [nzSpinning]="isActionLoading">
+                <div class="table-data-action-card">
+                  <h4 class="form-title">Update</h4>
+                  <!-- form -->
+                  <form
+                    nz-form
+                    [formGroup]="clientUserUpdateForm"
+                    [nzLayout]="'vertical'"
+                    (ngSubmit)="onClientUserUpdateSubmitForm($event)"
+                  >
+                    <!-- email -->
+                    <nz-form-item>
+                      <nz-form-control
+                        nzErrorTip="The input is not a valid email!"
+                      >
+                        <input
+                          nz-input
+                          formControlName="email"
+                          placeholder="Email"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- firstName -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="First name is required!">
+                        <input
+                          nz-input
+                          formControlName="firstName"
+                          placeholder="First Name"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- lastName -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Last name is required!">
+                        <input
+                          nz-input
+                          formControlName="lastName"
+                          placeholder="Last Name"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- phoneNumber -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Phone Number is required!">
+                        <input
+                          nz-input
+                          formControlName="phoneNumber"
+                          placeholder="Phone Number"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- streetNumber -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Street Number is required!">
+                        <input
+                          nz-input
+                          formControlName="streetNumber"
+                          placeholder="Street Number"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- city -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="City is required!">
+                        <input
+                          nz-input
+                          formControlName="city"
+                          placeholder="City"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- state -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="State is required!">
+                        <input
+                          nz-input
+                          formControlName="state"
+                          placeholder="State"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- zipCode -->
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Zip Code is required!">
+                        <input
+                          nz-input
+                          formControlName="zipCode"
+                          placeholder="Zip Code"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <!-- submit -->
+                    <div class="action-form-button-wrapper">
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        nzSize="large"
+                        [disabled]="clientUserUpdateForm.valid === false"
+                      >
+                        Update
+                      </button>
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzDanger
+                        nzSize="large"
+                        (click)="onClientUserUpdateCancelForm($event)"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </nz-spin>
+            </div>
+          </div>
+          <nz-card class="table-data-card" [nzTitle]="userDataCardTitleTpl">
+            <ng-template #userDataCardTitleTpl>
+              <h4 class="table-data-card-title">Users</h4>
+            </ng-template>
+
+            <nz-table
+              #usersTable
+              class="table-data"
+              [nzData]="clientUsers.data"
+              [nzFrontPagination]="false"
+              [nzLoading]="loading"
+              [nzTotal]="tableRecordCount"
+              [nzPageSize]="tablePageSize"
+              [nzPageIndex]="tablePageIndex"
+              (nzQueryParams)="onQueryParamsChange($event)"
+            >
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Id</th>
+                  <th>Email</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Address</th>
+                  <th>Subscription Plan</th>
+                  <th>Has Paid</th>
+                  <th>Payment Expired</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of usersTable.data">
+                  <td
+                    [nzChecked]="selectedTableItemId === data.id"
+                    (nzCheckedChange)="onTableItemChecked(data.id, $event)"
+                  ></td>
+                  <td>{{ data.id }}</td>
+                  <td>{{ data.email }}</td>
+                  <td>{{ data.firstName }}</td>
+                  <td>{{ data.lastName }}</td>
+                  <td>{{ data.address }}</td>
+                  <td>{{ data.subscriptionPlan }}</td>
+                  <td>{{ data.hasPaid ? 'Yes' : 'No' }}</td>
+                  <td>{{ data.paymentExpired ? 'Yes' : 'No' }}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <div class="table-actions">
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                (click)="onClientUserUpdateClick($event)"
+                [disabled]="selectedTableItemId === 0"
+              >
+                Update
+              </button>
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                [disabled]="selectedTableItemId === 0"
+                nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete this user?"
+                nzPopconfirmPlacement="top"
+                [nzIcon]="iconTpl"
+                nzOkText="Yes"
+                [nzOkType]="'danger'"
+                nzCancelText="No"
+                (nzOnConfirm)="onUserDataDeleteConfirm()"
+              >
+                <ng-template #iconTpl>
+                  <i nz-icon nzType="question-circle-o" style="color: red"></i>
+                </ng-template>
+                Delete
+              </button>
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                (click)="onClientUserSearchClick($event)"
+              >
+                Search
+              </button>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+
+      <!-- subscription plans -->
+      <div nz-row *ngIf="selectedTable === 'subscriptions'" class="table-data">
+        <div nz-col nzSpan="24">
+          <!-- search -->
+          <div nz-row *ngIf="selectedAction === 'search'" nzJustify="center">
+            <div nz-col nzSpan="12">
+              <nz-spin [nzSpinning]="isActionLoading">
+                <qr-admin-panel-subscription-plan-search
+                  [formGroup]="subscriptionPlanSearchForm"
+                  (subscriptionPlanSearchSubmit)="
+                    onSubscriptionPlanSearchSubmitForm($event)
+                  "
+                  (subscriptionPlanSearchCancel)="
+                    onSubscriptionPlanSearchCancelForm($event)
+                  "
+                ></qr-admin-panel-subscription-plan-search>
+              </nz-spin>
+            </div>
+          </div>
+
+          <!-- insert -->
+          <div nz-row *ngIf="selectedAction === 'insert'" nzJustify="center">
+            <div nz-col nzSpan="12">
+              <nz-spin [nzSpinning]="isActionLoading">
+                <qr-admin-panel-subscription-plan-insert
+                  [formGroup]="subscriptionPlanInsertForm"
+                  (submit)="onSubscriptionPlanInsertSubmitForm($event)"
+                >
+                </qr-admin-panel-subscription-plan-insert>
+              </nz-spin>
+            </div>
+          </div>
+
+          <!-- update -->
+          <div nz-row *ngIf="selectedAction === 'update'" nzJustify="center">
+            <div nz-col nzSpan="12">
+              <nz-spin [nzSpinning]="isActionLoading">
+                <qr-admin-panel-subscription-plan-update
+                  [formGroup]="subscriptionPlanUpdateForm"
+                  (updateSubmit)="onSubscriptionPlanUpdateSubmitForm($event)"
+                  (updateCancel)="onSubscriptionPlanUpdateCancelForm($event)"
+                >
+                </qr-admin-panel-subscription-plan-update>
+              </nz-spin>
+            </div>
+          </div>
+
+          <nz-card
+            class="table-data-card"
+            [nzTitle]="subscriptionPlanDataCardTitleTpl"
+          >
+            <ng-template #subscriptionPlanDataCardTitleTpl>
+              <h4 class="table-data-card-title">Subscription Plans</h4>
+            </ng-template>
+
+            <nz-table
+              #subscriptionsTable
+              class="table-data"
+              [nzData]="subscriptionPlans.data"
+              [nzFrontPagination]="false"
+              [nzLoading]="loading"
+              [nzTotal]="tableRecordCount"
+              [nzPageSize]="tablePageSize"
+              [nzPageIndex]="tablePageIndex"
+              (nzQueryParams)="onQueryParamsChange($event)"
+            >
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of subscriptionsTable.data">
+                  <td
+                    [nzChecked]="selectedTableItemId === data.id"
+                    (nzCheckedChange)="onTableItemChecked(data.id, $event)"
+                  ></td>
+                  <td>{{ data.id }}</td>
+                  <td>{{ data.name }}</td>
+                  <td>{{ data.price }}</td>
+                  <td>{{ data.duration }}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <div class="table-actions">
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                (click)="onSubscriptionPlanInsertClick($event)"
+              >
+                Insert
+              </button>
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                (click)="onSubscriptionPlanUpdateClick($event)"
+                [disabled]="selectedTableItemId === 0"
+              >
+                Update
+              </button>
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                [disabled]="selectedTableItemId === 0"
+                nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete this subscription plan?"
+                nzPopconfirmPlacement="top"
+                [nzIcon]="iconTpl"
+                nzOkText="Yes"
+                [nzOkType]="'danger'"
+                nzCancelText="No"
+                (nzOnConfirm)="onSubscriptionPlanDeleteConfirm()"
+              >
+                <ng-template #iconTpl>
+                  <i nz-icon nzType="question-circle-o" style="color: red"></i>
+                </ng-template>
+                Delete
+              </button>
+              <button
+                nz-button
+                nzDanger
+                nzType="primary"
+                (click)="onSubscriptionPlanSearchClick($event)"
+              >
+                Search
+              </button>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nz-divider></nz-divider>
+
+  <!-- footer -->
+  <div nz-row class="section-footer">
+    <div nz-col nzSpan="8" class="section-footer-ourservices">
+      <qr-our-services-card></qr-our-services-card>
+    </div>
+
+    <div nz-col nzSpan="8" class="section-footer-trackstorm">
+      <qr-track-storm-card></qr-track-storm-card>
+    </div>
+
+    <div nz-col nzSpan="8" class="section-footer-messageform">
+      <qr-contact-us-form></qr-contact-us-form>
+    </div>
+  </div>
+</div>

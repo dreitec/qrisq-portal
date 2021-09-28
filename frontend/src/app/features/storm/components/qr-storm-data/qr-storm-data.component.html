@@ -1,0 +1,115 @@
+<div class="container">
+  <div class="storm-name">
+    <h3>
+      <span
+        ><img height="40px" src="/assets/images/icon-triangle-green.png"
+      /></span>
+      {{ stormName }} Impact
+    </h3>
+  </div>
+
+  <div class="user-address" *ngIf="userDataAvailable">
+    <h4>Expected at {{ userAddress }}</h4>
+  </div>
+
+  <div *ngIf="userDataAvailable" class="risk-header">
+    <ng-container
+      *ngIf="mode === 'surge'; then surgeRiskHeader; else windRiskHeader"
+    ></ng-container>
+
+    <ng-template #windRiskHeader
+      ><h1>
+        <span *ngIf="windLevels[windRisk].shortDesc !== 'Minimal'"
+          >Max Sustained Winds of</span
+        >
+        <span *ngIf="windLevels[windRisk].shortDesc === 'Minimal'"
+          >Minimal Wind Risk
+        </span>
+
+        <span
+          *ngIf="windLevels[windRisk].shortDesc !== 'Minimal'"
+          [style]="{
+            color: windLevels[windRisk].colorHex
+          }"
+          >{{ windLevels[windRisk].shortDesc }}
+        </span>
+        {{ windLevels[windRisk].speedDesc }}
+        <span class="icon-level">
+          <img [src]="windLevels[windRisk].iconUrl" />
+        </span></h1
+    ></ng-template>
+
+    <ng-template #surgeRiskHeader
+      ><h1>
+        <ng-container
+          *ngIf="
+            surgeLevels[surgeRisk].riskDesc === 'No';
+            then surgeRiskHeaderNo;
+            else surgeRiskHeaderOtherThanNo
+          "
+        ></ng-container>
+        <ng-template #surgeRiskHeaderNo>
+          No Surge Risk
+          <span class="icon-level">
+            <img [src]="surgeLevels[surgeRisk].iconUrl" />
+          </span>
+        </ng-template>
+
+        <ng-template #surgeRiskHeaderOtherThanNo>
+          <span
+            [style]="{
+              color: surgeLevels[surgeRisk].colorHex
+            }"
+            >{{ surgeLevels[surgeRisk].riskDesc }}</span
+          >
+          Surge Risk
+          <span class="icon-level">
+            <img [src]="surgeLevels[surgeRisk].iconUrl" />
+          </span>
+          (~{{ toFeet(maxFlood) }}ft above ground)
+        </ng-template>
+      </h1></ng-template
+    >
+  </div>
+
+  <div class="advisory-date">
+    <ng-container
+      *ngIf="
+        mode === 'surge';
+        then floodAdvisoryDateTpl;
+        else windAdvisoryDateTpl
+      "
+    ></ng-container>
+    <ng-template #floodAdvisoryDateTpl>
+      <h4>{{ floodAdvisoryDate }}</h4>
+    </ng-template>
+    <ng-template #windAdvisoryDateTpl>
+      <h4>{{ windAdvisoryDate }}</h4>
+    </ng-template>
+  </div>
+
+  <ng-container *ngIf="userDataAvailable">
+    <ng-container *ngIf="isTrackAndConeChecked">
+      <ng-container
+        *ngIf="
+          landfallLocation;
+          then landfallExpectedDataTpl;
+          else landfallExpectedNoDataTpl
+        "
+      ></ng-container>
+
+      <ng-template #landfallExpectedDataTpl>
+        <div class="landfall-expected">
+          <h2>Landfall Expected - {{ toCDT(landfallDate) }}</h2>
+          <h4>Near {{ landfallLocation }}</h4>
+        </div>
+      </ng-template>
+
+      <ng-template #landfallExpectedNoDataTpl>
+        <div class="landfall-expected">
+          <h2>No Landfall Expected</h2>
+        </div>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</div>

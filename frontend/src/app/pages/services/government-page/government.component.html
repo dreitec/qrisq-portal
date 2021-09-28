@@ -1,0 +1,128 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-government.jpg'">
+    <div class="banner-content">
+      <h1>Safeguarding Communities</h1>
+      <p>
+        Q-risq Analytics is the only company providing address-specific
+        hurricane storm surge and wind information before, during, and after
+        landfall.
+      </p>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <!-- content -->
+    <div nz-row class="section-content">
+      <div nz-col nzOffset="8" nzSpan="16">
+        <div class="inner-container">
+          <img height="40px" src="/assets/images/icon-triangle-green.png" />
+          <p>
+            As a hurricane approaches coastal communities, Q-risq Analytics
+            provides necessary information for
+            <strong>government and community leaders</strong> to consider
+            appropriate measures to safeguard people, equipment, facilities, and
+            supplies.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- content-2 -->
+    <div nz-row class="section-content-2">
+      <div nz-col nzSpan="12">
+        <div class="text-container">
+          <p>
+            Built using the high-definition ADvanced CIRCulation (ADCIRC) storm
+            surge model, fueled with additional data sets and customized to
+            geolocated properties, the Q-risq Analytics provides the most
+            relevant information for officials to assess vulnerability and
+            mitigate damage.
+          </p>
+          <p>
+            After a storm makes landfall, Q-risq Analytics maps areas impacted
+            by surge and wind to efficiently direct emergency recovery
+            operations— getting communities back on their feet as quickly as
+            possible.
+          </p>
+        </div>
+      </div>
+
+      <div nz-col nzSpan="12">
+        <div class="image-container">
+          <img nz-image nzSrc="/assets/images/government-TxtImg.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div nz-row class="section-content-3">
+      <div nz-col>
+        <nz-card
+          class="left-card"
+          [nzCover]="leftTemplate"
+          [nzBordered]="false"
+        >
+          <p>
+            Each icon represents a geocoded address (PIF) while displaying a
+            total count in the table located at the top right corner. Each color
+            depicts the maximum wind speed each address will experience during
+            the storm. This information is helpful to understand the size and
+            scope of assets needed to prepare while focusing your efforts.
+          </p>
+        </nz-card>
+        <ng-template #leftTemplate>
+          <img src="/assets/images/government-1-1.jpg" />
+        </ng-template>
+      </div>
+      <div nz-col>
+        <nz-card
+          class="center-card"
+          [nzCover]="centerTemplate"
+          [nzBordered]="false"
+        >
+          <p>
+            As depicted in this small sample at 36 hours before landfall, we can
+            display geocoded addresses (PIFs) at risk of storm surge prior to
+            landfall; providing you with the opportunity to notify citizens and
+            forward important&nbsp;information.
+          </p>
+        </nz-card>
+        <ng-template #centerTemplate>
+          <img src="/assets/images/government-2.jpg" />
+        </ng-template>
+      </div>
+      <div nz-col>
+        <nz-card
+          class="right-card"
+          [nzCover]="rightTemplate"
+          [nzBordered]="false"
+        >
+          <p>
+            Post-storm analysis for each individual PIF begins within 48 hours
+            of landfall. Wind direction, speed, and duration for each side (NW,
+            NE, SW, SE) of property is detailed. The Wind and Surge timeseries
+            over the entire storm duration details which came first — peak winds
+            or peak surge?
+          </p>
+        </nz-card>
+        <ng-template #rightTemplate>
+          <img src="/assets/images/government-3.jpg" />
+        </ng-template>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="16" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

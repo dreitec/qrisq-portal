@@ -1,0 +1,172 @@
+<nz-card class="form" nzBorderless>
+  <!-- credit card information form -->
+  <form nz-form [formGroup]="paymentForm" (ngSubmit)="submitForm()">
+    <!-- first name -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter your First Name!">
+        <input
+          nzSize="large"
+          nz-input
+          nzSize="large"
+          type="text"
+          formControlName="firstName"
+          id="firstName"
+          placeholder="First Name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- last name -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter your Last Name!">
+        <input
+          nzSize="large"
+          nz-input
+          type="text "
+          formControlName="lastName"
+          id="lastName"
+          placeholder="Last Name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- card number -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter your Card Number!">
+        <input
+          nzSize="large"
+          nz-input
+          formControlName="cardNumber"
+          placeholder="Card Number"
+          id="cc-number"
+          type="tel"
+          autocomplete="cc-number"
+          ccNumber
+        />
+        <!-- <input
+          id="cc-number"
+          formControlName="cardNumber"
+          type="tel"
+          autocomplete="cc-number"
+          ccNumber
+        /> -->
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- expiration date -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Expiration date input not valid!">
+        <input
+          nzSize="large"
+          nz-input
+          formControlName="expirationDate"
+          placeholder="Expiration Date"
+          id="cc-exp-date"
+          type="tel"
+          autocomplete="cc-exp"
+          ccExp
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- CVC -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="CVC input not valid!">
+        <input
+          nzSize="large"
+          nz-input
+          formControlName="cvc"
+          placeholder="CVC"
+          id="cc-cvc"
+          type="tel"
+          autocomplete="off"
+          ccCVC
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- billing address -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter your Billing Address!">
+        <input
+          nzSize="large"
+          nz-input
+          type="text "
+          formControlName="billingAddress"
+          id="billingAddress"
+          placeholder="Billing Address"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- city -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter your City!">
+        <input
+          nzSize="large"
+          nz-input
+          type="text "
+          formControlName="city"
+          id="city"
+          placeholder="City"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- city -->
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please enter your State!">
+        <input
+          nzSize="large"
+          nz-input
+          type="text "
+          formControlName="state"
+          id="state"
+          placeholder="State"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- zipPostalCode -->
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="zipCodeErrorTpl">
+        <input
+          nzSize="large"
+          nz-input
+          formControlName="zipPostalCode"
+          id="zipPostalCode"
+          placeholder="Zip/Postal Code"
+          maxlength="5"
+        />
+      </nz-form-control>
+      <ng-template #zipCodeErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Zip code is required! <br />
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+          Zip Code must contains only digits! <br />
+        </ng-container>
+        <ng-container *ngIf="control.hasError('minlength')">
+          Zip Code must be at least 5 characters long! <br />
+        </ng-container>
+      </ng-template>
+    </nz-form-item>
+
+    <!-- submit -->
+    <nz-form-item>
+      <nz-form-control>
+        <button
+          class="submit-button"
+          nz-button
+          nzType="primary"
+          nzDanger
+          nzSize="large"
+          nzBlock
+          [disabled]="paymentForm.valid === false"
+        >
+          Submit
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>

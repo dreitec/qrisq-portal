@@ -1,0 +1,36 @@
+<div class="main-container">
+  <!--  -->
+  <!-- qr-banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-background.jpg'">
+    <div class="banner-content">
+      <h1>Out of Service Area</h1>
+      <p>
+        The address provided is out of the Q-risq service area. You can still
+        use our free app by clicking on the Hurricane Viewer button above.
+      </p>
+    </div>
+  </qr-banner>
+
+  <!--  -->
+  <!-- page-content -->
+
+  <div class="page-content">
+    <!--  -->
+    <!-- divider -->
+    <nz-divider></nz-divider>
+    <!--  -->
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="8" class="section-footer-ourservices">
+        <qr-our-services-card></qr-our-services-card>
+      </div>
+      <div nz-col nzSpan="8" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="main-container">
+  <!-- banner -->
+  <qr-banner [imageUrl]="'/assets/images/main-banner-onboarding.jpg'">
+    <div class="banner-content">
+      <h1>Q-risq Service Area</h1>
+      <p>
+        Q-risq Analytics forecasts Hurricane Wind & Storm Surge risk at specific
+        locations - days before the storm makes landfall - to help you prepare
+        in advance.
+      </p>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <!-- section-content-1 -->
+    <div nz-row class="section-content-1">
+      <div nz-col nzSpan="10" class="nzcol-1">
+        <div class="container">
+          <div class="text-wrapper">
+            <img
+              height="40px"
+              src="/assets/images/icon-triangle-green.png"
+              alt=""
+            />
+            <p>
+              Please enter your address of interest below to see if it's in our
+              service area.
+            </p>
+          </div>
+          <div class="form-wrapper">
+            <nz-card class="form" nzBorderless>
+              <form nz-form>
+                <input
+                  nz-input
+                  ngx-google-places-autocomplete
+                  #placesRef="ngx-places"
+                  nzSize="large"
+                  placeholder="Enter your address"
+                  (onAddressChange)="onAddressChange($event)"
+                  autocomplete="false"
+                />
+                <ng-container *ngIf="isLocation$ | async as isLocation"
+                  ><button
+                    (click)="OnSearch()"
+                    nz-button
+                    nzType="primary"
+                    nzSize="large"
+                    nzSearch
+                    nzDanger
+                    nzBlock
+                    nzDisable
+                    [disabled]="!isLocation"
+                  >
+                    Search
+                  </button></ng-container
+                >
+              </form>
+            </nz-card>
+          </div>
+        </div>
+      </div>
+      <div nz-col nzSpan="14" class="nzcol-2">
+        <div class="legend-wrapper">
+          <p>
+            <span class="text-blue">Blue</span> - Hurricane Wind Service Area
+          </p>
+          <p>
+            <span class="text-red">Red</span> - Hurricane Storm Surge and Wind
+            Service
+          </p>
+        </div>
+        <div class="map-wrapper">
+          <img
+            nz-image
+            nzSrc="../../../../assets/images/service-area-map.png"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+    <!-- divider -->
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="8" class="section-footer-ourservices">
+        <qr-our-services-card></qr-our-services-card>
+      </div>
+      <div nz-col nzSpan="8" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

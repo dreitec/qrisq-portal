@@ -1,0 +1,29 @@
+:host {
+  min-width: 100%;
+}
+
+nz-card {
+  /* background-image: url('../../../assets/images/main-banner1-2_626d64c0aef3be22948fc57dd1d1fa07.jpg'); */
+  background-color: rgba(6, 9, 10, 0.74);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: none;
+  width: 100%;
+  margin-bottom: 32px;
+  /* padding-right: 40%;
+  padding-left: 4%; */
+}
+
+.content {
+  padding: 10% 8%;
+  @media (max-width: 1439.5px) {
+    padding: 16% 0;
+  }
+  @media (min-width: 1440px) {
+    padding: 16% 0% 12%!important;
+  }
+}

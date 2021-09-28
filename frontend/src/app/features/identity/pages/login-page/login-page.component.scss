@@ -1,0 +1,339 @@
+
+// p {
+//   font-size: 1.6rem;
+//   font-weight: 700;
+//   margin-bottom: 10px;
+
+// }
+
+nz-card.banner {
+  /* background-im
+  age: -webkit-linear-gradient(
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 100%
+    ),
+    url('../../../assets/images/main-banner1-2_626d64c0aef3be22948fc57dd1d1fa07.jpg');
+  background-image: -moz-linear-gradient(
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 100%
+    ),
+    url('../../../assets/images/main-banner1-2_626d64c0aef3be22948fc57dd1d1fa07.jpg');
+  background-image: -o-linear-gradient(
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 100%
+    ),
+    url('../../../assets/images/main-banner1-2_626d64c0aef3be22948fc57dd1d1fa07.jpg');
+  background-image: -ms-linear-gradient(
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 100%
+    ),
+    url('../../../assets/images/main-banner1-2_626d64c0aef3be22948fc57dd1d1fa07.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%),
+    url('../../../assets/images/main-banner1-2_626d64c0aef3be22948fc57dd1d1fa07.jpg'); */
+
+  // background-image: url('/assets/images/main-banner-insurance.jpg');
+  background-color: rgba(6, 9, 10, 0.74);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  min-height: 661px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: none;
+  width: 100%;
+  margin-bottom: 32px;
+  padding-left: 32px;
+  padding-right: 40%;
+}
+
+.bullet-paragraph-container {
+  align-items: center;
+  margin-bottom: 30px;
+  h3 {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+nz-card.banner h2 {
+  color: #fff;
+  font-size: 3rem;
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  [nz-row] {
+    max-width: 920px;
+    width: 920px;
+    padding: 0px 16px;
+    margin: 16px 0px;
+  }
+
+  [nz-col] > p {
+    font-family: Rubik, Arial, Helvetica, sans-serif;
+    font-size: 1.5rem;
+    color: #595959;
+  }
+
+  .contact-form {
+    background-color: #ebebeb;
+    padding: 16px;
+  }
+
+
+
+  nz-input-group {
+    margin-bottom: 10px;
+  }
+
+  .form-container {
+    background-color: #ebebeb;
+  }
+
+  .legend-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .legend-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .legend-container p {
+    font-family: Rubik, Arial, Helvetica, sans-serif;
+    font-size: 1, 2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .legend-container .text-blue {
+    color: #0050b3;
+  }
+
+  .legend-container .text-red {
+    color: #cf1322;
+  }
+
+  .map-container > img {
+    max-width: 100%;
+    height: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  [nz-row] {
+    max-width: 880px;
+    width: 880px;
+    padding: 0px 16px;
+    margin: 16px 0px;
+  }
+
+  [nz-row].service-section {
+    background-color: #ebebeb;
+    max-height: 370px;
+  }
+
+  [nz-col].service-section-image {
+    max-height: 370px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  [nz-col].service-section-image > img {
+    max-width: 100%;
+    height: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  [nz-col] > img {
+    max-width: 100%;
+    height: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  h4 {
+    font-family: Rubik, Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  h5 {
+    font-family: Rubik, Arial, Helvetica, sans-serif;
+    font-size: 1.3rem;
+    color: #2f5597 !important;
+    font-weight: 600;
+  }
+
+  [nzDanger] {
+    margin-top: 10px;
+  }
+
+
+
+  /* [nz-icon] {
+    font-size: 3rem;
+  } */
+
+  [nz-radio-button] {
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .form-section > h3 {
+    font-family: Rubik, Arial, Helvetica, sans-serif;
+    font-size: 1.7rem;
+  }
+
+  .form [nz-input] {
+    margin-bottom: 5px;
+  }
+
+  .alert-container {
+    margin-bottom: 10px;
+  }
+  }
+
+nz-card.banner p {
+  color: #fff;
+  font-size: 1.4rem;
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+}
+
+.inner-container p {
+  padding-right: 40%;
+}
+
+.form-section {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+// [nz-col] > p {
+//   font-family: Rubik, Arial, Helvetica, sans-serif;
+//   font-size: 1.5rem;
+//   color: #595959;
+// }
+
+.contact-form {
+  background-color: #ebebeb;
+  padding: 16px;
+}
+nz-form-control {
+  margin-bottom: 0;
+}
+nz-input-group {
+  margin-bottom: 10px;
+}
+
+.form-container {
+  background-color: #ebebeb;
+}
+
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.legend-container p {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1, 2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.legend-container .text-blue {
+  color: #0050b3;
+}
+
+.legend-container .text-red {
+  color: #cf1322;
+}
+
+.map-container > img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+h4 {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+h5 {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
+  color: #2f5597 !important;
+  font-weight: 600;
+}
+
+
+
+/* [nz-icon] {
+  font-size: 3rem;
+} */
+
+[nz-radio-button] {
+  min-width: 200px;
+  text-align: center;
+}
+
+.form-section > h3 {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.7rem;
+
+}
+
+.alert-container {
+  margin-bottom: 10px;
+}
+
+nz-card.form {
+  background-color: #ebebeb;
+  margin: 0 auto;
+  width: 90vw;
+  max-width: 500px;
+  [nz-form] {
+    text-align: center;
+    nz-form-item:last-child {
+      margin: 0 auto;
+      width: 130px;
+      [nzDanger] {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+nz-card.form h3 {
+  color: #595959;
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
+}

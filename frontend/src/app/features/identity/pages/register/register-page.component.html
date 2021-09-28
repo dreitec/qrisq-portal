@@ -1,0 +1,191 @@
+<div class="main-container">
+  <nz-card class="banner">
+    <h2>Account Registration</h2>
+    <p>
+      Please create an account to receive information specific to your address.
+    </p>
+  </nz-card>
+
+  <div class="form-section">
+    <div nz-row nzJustify="center">
+      <div nz-col>
+        <p>Enter Account Info and Service Address</p>
+      </div>
+    </div>
+
+    <div nz-row nzJustify="center">
+      <div nz-col>
+        <nz-card class="form" nzBorderless>
+          <h3>Account Info</h3>
+
+          <form nz-form [formGroup]="registerForm" (ngSubmit)="submitForm()">
+            <!-- first name -->
+            <nz-form-item>
+              <nz-form-control nzErrorTip="Please enter your First Name!">
+                <input
+                  nz-input
+                  type="text "
+                  formControlName="firstName"
+                  id="firstName"
+                  placeholder="First Name"
+                />
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- last name -->
+            <nz-form-item>
+              <nz-form-control nzErrorTip="Please enter your Last Name!">
+                <input
+                  nz-input
+                  type="text "
+                  formControlName="lastName"
+                  id="lastName"
+                  placeholder="Last Name"
+                />
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- email -->
+            <nz-form-item>
+              <nz-form-control nzErrorTip="The input is not valid Email!">
+                <input
+                  nz-input
+                  type="email "
+                  formControlName="email"
+                  id="email"
+                  placeholder="Email"
+                />
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- password -->
+            <nz-form-item>
+              <nz-form-control nzErrorTip="Please input your password!">
+                <input
+                  nz-input
+                  type="password"
+                  formControlName="password"
+                  id="password"
+                  placeholder="Password"
+                  (ngModelChange)="updateConfirmValidator()"
+                />
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- confirm password -->
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="errorTpl">
+                <input
+                  nz-input
+                  type="password"
+                  formControlName="checkPassword"
+                  id="checkPassword"
+                  placeholder="Confirm Password"
+                />
+                <ng-template #errorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    Please confirm your password!
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('confirm')">
+                    Two passwords that you enter is inconsistent!
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- phone number -->
+            <nz-form-item>
+              <nz-form-control nzErrorTip="Please input your phone number!">
+                <input
+                  nz-input
+                  formControlName="phoneNumber"
+                  id="phoneNumber"
+                  placeholder="Phone Number"
+                />
+              </nz-form-control>
+            </nz-form-item>
+
+            <ng-container *ngIf="signUp$ | async as signUp">
+              <h3>Service Address</h3>
+
+              <!-- street address -->
+              <nz-form-item>
+                <nz-form-control>
+                  <input
+                    nz-input
+                    id="street-address"
+                    placeholder="Street Address"
+                    [value]="
+                      signUp.addressStreetNumber +
+                      ' ' +
+                      signUp.addressStreetName
+                    "
+                    disabled
+                  />
+                </nz-form-control>
+              </nz-form-item>
+
+              <!-- city -->
+              <nz-form-item>
+                <nz-form-control>
+                  <input
+                    nz-input
+                    id="city"
+                    placeholder="City"
+                    [value]="signUp.addressCity"
+                    disabled
+                  />
+                </nz-form-control>
+              </nz-form-item>
+
+              <!-- state -->
+              <nz-form-item>
+                <nz-form-control>
+                  <input
+                    nz-input
+                    id="state"
+                    placeholder="State"
+                    [value]="signUp.addressState"
+                    disabled
+                  />
+                </nz-form-control>
+              </nz-form-item>
+
+              <!-- zip -->
+              <nz-form-item>
+                <nz-form-control>
+                  <input
+                    nz-input
+                    id="zip"
+                    placeholder="Zip/Postal Code"
+                    [value]="signUp.addressZip"
+                    disabled
+                  />
+                </nz-form-control>
+              </nz-form-item>
+            </ng-container>
+
+            <button nz-button nzType="primary" nzSize="large" nzDanger nzBlock>
+              Continue
+            </button>
+          </form>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+
+  <div nz-row class="section-footer">
+    <div nz-col nzSpan="8" class="section-footer-ourservices">
+      <qr-our-services-card></qr-our-services-card>
+    </div>
+
+    <div nz-col nzSpan="8" class="section-footer-trackstorm">
+      <qr-track-storm-card></qr-track-storm-card>
+    </div>
+
+    <div nz-col nzSpan="8" class="section-footer-messageform">
+      <qr-contact-us-form></qr-contact-us-form>
+    </div>
+  </div>
+</div>

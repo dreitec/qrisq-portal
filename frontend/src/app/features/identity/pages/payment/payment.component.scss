@@ -1,0 +1,130 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+.inner-container p {
+  padding-right: 40%;
+}
+
+.form-section {
+  background-repeat: no-repeat;
+  background-size: contain;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.alert-container {
+  margin-bottom: 10px;
+}
+
+.payment-options {
+  margin-bottom: 20px;
+}
+
+.contact-form {
+  background-color: #ebebeb;
+  padding: 16px;
+}
+
+nz-card.form {
+  background-color: #ebebeb;
+  width: 500px;
+  max-width: 500px;
+}
+
+nz-card.form h3 {
+  color: #595959;
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
+}
+
+nz-input-group {
+  margin-bottom: 10px;
+}
+
+.form-container {
+  background-color: #ebebeb;
+}
+
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.legend-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.legend-container p {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1, 2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.legend-container .text-blue {
+  color: #0050b3;
+}
+
+.legend-container .text-red {
+  color: #cf1322;
+}
+
+.map-container > img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+h4 {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+h5 {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.3rem;
+  color: #2f5597 !important;
+  font-weight: 600;
+}
+
+[nzDanger] {
+  margin-top: 10px;
+}
+
+/* [nz-icon] {  
+  font-size: 3rem;
+} */
+
+[nz-radio-button] {
+  min-width: 200px;
+  text-align: center;
+}
+
+.form-section > h3 {
+  font-family: Rubik, Arial, Helvetica, sans-serif;
+  font-size: 1.7rem;
+}
+
+.form [nz-input] {
+  margin-bottom: 5px;
+}

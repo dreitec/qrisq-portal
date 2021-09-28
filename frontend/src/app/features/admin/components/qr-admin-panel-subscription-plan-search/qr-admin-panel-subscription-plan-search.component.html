@@ -1,0 +1,46 @@
+<div class="table-data-action-card">
+  <h4 class="form-title">Search</h4>
+  <!-- form -->
+  <form
+    nz-form
+    [formGroup]="formGroup"
+    [nzLayout]="'vertical'"
+    (ngSubmit)="onSubmit($event)"
+  >
+    <!-- name -->
+    <nz-form-item>
+      <nz-form-control>
+        <input nz-input formControlName="name" placeholder="Name" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- price -->
+    <nz-form-item>
+      <nz-form-control>
+        <input nz-input formControlName="price" placeholder="Price" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- submit -->
+    <div class="action-form-button-wrapper">
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        nzSize="large"
+        [disabled]="formGroup.valid === false"
+      >
+        Search
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        nzSize="large"
+        (click)="onCancel($event)"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

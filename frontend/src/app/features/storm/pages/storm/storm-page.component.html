@@ -1,0 +1,97 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-background.jpg'">
+    <div class="banner-content">
+      <h1>Q-risq Hurricane Viewer</h1>
+      <p>
+        Use the map below to see the latest storm advisory<br />
+        for your service address.
+      </p>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <div class="storm-section">
+      <ng-container *ngIf="isDataLoaded === false">
+        <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+      </ng-container>
+
+      <ng-container *ngIf="isDataLoaded">
+        <div
+          *ngIf="userDataAvailable; then stormUserData; else stormNoUserData"
+        ></div>
+        <ng-template #stormUserData
+          ><qr-storm-data
+            [userAddress]="userGeolocation.address"
+            [stormName]="stormData.stormName"
+            [surgeRisk]="stormData.surgeRisk"
+            [windRisk]="stormData.windRisk"
+            [advisoryDate]="stormData.advisoryDate"
+            [landfallDate]="stormData.landfallDate"
+            [landfallLocation]="stormData.landfallLocation"
+            [stormDistance]="stormData.stormDistance"
+            [mode]="mapMode"
+            [isTrackAndConeChecked]="isTrackAndConeChecked"
+            [userDataAvailable]="stormData.userDataAvailable"
+            [maxFlood]="stormData.maxFlood"
+            [floodAdvisoryDate]="stormData.floodAdvisoryDate"
+            [windAdvisoryDate]="stormData.windAdvisoryDate"
+          >
+          </qr-storm-data>
+          <qr-storm-map
+            [userLattitude]="userGeolocation.lattitude"
+            [userLongitude]="userGeolocation.longitude"
+            [surgeGeoJSON]="stormData.surgeGeoJSON"
+            [lineGeoJSON]="stormData.lineGeoJSON"
+            [pointsGeoJSON]="stormData.pointsGeoJSON"
+            [polygonsGeoJSON]="stormData.polygonsGeoJSON"
+            [windGeoJSON]="stormData.windGeoJSON"
+            [windData]="stormData.windGrib2JSON"
+            [surgeRisk]="stormData.surgeRisk"
+            [windRisk]="stormData.windRisk"
+            [stormDistance]="stormData.stormDistance"
+            [forecastAdvisory]="stormData.forecastAdvisory"
+            [restriction]="mapRestriction"
+            [zoom]="mapZoom"
+            [mode]="mapMode"
+            [freeMode]="false"
+            [userDataAvailable]="stormData.userDataAvailable"
+            (modeChange)="onMapModeChange($event)"
+            (trackAndConeChanged)="onTrackAndConeChanged($event)"
+            (mapLoaded)="onMapLoaded($event)"
+            (mapHelpClick)="onMapHelpClick()"
+          >
+          </qr-storm-map
+        ></ng-template>
+        <ng-template #stormNoUserData
+          ><qr-storm-map-no-data
+            [restriction]="mapRestriction"
+            [zoom]="mapZoom"
+            (mapHelpClick)="onMapHelpClick()"
+          >
+          </qr-storm-map-no-data
+        ></ng-template>
+        <ng-container *ngIf="stormData.userDataAvailable">
+          <div class="next-forecast-container">
+            <h4>Next Forecast Available</h4>
+            <p>{{ stormData.nextAdvisoryDate }}</p>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="16" class="section-footer-trackstorm">
+        <qr-track-storm-card> </qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form> </qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

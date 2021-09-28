@@ -1,0 +1,64 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
+    "allowJs": true,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "types": [
+      "node"
+    ],
+    "paths": {
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@env": [
+        "src/environments/environment"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@core/*": [
+        "src/app/core/*"
+      ],
+      "@storm/*": [
+        "src/app/features/storm/*"
+      ],
+      "@admin/*": [
+        "src/app/features/admin/*"
+      ],
+      "@identity/*": [
+        "src/app/features/identity/*"
+      ],
+      "@design/*": [
+        "src/app/design/*"
+      ],
+      "@features/*": [
+        "src/app/features/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
+      
+        
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictTemplates": true
+  }
+}

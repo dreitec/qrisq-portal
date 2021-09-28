@@ -1,0 +1,50 @@
+<div class="main-container">
+  <!--  -->
+  <!-- qr-banner  -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-forcast.jpg'">
+    <h1>Payment Successful!</h1>
+  </qr-banner>
+
+  <!--  -->
+  <!-- page-content -->
+  <div class="page-content">
+    <!--  -->
+    <!-- section-content-1 -->
+    <div nz-row nzJustify="center" class="section-content-1">
+      <!--  -->
+      <!-- col-1 -->
+      <div nz-col class="column-1" nzSpan="12">
+        <div class="inner-container">
+          <img height="40px" src="/assets/images/icon-triangle-green.png" />
+          <div class="button-wrapper">
+            <p><strong>Select "Continue" to finalize registration.</strong></p>
+            <button
+              nz-button
+              nzType="primary"
+              nzBlock
+              nzDanger
+              nzSize="large"
+              (click)="onRegisterSubmit()"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="16" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

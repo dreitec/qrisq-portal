@@ -1,0 +1,84 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-forcast.jpg'">
+    <div class="banner-content">
+      <h1>Cancel Subscription</h1>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <div class="wrapper">
+      <div class="title-wrapper">
+        <div class="title-wrapper">
+          <h3>
+            <span
+              ><img height="40px" src="/assets/images/icon-triangle-green.png"
+            /></span>
+            If you're sure you'd like to cancel the Q-risq Hurricane Viewer
+            subscription, please click "Submit" below.
+          </h3>
+        </div>
+      </div>
+      <div nz-row nzJustify="center">
+        <div class="cancel-subscription-form" nz-col nzSpan="12">
+          <nz-spin [nzSpinning]="isLoading">
+            <div class="form-card">
+              <!-- form -->
+              <form
+                nz-form
+                [formGroup]="cancelSubscriptionForm"
+                [nzLayout]="'vertical'"
+                (ngSubmit)="onSubmitForm($event)"
+              >
+                <h4 class="form-title">
+                  Please provide some feedback on how we can improve our
+                  service:
+                </h4>
+                <nz-form-item>
+                  <nz-form-control nzErrorTip="This field is required.">
+                    <textarea
+                      rows="10"
+                      nz-input
+                      formControlName="message"
+                    ></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <!-- submit -->
+                <div class="button-wrapper">
+                  <button
+                    nz-button
+                    nzType="primary"
+                    nzDanger
+                    nzSize="large"
+                    [disabled]="cancelSubscriptionForm.valid === false"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </nz-spin>
+        </div>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="8" class="section-footer-ourservices">
+        <qr-our-services-card></qr-our-services-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

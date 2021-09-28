@@ -1,0 +1,28 @@
+<div>
+  <agm-map
+    [restriction]="restriction"
+    [zoom]="zoom"
+    [disableDefaultUI]="true"
+    (mapReady)="mapReady($event)"
+  >
+    <div id="user-data-not-available-message">
+      <div class="message-card">
+        <p>
+          Your information is being processed, check back soon for address
+          specific data.
+        </p>
+      </div>
+    </div>
+  </agm-map>
+  <div class="map-help-wrapper">
+    <button
+      class="map-help-button"
+      nz-button
+      nzType="link"
+      nzDanger
+      (click)="onMapHelpClick($event)"
+    >
+      Help
+    </button>
+  </div>
+</div>

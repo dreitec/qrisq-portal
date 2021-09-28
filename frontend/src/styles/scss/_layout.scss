@@ -1,0 +1,194 @@
+.main-container {
+  align-items: center;
+  background-color: #fff;
+  background-size: contain;
+  background-image: url('/assets/images/bg-graph.png') !important;
+  background-repeat: no-repeat;
+  background-attachment: scroll !important;
+  background-position: -75px 600px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+/* page-content */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 92%;
+  margin: auto;
+  padding-bottom: 5%;
+}
+.page-content, .navbar, qr-banner .ant-card-body, nz-footer, .form-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  @media only screen and (min-width: 1440px) {
+    width: 90%;
+    max-width: 1440px;
+  }
+}
+/* bullet text */
+.bullet-paragraph-container {
+  display: flex;
+  align-items: flex-start;
+  img {
+    max-width: 100%;
+    height: auto;
+    max-height: 40px;
+    margin-top: 5px;
+    margin-bottom: auto;
+    margin-right: 30px;
+  }
+  h3 {
+    margin: 0;
+  }
+}
+
+/*content sections*/
+
+.section-content {
+  width: 100%;
+  padding-top: 1%;
+  padding-bottom: 4%;
+}
+
+.section-content .inner-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.section-content .inner-container p {
+  font-size: 28px;
+  line-height: 1.4em;
+}
+
+.section-content .inner-container img {
+  max-width: 100%;
+  height: auto;
+  max-height: 40px;
+  margin-top: 5px;
+  margin-bottom: auto;
+  margin-right: 30px;
+}
+
+.section-content .image-container {
+  margin-left: 20px;
+}
+
+/* section-content-2 */
+
+.section-content-2 {
+  background-color: #ebebeb;
+  margin-bottom: 40px;
+  @media (max-width: 980px) {
+    max-width: 94%;
+    margin: 0 auto 40px;
+    .ant-col:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.section-content-2 .text-container {
+  padding: 3em;
+  margin-right: 20px;
+}
+
+.section-content-2 .text-container p {
+  padding-bottom: 1em;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.section-content-2 .image-container img {
+  max-width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* section-content-3 */
+.section-content-3 {
+  width: 100%;
+  @media (max-width: 980px) {
+    max-width: 94%;
+    margin: 0 auto 30px;
+  }
+  @media (min-width: 981px) {
+    .ant-col {
+      margin-right: 5.5%;
+      width: 29.6667%;
+      &:last-child {
+        margin-right: 0 !important;
+      }
+    }
+  }
+  .ant-card-body {
+    padding: 24px 0;
+  }
+}
+/* footer */
+
+.section-footer {
+  width: 100%;
+  padding-top: 65px;
+  margin-top: -24px;
+}
+
+.section-footer-ourservices h3,
+.section-footer-trackstorm h3,
+.section-footer-messageform h3 {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: #2f5597;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.section-footer-ourservices img,
+.section-footer-trackstorm img {
+  max-width: 100%;
+  width: 100%;
+}
+
+.section-footer-ourservices p,
+.section-footer-trackstorm p {
+  font-size: 1rem;
+  margin: 20px 0;
+  min-height: 130px;
+}
+
+.section-footer-ourservices button,
+.section-footer-trackstorm button,
+.section-footer-messageform button {
+  font-weight: 500;
+}
+
+.section-footer-ourservices,
+.section-footer-trackstorm,
+.section-footer-messageform {
+  padding: 0px 24px;
+}
+
+.section-footer-messageform .form-container {
+  background-color: #ebebeb;
+  padding: 1.5em;
+}
+
+.section-footer-messageform .form-container button {
+  margin-bottom: 20px;
+}
+
+nz-divider {
+  border-top: 1px solid #000 !important;
+  width: 94% !important;
+  min-width: 94% !important;
+  margin: 24px auto;
+}
+
+/* Forms, inputs*/
+.ant-form-item {
+  margin-bottom: 7px;
+}

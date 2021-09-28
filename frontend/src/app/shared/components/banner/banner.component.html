@@ -1,0 +1,22 @@
+<!-- <nz-card>
+E  <ng-content>
+
+  </ng-content>
+  <div class="inner-container">
+    <h2>Location-Specific Hurricane and Wind Storm Surge Data</h2>
+    <p>
+      Q-risq Analytics forecasts Hurricane and Wind & Storm Surge risk at
+      specific locations - days before the the storm makes landfall - to help
+      you prepare in advance.
+    </p>
+    <button nz-button nzGhost nzSize="large" (click)="OnSignUp()">
+      Sign Up
+    </button>
+  </div>
+</nz-card> -->
+
+<nz-card [style]="'background-image: url(' + imageUrl + ')'">
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+</nz-card>

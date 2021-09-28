@@ -1,0 +1,67 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-hindcast.jpg'">
+    <div class="banner-content">
+      <h1>Hindcast: Post-Event Analysis</h1>
+      <p>
+        After landfall, know a storm’s impact: wind, surge, and rainfall down to
+        each address.
+      </p>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <!-- content -->
+    <div nz-row class="section-content">
+      <div nz-col nzOffset="8" nzSpan="16">
+        <div class="inner-container">
+          <img height="40px" src="/assets/images/icon-triangle-green.png" />
+          <p>
+            Once the storm has made landfall, Q-risq Analysis focuses on
+            ensuring<strong>
+              information accuracy by overlaying our output data with US
+              government sourced LiDAR ground elevation measurements</strong
+            >, for both surge and wind.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- content-2 -->
+    <div nz-row class="section-content-2">
+      <div nz-col nzSpan="12">
+        <div class="text-container">
+          <p>
+            Depending upon where a property is located in relation to the
+            storm’s center, the wind and surge time of arrival and their
+            intensities can vary greatly. Our post-storm analysis, uses
+            supercomputer processing and over 1,000 water and wind observations
+            to analyze surge levels, maximum wind speed, and direction and
+            duration for each side of the property, giving you the most accurate
+            data available within 48 hours of landfall.
+          </p>
+        </div>
+      </div>
+
+      <div nz-col nzSpan="12">
+        <div class="image-container">
+          <img nz-image nzSrc="/assets/images/hind-cast-bg.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="16" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>

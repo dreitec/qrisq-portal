@@ -1,0 +1,102 @@
+<div class="main-container">
+  <qr-banner [imageUrl]="'/assets/images/main-background.jpg'">
+    <div class="banner-content">
+      <h1>Location-Specific Hurricane Wind & Storm Surge Data</h1>
+
+      <p>
+        <strong>Q-risq Analytics</strong> forecasts Hurricane Wind & Storm Surge
+        risk at specific locations - days before the storm makes landfall - to
+        help you prepare in advance.
+      </p>
+
+      <div class="button-container">
+        <button nz-button nzGhost nzSize="large" (click)="OnSignUp()">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <div class="section-bg-image">
+      <div nz-row class="section">
+        <div nz-col nzSpan="15">
+          <div class="bullet-paragraph-container">
+            <img
+              class="icon-triangle"
+              height="40px"
+              src="/assets/images/icon-triangle-green.png"
+              alt=""
+            />
+            <p>
+              Q-risq Analytics patented process equips you with site specific
+              pre and post-storm analysis, so you know what could happen, how to
+              assess damage, and how to recover faster.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- forecast -->
+
+    <div nz-row class="section-forecast">
+      <div nz-col nzSpan="12" class="section-forecast-left">
+        <h3>FORECAST</h3>
+
+        <h4>Prior to Landfall</h4>
+        <p>
+          Days before landfall, the Q-risq Analytics team is working at full
+          capacity, continuously monitoring the storm’s track and intensity to
+          provide location specific wind and surge forecast data.
+        </p>
+        <button nz-button nzType="link" nzSize="large">LEARN MORE</button>
+      </div>
+
+      <div nz-col nzSpan="12" class="section-forecast-right">
+        <img nz-image nzSrc="/assets/images/forcast.jpg" alt="" />
+      </div>
+    </div>
+
+    <!-- hindcast -->
+
+    <div nz-row class="section-hindcast">
+      <div nz-col nzSpan="12" class="section-hindcast-left">
+        <h3>HINDCAST</h3>
+
+        <h4>Post-Event Analysis</h4>
+        <p>
+          Once the storm has made landfall, Q-risq Analytics focuses on creating
+          a report of the storm’s impact. Maximum sustained winds, storm surge,
+          and accumulated rainfall are displayed for each address.
+        </p>
+        <button nz-button nzType="link" nzSize="large">LEARN MORE</button>
+      </div>
+
+      <div nz-col nzSpan="12" class="section-hindcast-right">
+        <img nz-image nzSrc="/assets/images/post-event-980x568.jpg" alt="" />
+      </div>
+    </div>
+
+    <!-- divider -->
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="8" class="section-footer-ourservices">
+        <qr-our-services-card></qr-our-services-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+
+    <!-- <qrisq-company-widget-group></qrisq-company-widget-group> -->
+  </div>
+</div>

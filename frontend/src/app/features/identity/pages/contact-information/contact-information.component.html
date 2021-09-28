@@ -1,0 +1,282 @@
+<div class="main-container">
+  <!-- banner -->
+
+  <qr-banner [imageUrl]="'/assets/images/main-banner-forcast.jpg'">
+    <div class="banner-content">
+      <h1>Update Contact Information</h1>
+      <p>Please update your contact information below.</p>
+    </div>
+  </qr-banner>
+
+  <div class="page-content">
+    <div class="wrapper">
+      <div class="title-wrapper">
+        <h3>
+          <span
+            ><img height="40px" src="/assets/images/icon-triangle-green.png"
+          /></span>
+          Edit Contact Information
+        </h3>
+      </div>
+      <div nz-row nzGutter="48" nzJustify="center">
+        <div class="contact-information-form" nz-col nzSpan="24">
+          <nz-spin [nzSpinning]="isLoading">
+            <div class="form-card">
+              <!-- form -->
+              <form
+                nz-form
+                [formGroup]="contactInformationForm"
+                [nzLayout]="'vertical'"
+                (ngSubmit)="onSubmitForm($event)"
+              >
+                <!-- ----------------------------------------------------------------------- -->
+                <!--                              email section                              -->
+                <!-- ----------------------------------------------------------------------- -->
+
+                <div class="form-section">
+                  <div class="form-section-header">
+                    <h4 class="title">Update Email</h4>
+                    <nz-switch
+                      class="switch"
+                      [(ngModel)]="updateEmail"
+                      [nzControl]="true"
+                      (click)="onUpdateEmailClick()"
+                      [ngModelOptions]="{ standalone: true }"
+                    ></nz-switch>
+                  </div>
+
+                  <div
+                    class="form-section-content"
+                    formGroupName="email"
+                    *ngIf="updateEmail"
+                  >
+                    <nz-form-item>
+                      <nz-form-control>
+                        <input
+                          nz-input
+                          formControlName="currentEmail"
+                          placeholder="Email"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-control
+                        nzErrorTip="Please enter a valid email address."
+                      >
+                        <input
+                          nz-input
+                          formControlName="newEmail"
+                          placeholder="New Email"
+                          (ngModelChange)="updateConfirmNewEmailValidator()"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-control [nzErrorTip]="confirmEmailErrorTpl">
+                        <input
+                          nz-input
+                          formControlName="confirmNewEmail"
+                          placeholder="Confirm New Email"
+                        />
+                        <ng-template #confirmEmailErrorTpl let-control>
+                          <ng-container *ngIf="control.hasError('email')">
+                            Please enter a valid email. <br />
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('required')">
+                            Please confirm your email. <br />
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('confirm')">
+                            Please make sure both email fields match. <br />
+                          </ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                </div>
+
+                <!-- ----------------------------------------------------------------------- -->
+                <!--                          phone number section                           -->
+                <!-- ----------------------------------------------------------------------- -->
+
+                <div class="form-section">
+                  <div class="form-section-header">
+                    <h4 class="title">Update Phone Number</h4>
+                    <nz-switch
+                      class="switch"
+                      [(ngModel)]="updatePhoneNumber"
+                      [nzControl]="true"
+                      (click)="onUpdatePhoneNumberClick()"
+                      [ngModelOptions]="{ standalone: true }"
+                    ></nz-switch>
+                  </div>
+
+                  <div
+                    class="form-section-content"
+                    formGroupName="phoneNumber"
+                    *ngIf="updatePhoneNumber"
+                  >
+                    <nz-form-item>
+                      <nz-form-control>
+                        <input
+                          nz-input
+                          formControlName="currentPhoneNumber"
+                          placeholder="Phone Number"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-control [nzErrorTip]="phoneNumberErrorTpl">
+                        <input
+                          nz-input
+                          formControlName="newPhoneNumber"
+                          placeholder="New Phone Number"
+                          (ngModelChange)="
+                            updateConfirmNewPhoneNumberValidator()
+                          "
+                          type="tel"
+                        />
+                        <ng-template #phoneNumberErrorTpl let-control>
+                          <ng-container *ngIf="control.hasError('required')">
+                            Phone number is required. <br />
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('pattern')">
+                            Invalid phone number.<br />
+                          </ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-control
+                        [nzErrorTip]="confirmPhoneNumberErrorTpl"
+                      >
+                        <input
+                          nz-input
+                          formControlName="confirmNewPhoneNumber"
+                          placeholder="Confirm New Phone Number"
+                        />
+                        <ng-template #confirmPhoneNumberErrorTpl let-control>
+                          <ng-container *ngIf="control.hasError('required')">
+                            Please confirm your phone number. <br />
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('pattern')">
+                            Invalid phone number.<br />
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('confirm')">
+                            Please make sure both phone number fields match.<br />
+                          </ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                </div>
+
+                <!-- ----------------------------------------------------------------------- -->
+                <!--                            password section                             -->
+                <!-- ----------------------------------------------------------------------- -->
+
+                <div class="form-section">
+                  <div class="form-section-header">
+                    <h4 class="title">Update Password</h4>
+                    <nz-switch
+                      class="switch"
+                      [(ngModel)]="updatePassword"
+                      [nzControl]="true"
+                      (click)="onUpdatePasswordClick()"
+                      [ngModelOptions]="{ standalone: true }"
+                    ></nz-switch>
+                  </div>
+
+                  <div
+                    class="form-section-content"
+                    formGroupName="password"
+                    *ngIf="updatePassword"
+                  >
+                    <nz-form-item>
+                      <nz-form-control
+                        nzErrorTip="Please enter your old password."
+                      >
+                        <input
+                          nz-input
+                          formControlName="currentPassword"
+                          placeholder="Old Password"
+                          type="password"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-control
+                        nzErrorTip="Please enter your new password!"
+                      >
+                        <input
+                          nz-input
+                          type="password"
+                          formControlName="newPassword"
+                          placeholder="New Password"
+                          (ngModelChange)="updateConfirmNewPasswordValidator()"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item>
+                      <nz-form-control [nzErrorTip]="confirmPasswordErrorTpl">
+                        <input
+                          nz-input
+                          formControlName="confirmNewPassword"
+                          placeholder="Confirm Password"
+                          type="password"
+                        />
+                        <ng-template #confirmPasswordErrorTpl let-control>
+                          <ng-container *ngIf="control.hasError('required')">
+                            Please confirm your new password. <br />
+                          </ng-container>
+                          <ng-container *ngIf="control.hasError('confirm')">
+                            Please make sure both password fields match. <br />
+                          </ng-container>
+                        </ng-template>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                </div>
+
+                <!-- submit -->
+                <div class="button-wrapper">
+                  <button
+                    nz-button
+                    nzType="primary"
+                    nzDanger
+                    nzSize="large"
+                    [disabled]="getDisabled()"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </nz-spin>
+        </div>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- footer -->
+    <div nz-row class="section-footer">
+      <div nz-col nzSpan="8" class="section-footer-ourservices">
+        <qr-our-services-card></qr-our-services-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-trackstorm">
+        <qr-track-storm-card></qr-track-storm-card>
+      </div>
+
+      <div nz-col nzSpan="8" class="section-footer-messageform">
+        <qr-contact-us-form></qr-contact-us-form>
+      </div>
+    </div>
+  </div>
+</div>
