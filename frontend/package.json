@@ -43,7 +43,7 @@
     "angular-credit-cards": "^3.1.8",
     "aws-lambda-invoke": "^3.0.0",
     "aws-sdk": "^2.948.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bootstrap": "^4.6.0",
     "camelcase-keys": "^6.2.2",
     "chaikin-smooth": "^1.0.4",
