@@ -12,12 +12,13 @@ version: 1
 source:
   # The name of the provider that is used to store the source artifacts.
   # (i.e. GitHub, Bitbucket, CodeCommit)
-  provider: GitHubV1
+  provider: GitHub
   # Additional properties that further specify the location of the artifacts.
   properties:
-    access_token_secret: github-token-apps-QRisq-Portal
     branch: main
     repository: https://github.com/qrisq-analytics/QRisq-Portal
+    # Optional: specify the name of an existing CodeStar Connections connection.
+    # connection_name: a-connection
 
 # This section defines the order of the environments your pipeline will deploy to.
 stages:
