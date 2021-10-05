@@ -1,0 +1,122 @@
+# The manifest for the "portal-api" service.
+# Read the full specification for the "Load Balanced Web Service" type at:
+#  https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/
+
+# Your service name will be used in naming your resources like log groups, ECS services, etc.
+name: portal-api
+type: Load Balanced Web Service
+
+# Distribute traffic to your service.
+http:
+  # Requests to this path will be forwarded to your service.
+  # To match all requests you can use the "/" path.
+  path: '/'
+  # You can specify a custom health check path. The default is "/".
+  # healthcheck: '/'
+
+# Configuration for your containers and service.
+image:
+  # Docker build arguments. For additional overrides: https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/#image-build
+  build: Dockerfile.production
+  # Port exposed through your container to route traffic to it.
+  port: 8000
+
+cpu: 256       # Number of CPU units for the task.
+memory: 2048    # Amount of memory in MiB used by the task.
+count: 1       # Number of tasks that should be running in your service.
+exec: true     # Enable running commands in your container.
+
+# Optional fields for more advanced use-cases.
+#
+#variables:                    # Pass environment variables as key value pairs.
+#  LOG_LEVEL: info
+
+#secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.
+#  GITHUB_TOKEN: GITHUB_TOKEN  # The key is the name of the environment variable, the value is the name of the SSM parameter.
+
+# You can override any of the values defined above by environment.
+environments:
+ staging:
+  secrets: 
+      ADMIN_EMAIL: /copilot/apps/staging/secrets/admin_email
+      ALLOWED_HOSTS: /copilot/apps/staging/secrets/allowed_hosts
+      AWS_ACCESS_KEY: /copilot/apps/staging/secrets/aws_access_key
+      AWS_REGION: /copilot/apps/staging/secrets/aws_region
+      AWS_SECRET_KEY: /copilot/apps/staging/secrets/aws_secret_key
+      AWS_SQS_ACCESS_KEY_ID: /copilot/apps/staging/secrets/aws_sqs_access_key_id
+      AWS_SQS_QUEUE_URL: /copilot/apps/staging/secrets/aws_sqs_queue_url
+      AWS_SQS_SECRET_ACCESS_KEY: /copilot/apps/staging/secrets/aws_sqs_secret_access_key
+      AWS_STORM_BUCKET: /copilot/apps/staging/secrets/aws_storm_bucket
+      AWS_STORM_MOST_RECENT_FILE: /copilot/apps/staging/secrets/aws_storm_most_recent_file
+      AWS_WKT_BUCKET: /copilot/apps/staging/secrets/aws_wkt_bucket
+      CORS_HOSTS: /copilot/apps/staging/secrets/cors_hosts
+      DB_HOST: /copilot/apps/staging/secrets/db_host
+      DB_NAME: /copilot/apps/staging/secrets/db_name
+      DB_PASSWORD: /copilot/apps/staging/secrets/db_password
+      DB_PORT: /copilot/apps/staging/secrets/db_port
+      DB_SCHEMA: /copilot/apps/staging/secrets/db_schema
+      DB_USER: /copilot/apps/staging/secrets/db_user
+      DEBUG: /copilot/apps/staging/secrets/debug
+      EMAIL_HOST: /copilot/apps/staging/secrets/email_host
+      EMAIL_HOST_PASSWORD: /copilot/apps/staging/secrets/email_host_password
+      EMAIL_HOST_USER: /copilot/apps/staging/secrets/email_host_user
+      EMAIL_PORT: /copilot/apps/staging/secrets/email_port
+      FLUIDPAY_TEST: /copilot/apps/staging/secrets/fluidpay_test
+      FLUID_PAY_API_KEY: /copilot/apps/staging/secrets/fluid_pay_api_key
+      FLUID_PAY_PROCESSOR_ID: /copilot/apps/staging/secrets/fluid_pay_processor_id
+      FLUID_PAY_PRODUCTION_URL: /copilot/apps/staging/secrets/fluid_pay_production_url
+      FLUID_PAY_SANDBOX_URL: /copilot/apps/staging/secrets/fluid_pay_sandbox_url
+      FROM_EMAIL: /copilot/apps/staging/secrets/from_email
+      PAYPAL_CLIENT_ID: /copilot/apps/staging/secrets/paypal_client_id
+      PAYPAL_SECRET_KEY: /copilot/apps/staging/secrets/paypal_secret_key
+      PAYPAL_TEST: /copilot/apps/staging/secrets/paypal_test
+      SECRET_KEY: /copilot/apps/staging/secrets/secret_key
+      STORM_DB_HOST: /copilot/apps/staging/secrets/storm_db_host
+      STORM_DB_NAME: /copilot/apps/staging/secrets/storm_db_name
+      STORM_DB_PASSWORD: /copilot/apps/staging/secrets/storm_db_password
+      STORM_DB_PORT: /copilot/apps/staging/secrets/storm_db_port
+      STORM_DB_SCHEMA: /copilot/apps/staging/secrets/storm_db_schema
+      STORM_DB_USER: /copilot/apps/staging/secrets/storm_db_user
+ prod:
+  secrets: 
+      ADMIN_EMAIL: /copilot/apps/prod/secrets/admin_email
+      ALLOWED_HOSTS: /copilot/apps/prod/secrets/allowed_hosts
+      AWS_ACCESS_KEY: /copilot/apps/prod/secrets/aws_access_key
+      AWS_REGION: /copilot/apps/prod/secrets/aws_region
+      AWS_SECRET_KEY: /copilot/apps/prod/secrets/aws_secret_key
+      AWS_SQS_ACCESS_KEY_ID: /copilot/apps/prod/secrets/aws_sqs_access_key_id
+      AWS_SQS_QUEUE_URL: /copilot/apps/prod/secrets/aws_sqs_queue_url
+      AWS_SQS_SECRET_ACCESS_KEY: /copilot/apps/prod/secrets/aws_sqs_secret_access_key
+      AWS_STORM_BUCKET: /copilot/apps/prod/secrets/aws_storm_bucket
+      AWS_STORM_MOST_RECENT_FILE: /copilot/apps/prod/secrets/aws_storm_most_recent_file
+      AWS_WKT_BUCKET: /copilot/apps/prod/secrets/aws_wkt_bucket
+      CORS_HOSTS: /copilot/apps/prod/secrets/cors_hosts
+      DB_HOST: /copilot/apps/prod/secrets/db_host
+      DB_NAME: /copilot/apps/prod/secrets/db_name
+      DB_PASSWORD: /copilot/apps/prod/secrets/db_password
+      DB_PORT: /copilot/apps/prod/secrets/db_port
+      DB_SCHEMA: /copilot/apps/prod/secrets/db_schema
+      DB_USER: /copilot/apps/prod/secrets/db_user
+      DEBUG: /copilot/apps/prod/secrets/debug
+      EMAIL_HOST: /copilot/apps/prod/secrets/email_host
+      EMAIL_HOST_PASSWORD: /copilot/apps/prod/secrets/email_host_password
+      EMAIL_HOST_USER: /copilot/apps/prod/secrets/email_host_user
+      EMAIL_PORT: /copilot/apps/prod/secrets/email_port
+      FLUIDPAY_TEST: /copilot/apps/prod/secrets/fluidpay_test
+      FLUID_PAY_API_KEY: /copilot/apps/prod/secrets/fluid_pay_api_key
+      FLUID_PAY_PROCESSOR_ID: /copilot/apps/prod/secrets/fluid_pay_processor_id
+      FLUID_PAY_PRODUCTION_URL: /copilot/apps/prod/secrets/fluid_pay_production_url
+      FLUID_PAY_SANDBOX_URL: /copilot/apps/prod/secrets/fluid_pay_sandbox_url
+      FROM_EMAIL: /copilot/apps/prod/secrets/from_email
+      PAYPAL_CLIENT_ID: /copilot/apps/prod/secrets/paypal_client_id
+      PAYPAL_SECRET_KEY: /copilot/apps/prod/secrets/paypal_secret_key
+      PAYPAL_TEST: /copilot/apps/prod/secrets/paypal_test
+      SECRET_KEY: /copilot/apps/prod/secrets/secret_key
+      STORM_DB_HOST: /copilot/apps/prod/secrets/storm_db_host
+      STORM_DB_NAME: /copilot/apps/prod/secrets/storm_db_name
+      STORM_DB_PASSWORD: /copilot/apps/prod/secrets/storm_db_password
+      STORM_DB_PORT: /copilot/apps/prod/secrets/storm_db_port
+      STORM_DB_SCHEMA: /copilot/apps/prod/secrets/storm_db_schema
+      STORM_DB_USER: /copilot/apps/prod/secrets/storm_db_user
+  
+
