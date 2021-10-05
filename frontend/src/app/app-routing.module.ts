@@ -42,7 +42,7 @@ import { QrPaymentSuccessfulPageComponent } from './features/identity/pages/paym
 const routes = [
   /* ---------------------------------- home ---------------------------------- */
 
-  { path: 'home', component: QrHomePageComponent },
+  { path: '', component: QrHomePageComponent },
 
   /* ---------------------------------- admin --------------------------------- */
 
@@ -193,4 +193,4 @@ const routes = [
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
