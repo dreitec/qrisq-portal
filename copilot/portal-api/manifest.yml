@@ -57,6 +57,7 @@ environments:
       DB_SCHEMA: /copilot/apps/staging/secrets/db_schema
       DB_USER: /copilot/apps/staging/secrets/db_user
       DEBUG: /copilot/apps/staging/secrets/debug
+      DOMAIN: /copilot/apps/staging/secrets/domain
       EMAIL_HOST: /copilot/apps/staging/secrets/email_host
       EMAIL_HOST_PASSWORD: /copilot/apps/staging/secrets/email_host_password
       EMAIL_HOST_USER: /copilot/apps/staging/secrets/email_host_user
@@ -67,6 +68,7 @@ environments:
       FLUID_PAY_PRODUCTION_URL: /copilot/apps/staging/secrets/fluid_pay_production_url
       FLUID_PAY_SANDBOX_URL: /copilot/apps/staging/secrets/fluid_pay_sandbox_url
       FROM_EMAIL: /copilot/apps/staging/secrets/from_email
+      FRONTEND_DOMAIN: /copilot/apps/staging/secrets/frontend_domain
       PAYPAL_CLIENT_ID: /copilot/apps/staging/secrets/paypal_client_id
       PAYPAL_SECRET_KEY: /copilot/apps/staging/secrets/paypal_secret_key
       PAYPAL_TEST: /copilot/apps/staging/secrets/paypal_test
@@ -98,6 +100,7 @@ environments:
       DB_SCHEMA: /copilot/apps/prod/secrets/db_schema
       DB_USER: /copilot/apps/prod/secrets/db_user
       DEBUG: /copilot/apps/prod/secrets/debug
+      DOMAIN: /copilot/apps/prod/secrets/domain
       EMAIL_HOST: /copilot/apps/prod/secrets/email_host
       EMAIL_HOST_PASSWORD: /copilot/apps/prod/secrets/email_host_password
       EMAIL_HOST_USER: /copilot/apps/prod/secrets/email_host_user
@@ -108,6 +111,7 @@ environments:
       FLUID_PAY_PRODUCTION_URL: /copilot/apps/prod/secrets/fluid_pay_production_url
       FLUID_PAY_SANDBOX_URL: /copilot/apps/prod/secrets/fluid_pay_sandbox_url
       FROM_EMAIL: /copilot/apps/prod/secrets/from_email
+      FRONTEND_DOMAIN: /copilot/apps/prod/secrets/frontend_domain
       PAYPAL_CLIENT_ID: /copilot/apps/prod/secrets/paypal_client_id
       PAYPAL_SECRET_KEY: /copilot/apps/prod/secrets/paypal_secret_key
       PAYPAL_TEST: /copilot/apps/prod/secrets/paypal_test
