@@ -14,6 +14,8 @@ COPY package.json package-lock.json ./
 
 RUN npm install
 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY . .
 
 RUN npx ng build --prod 
