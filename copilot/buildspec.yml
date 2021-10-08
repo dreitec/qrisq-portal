@@ -1,5 +1,9 @@
 # Buildspec runs in the build stage of your pipeline.
 version: 0.2
+env:
+  parameter-store:
+    DOCKER_USERNAME: DOCKER_USERNAME
+    DOCKER_PASSWORD: DOCKER_PASSWORD
 phases:
   install:
     runtime-versions:
@@ -112,6 +116,7 @@ phases:
           echo "Docker build context: $df_dir_path"
           echo "Docker build args: $build_args"
           echo "Running command: docker build -t $workload:$tag $build_args-f $df_path $df_dir_path";
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
           docker build -t $workload:$tag $build_args-f $df_path $df_dir_path;
           image_id=$(docker images -q $workload:$tag);
           for env in $pl_envs; do
