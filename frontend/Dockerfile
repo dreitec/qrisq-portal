@@ -10,16 +10,14 @@ RUN apt-get update && \
 
 WORKDIR /opt/app
 
-COPY package.json package-lock.json ./
+COPY . .
 
 RUN npm install
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-COPY . .
-
-RUN npx ng build --prod 
+RUN npx ng build --prod
 
 RUN cp -R dist/qrisq-onbrdng-webspa/* /usr/share/nginx/html
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
