@@ -288,7 +288,7 @@ SWAGGER_SETTINGS = {
     # default api Info if none is otherwise given; should be an import string to an openapi.Info object
     'DEFAULT_INFO': 'qrisq_api.swagger.swagger_info',
     # default API url if none is otherwise given
-    'DEFAULT_API_URL': 'http://127.0.0.1:8000/',
+    'DEFAULT_API_URL': 'http://127.0.0.1:8000',
     'SECURITY_DEFINITIONS': {
         'Bearer': {
             'in': 'header',
