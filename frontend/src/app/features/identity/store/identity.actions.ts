@@ -215,6 +215,7 @@ export const actionResetPayment = createAction(
 // request
 export const actionProcessPaymentRequest = createAction(
   '[Identity] Process Payment Request',
+  props<{ paymentInformation: PaymentInformation }>()
 );
 
 // success
