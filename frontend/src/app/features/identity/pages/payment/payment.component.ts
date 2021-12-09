@@ -70,7 +70,8 @@ export class QrPaymentPageComponent implements OnInit {
   }
 
   onCreditCardPaymentSubmit(paymentInformation: PaymentInformation) {
-    this.store.dispatch(actionProcessPaymentRequest({ paymentInformation }));
+    console.log(paymentInformation);
+    this.store.dispatch(actionProcessPaymentRequestSuccess({ paymentInformation }));
   }
 
   onPaypalPaymentSubmit() {}

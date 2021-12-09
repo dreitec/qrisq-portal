@@ -26,7 +26,9 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
   subscriptionPlans$ = this.identityService.fetchSubscriptionPlans().pipe(
     take(1),
     tap((response) => console.log(response)),
-    map((subscriptionPlans: SubscriptionPlan[]) => subscriptionPlans)
+    map((subscriptionPlans: SubscriptionPlan[]) => {
+      return subscriptionPlans
+    })
   );
 
   ngOnInit(): void {}
