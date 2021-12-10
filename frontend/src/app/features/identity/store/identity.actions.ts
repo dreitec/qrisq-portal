@@ -220,7 +220,7 @@ export const actionProcessPaymentRequest = createAction(
 
 // success
 export const actionProcessPaymentRequestSuccess = createAction(
-  '[Identity] Process Payment Request Success'
+  '[Identity] Process Payment Request Success',
 );
 
 // failed
