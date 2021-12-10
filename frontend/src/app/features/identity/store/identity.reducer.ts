@@ -305,6 +305,10 @@ const reducer = createReducer(
     payment: {
       paymentFailed: false,
     },
+    user: {
+      ...state.signedUser.user,
+      hasPaid: true,
+    }
   })),
 
   on(actionProcessPaymentRequestSuccess, (state) => ({
