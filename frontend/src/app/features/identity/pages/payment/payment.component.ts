@@ -70,7 +70,6 @@ export class QrPaymentPageComponent implements OnInit {
   }
 
   onCreditCardPaymentSubmit(paymentInformation: PaymentInformation) {
-    console.log(paymentInformation);
     this.store.dispatch(actionProcessPaymentRequest({ paymentInformation }));
   }
 
