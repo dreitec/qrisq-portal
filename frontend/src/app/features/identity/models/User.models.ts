@@ -19,9 +19,9 @@ export interface UserSubscription {
   feature: string;
   price?: any;
   duration?: any;
-  recurring: boolean;
   isCancelled: boolean;
   cancelled_at?: any;
+  expires_at?: any;
 }
 
 export interface UserAddress {

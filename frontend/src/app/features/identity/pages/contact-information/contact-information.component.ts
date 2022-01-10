@@ -174,7 +174,6 @@ export class QrContactInformationPageComponent implements OnInit {
       };
     }
 
-    console.log(contactInformation);
 
     this.isLoading = true;
     this.identityService

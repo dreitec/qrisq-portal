@@ -23,7 +23,7 @@
       *ngIf="paypalPaymentFailed"
       nzType="error"
       nzMessage="Payment Failed"
-      nzDescription="We arent't able to process your payment using your Paypal account at this time. Please check your information and try again."
+      nzDescription="We aren't able to process your payment using your Paypal account at this time. Please check your information and try again."
       nzShowIcon
     ></nz-alert>
 
@@ -149,9 +149,14 @@
             (submitPayment)="onCreditCardPaymentSubmit($event)"
           ></qr-payment-form-credit-card>
 
-          <qr-payment-form-paypal [hidden]="paymentMethod !== 'paypal'"
-            ><ngx-paypal [config]="payPalConfig"></ngx-paypal
-          ></qr-payment-form-paypal>
+          <qr-payment-form-paypal [hidden]="paymentMethod !== 'paypal'">
+            <input type="image"
+                   name="submit"
+                   src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribe_LG.gif"
+                   alt="Subscribe"
+                   (click)="onPaypalPaymentSubmit()">
+            <img alt="" width="1" height="1" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >
+          </qr-payment-form-paypal>
         </ng-container>
       </div>
     </div>
@@ -172,5 +177,11 @@
         <qr-contact-us-form></qr-contact-us-form>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="page-loading" *ngIf="loading">
+  <div class="spinner-container">
+    <nz-spin nzSimple [nzSize]="'large'" [nzTip]="loadingMessage"></nz-spin>
   </div>
 </div>

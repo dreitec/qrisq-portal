@@ -23,7 +23,6 @@ export class QrAdminGuard implements CanActivate {
     return this.store.select(selectSignedUser).pipe(
       take(1),
       map((user: SignedUserState) => {
-        console.log(user);
         if (!user) {
           this.router.navigate(['/identity/login']);
         }

@@ -1,30 +1,238 @@
 import requests
 import json
-
+import logging
+import hmac
+import hashlib
+import datetime
+import base64
+import subscriptions.subscription_date_utils as subscription_date_utils
+import dateutil.parser
 from django.conf import settings
-from rest_framework.response import Response
+from subscriptions.models import UserPayment, SubscriptionPlan, UserSubscription
+from user_app.models import User
 
 
 class FluidPay(object):
 
     def __init__(self):
+        self.APPROVAL_RESPONSE_CODE = 100
+        self.customer_id_prefix = "f"
         self.api_key = settings.FLUID_PAY_API_KEY
+        self.webhook_signature = settings.FLUID_PAY_WEBHOOK_SIGNATURE
         if settings.FLUIDPAY_TEST:
             self.base_url = settings.FLUID_PAY_SANDBOX_URL
         else:
             self.base_url = settings.FLUID_PAY_PRODUCTION_URL
-
-    def request_handler(self, req_method, params, body={}):
-        url = f"{self.base_url}/{'/'.join(params)}"
-        headers = {
+        self.headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'credentials': 'include',
             'Authorization': self.api_key
         }
-        if req_method == 'GET':
-            return requests.get(url, headers=headers)
-        elif req_method == 'POST':
-            return requests.post(url, data=body, headers=headers)
-        elif req_method == 'DELETE':
-            return requests.delete(url, data=body, headers=headers)
+
+    def __post(self, endpoint, body, raw=False):
+        url = self.base_url + endpoint
+        if raw:
+            r = requests.post(url, headers=self.headers, data=body)
+        else:
+            r = requests.post(url, headers=self.headers, json=body)
+        r.raise_for_status()
+        return r.json()
+
+    def __delete(self, endpoint):
+        url = self.base_url + endpoint
+        r = requests.delete(url, headers=self.headers)
+        r.raise_for_status()
+        return r.json()
+
+    def __get(self, endpoint, errorOn404=True, return_raw_response=False):
+        url = self.base_url + endpoint
+        r = requests.get(url, headers=self.headers)
+        if r.status_code != 404 or errorOn404:
+            r.raise_for_status()
+        if return_raw_response:
+            return r
+        return r.json()
+
+    def verify_webhook_signature(self, raw_hook, headers):
+        logging.info("Verifying webhook signature....")
+        hook = json.loads(raw_hook)
+        header_signature_base64 = headers["Signature"]
+        header_signature_base64 += '=' * (-len(header_signature_base64) % 4)
+        header_signature = base64.urlsafe_b64decode(header_signature_base64).hex()
+        auth_sig = hmac.new(self.webhook_signature.encode('ascii'), raw_hook, hashlib.sha256).hexdigest()
+
+        if header_signature != auth_sig:
+            logging.warning("Webhook authorization failed.")
+            raise Exception("not authorized")
+
+        return hook
+
+    def process_subscription_payment_webhook(self, raw_hook, headers):
+        hook = self.verify_webhook_signature(raw_hook, headers)
+        data = hook["data"]
+        if data["status"] in ["settled"] and "subscription_id" in "data" and len(data["subscription_id"]) > 0:
+            subscription_id = data["subscription_id"]
+            user_id = data["customer_id"]
+            subscription = self.get_subscription(subscription_id)["data"]
+            fluidpay_plan_id = subscription["plan_id"]
+            amount_paid = data["amount"]
+            expires_at = subscription["next_bill_date"],
+            payment_id = data["id"]
+            payment_gateway = "fluidpay"
+
+            user = User.objects.objects.get(id=user_id)
+            user_subscription = UserSubscription.objects.get(user_id=user_id)
+            plan = SubscriptionPlan.objects.get(fluidpay_plan_id=fluidpay_plan_id)
+
+            expires_at = dateutil.parser.isoparse(expires_at)
+
+            if subscription_date_utils.should_suspend_subscription(plan.name.upper(), expires_at):
+                expires_at = subscription_date_utils.get_next_start_of_hurricane_season()
+                self.update_subscription_bill_date(subscription_id, expires_at)
+
+            user_payment = UserPayment(
+                user=user,
+                payment_id=payment_id,
+                payment_gateway=payment_gateway,
+                price=amount_paid,
+                subscription_id=subscription_id,
+                user_subscription=user_subscription,
+                expires_at=expires_at.date().isoformat() + "T11:59:59Z"
+            )
+            return user_payment
+        return None
+
+    def update_subscription_bill_date(self, subscription_id, new_bill_date):
+        subscription = self.__get("recurring/subscription/{}".format(subscription_id))["data"]
+        # We do need to provide a decent subset of data for fluidpay to accept thd updated plan
+        updated_subscription = {
+            "id": subscription_id,
+            "plan_id": subscription["data"]["plan_id"],
+            "amount": subscription["data"]["amount"],
+            "billing_cycle_interval": subscription["data"]["billing_cycle_interval"],
+            "billing_frequency": subscription["data"]["billing_frequency"],
+            "billing_days": subscription["data"]["billing_days"],
+            "duration": subscription["data"]["duration"],
+            "next_bill_date": new_bill_date.strftime('%Y-%m-%d')
+        }
+        self.__post("recurring/subscription/{}".format(subscription_id), updated_subscription)
+
+    def create_subscription(self, user, validated_data, subscription_plan):
+        update_payment_method = False
+        customer_id = self.customer_id_prefix + str(user.id)
+        user_email = user.email
+        user_subscription = UserSubscription.objects.get(user_id=user.id)
+
+        response = self.__get("/vault/{}".format(customer_id), errorOn404=False, return_raw_response=True)
+        if response.status_code == 404:
+
+            # Customer doesn't exist? Need to create it
+            body = {
+                "id": customer_id,
+                "default_payment": {
+                    "card": {
+                        "number": validated_data.get('card_number'),
+                        "expiration_date": validated_data.get('expiration_date'),
+                        "cvc": validated_data.pop('cvc')
+                    }
+                },
+                "default_billing_address": {
+                    "first_name": validated_data.get("first_name"),
+                    "last_name": validated_data.get("last_name"),
+                    "line_1": validated_data.get("billing_address"),
+                    "city": validated_data.get("city"),
+                    "state": validated_data.get("state"),
+                    "country": "US",
+                    "postal_code": validated_data.get("zip_code"),
+                    "email": user_email
+                }
+            }
+            self.__post("/vault/customer", body)
+        else:
+            response.raise_for_status()
+            update_payment_method = True
+
+        response = response.json()
+        payment_method_id = response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
+        billing_address_id = response["data"]["data"]["customer"]["addresses"][0]["id"]
+        today = datetime.date.today()
+        plan_type = subscription_plan.name.upper()
+        plan_cost = int(subscription_plan.price * 100)
+        next_billing_date, initial_charge_multiplier = subscription_date_utils.get_initial_subscription_billing_date(plan_type, today)
+
+        if update_payment_method:
+            body = {
+                "number": validated_data.get('card_number'),
+                "expiration_date": validated_data.get('expiration_date'),
+                "cvc": validated_data.get('cvc')
+            }
+            self.__post("/vault/customer/{}/card/{}".format(customer_id, payment_method_id), body)
+
+        # Charge them for prorated amount upfront
+        transaction_data = {
+            "processor_id": settings.FLUID_PAY_PROCESSOR_ID,
+            "type": "sale",
+            "amount": round(initial_charge_multiplier * plan_cost),
+            "tax_amount": 0,
+            "shipping_amount": 0,
+            "currency": "USD",
+            "description": "Prorated subscription charge for subscription",
+            "email_receipt": True,
+            "email_address": user.email,
+            "create_vault_record": False,
+            "payment_method": {
+                "card": {
+                    "entry_type": "keyed",
+                    "number": validated_data.get('card_number'),
+                    "expiration_date": validated_data.get('expiration_date'),
+                    "cvc": validated_data.get("cvc")
+                }
+            }
+        }
+        response = self.__post("/transaction", transaction_data)
+        payment_id = response["data"]["id"]
+        payment_gateway = "fluidpay"
+        response_code = response["data"]["response_code"]
+
+        if not settings.FLUIDPAY_TEST and response_code != self.APPROVAL_RESPONSE_CODE:
+            raise Exception("Response code of {} was received from the server, but expected {}".format(response_code, self.APPROVAL_RESPONSE_CODE))
+
+        # Create the subscription record
+        body = {
+            "plan_id": str(subscription_plan.fluidpay_plan_id),
+            "customer": {
+                "id": customer_id,
+                "payment_method_id": payment_method_id,
+                "payment_method_type": "card",
+                "billing_address_id": billing_address_id,
+
+            },
+            "billing_cycle_interval": subscription_plan.duration,
+            "billing_days": "1",
+            "next_bill_date":  next_billing_date.strftime('%Y-%m-%d')
+        }
+        response = self.__post("/recurring/subscription", body)
+        subscription_id = response["data"]["id"]
+        amount_paid = transaction_data["amount"] * .01
+        user_payment = UserPayment(
+            user=user,
+            payment_id=payment_id,
+            payment_gateway=payment_gateway,
+            price=amount_paid,
+            subscription_id=subscription_id,
+            user_subscription=user_subscription,
+            expires_at=next_billing_date.isoformat() + "T11:59:59Z"
+        )
+        return user_payment
+
+    def get_subscription(self, subscription_id):
+        return self.__get("/recurring/subscription/{}".format(subscription_id))
+
+    def suspend_subscription(self, subscription_id):
+        return self.__get("/recurring/subscription/{}/status/paused".format(subscription_id))
+
+    def cancel_subscription(self, subscription_id):
+        return self.__get("/recurring/subscription/{}/status/cancelled".format(subscription_id))
+
+

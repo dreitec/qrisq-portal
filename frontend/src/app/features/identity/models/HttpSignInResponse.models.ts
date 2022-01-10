@@ -17,7 +17,6 @@ export interface User {
 
 export interface Subscription {
   plan: Plan;
-  recurring: boolean;
   is_cancelled: boolean;
   cancelled_at?: any;
 }

@@ -1,8 +1,7 @@
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
-from subscriptions.views import SubscriptionPlanViewSet, RefundPaymentView, CancelSubscriptionView, \
-    AddPaymentInfoView, FluidPayTransaction  # , fluidpay_refund
+from subscriptions.views import SubscriptionPlanViewSet, CancelSubscriptionView, CreateSubscriptionView, PaypalWebhookView, FluidPayWebhookView, VerifySubscriptionPaymentView
 
 router = SimpleRouter(trailing_slash=False)
 router.register('subscription-plans', SubscriptionPlanViewSet, basename="subscription-plans")
@@ -12,8 +11,11 @@ router.register('subscription-plans', SubscriptionPlanViewSet, basename="subscri
 urlpatterns = router.urls
 
 urlpatterns += [
-    path("refund-payment", RefundPaymentView.as_view(), name="refund-payment"),
+    path("create-subscription", CreateSubscriptionView.as_view(), name="create-subscription"),
     path("cancel-subscription", CancelSubscriptionView.as_view(), name="cancel-subscription"),
-    path("process-transaction", FluidPayTransaction.as_view(), name="credit-card-process"),
-    path('add-payment-info', AddPaymentInfoView.as_view(), name="add_payment_info"),
+    path('webhook-paypal', PaypalWebhookView.as_view(), name="webhook-paypal"),
+    path('webhook-fluidpay', FluidPayWebhookView.as_view(), name="webhook-fluidpay"),
+    path('verify-subscription-payment', VerifySubscriptionPaymentView.as_view(), name="verify-subscription-payment")
 ]
+
+

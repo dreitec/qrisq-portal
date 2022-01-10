@@ -14,7 +14,7 @@ export class QrPaymentService {
 
   processPayment(paymentInformation: PaymentInformation) {
     return this.httpClient.post(
-      environment.API_URL + '/process-transaction',
+      environment.API_URL + '/create-subscription',
       {
         first_name: paymentInformation.firstName,
         last_name: paymentInformation.lastName,
@@ -27,6 +27,7 @@ export class QrPaymentService {
         zip_code: paymentInformation.zipCode,
         amount: paymentInformation.amount,
         subscription_plan_id: paymentInformation.subscriptionPlanId,
+        payment_gateway: 'fluidpay'
       },
       {
         headers: { 'Content-type': 'application/json; charset=utf-8' },
@@ -34,18 +35,23 @@ export class QrPaymentService {
     );
   }
 
-  addPaypalPaymentInformation(
-    paypalPaymentInformation: PaypalPaymentInformation
-  ) {
+  createSubscriptionFromPaypal(paymentInformation: PaypalPaymentInformation) {
     return this.httpClient.post(
-      environment.API_URL + '/add-payment-info',
+      environment.API_URL + '/create-subscription',
       {
-        payment_id: paypalPaymentInformation.payment_id,
-        payment_gateway: paypalPaymentInformation.payment_gateway,
+        subscription_plan_id: paymentInformation.subscriptionPlanId,
+        payment_gateway: 'paypal'
       },
       {
         headers: { 'Content-type': 'application/json; charset=utf-8' },
       }
     );
   }
+
+  verifySubscriptionPayment() {
+    return this.httpClient.get(
+      environment.API_URL + '/verify-subscription-payment',
+    );
+  }
+
 }

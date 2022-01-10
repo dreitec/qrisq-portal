@@ -8,7 +8,7 @@ import { createAction, props } from '@ngrx/store';
 import { GeocodedAddress } from '../models/Geocoding.models';
 import { HttpSignInResponse } from '../models/HttpSignInResponse.models';
 import {
-  PaymentInformation,
+  PaymentInformation, PaypalCreateSubscriptionResponse,
   PaypalPaymentInformation,
 } from '../models/Payment.models';
 import { UpdateGeolocationRequestParameters } from '../models/UpdateGeolocation.models';
@@ -212,6 +212,14 @@ export const actionResetPayment = createAction(
   '[Identity] Process Reset Payment'
 );
 
+export const actionVerifyPayment = createAction(
+  '[Identity] Process Verify Payment'
+);
+
+export const actionVerifyPaymentSuccess = createAction(
+  '[Identity] Process Verify Payment Success'
+)
+
 // request
 export const actionProcessPaymentRequest = createAction(
   '[Identity] Process Payment Request',
@@ -235,9 +243,10 @@ export const actionProcessPaypalPaymentRequest = createAction(
   props<{ paypalPaymentInformation: PaypalPaymentInformation }>()
 );
 
+
 // success
 export const actionProcessPaypalPaymentRequestSuccess = createAction(
-  '[Identity] Process Paypal Payment Request Success'
+  '[Identity] Process Paypal Payment Request Success',
 );
 
 // failed

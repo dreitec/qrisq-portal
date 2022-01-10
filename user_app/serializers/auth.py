@@ -1,11 +1,11 @@
 from datetime import datetime
 from rest_framework import serializers
-
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from subscriptions.serializers import UserSubscriptionSerializer
+import dateutil.parser
 from .user import UserSerializer
+import logging
 
 
 class LoginTokenSerializer(TokenObtainPairSerializer):
@@ -15,17 +15,16 @@ class LoginTokenSerializer(TokenObtainPairSerializer):
         response = self.validated_data
         response['user'] = UserSerializer(user).data
         subscribed_plan = getattr(user, "subscription_plan", None)
-        response['user']['subscription'] = UserSubscriptionSerializer(subscribed_plan).data
+        user_subscription = UserSubscriptionSerializer(subscribed_plan).data
+        response['user']['subscription'] = user_subscription
 
-        # check payment expired or has user paid for service
-        user_payment = user.payment.last()
         has_paid = False
         payment_expired = False
-        if user_payment:
-            payment_expired = user_payment.expires_at.timestamp() <= datetime.now().timestamp()
+        if user_subscription is not None:
+            payment_expired = user_subscription["expires_at"] is None or dateutil.parser.isoparse(user_subscription["expires_at"]).timestamp() <= datetime.now().timestamp()
             has_paid = not payment_expired
 
-        response['user']['has_paid'] = True if has_paid and not subscribed_plan.is_cancelled else False
+        response['user']['has_paid'] = has_paid
         response['user']['payment_expired'] = payment_expired
         return response
 

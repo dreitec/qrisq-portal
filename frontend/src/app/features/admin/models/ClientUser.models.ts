@@ -40,7 +40,6 @@ export interface ClientUser {
     };
     subscribedOn: string;
     updatedAt: string;
-    recurring: boolean;
     isCancelled: boolean;
     cancelledAt?: any;
   };
@@ -93,7 +92,6 @@ export interface ClientUsersHttpGetResponseModel {
       };
       subscribed_on: string;
       updated_at: string;
-      recurring: boolean;
       is_cancelled: boolean;
       cancelled_at?: any;
     };

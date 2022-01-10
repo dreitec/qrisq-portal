@@ -26,7 +26,6 @@ export class QrPaymentGuard implements CanActivate {
         }
 
         if (!signedUser.user.hasPaid) {
-          console.log('not paid');
           return this.router.parseUrl('identity/sign-up/payment');
         }
         return true;

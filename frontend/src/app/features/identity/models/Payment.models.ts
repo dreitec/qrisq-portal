@@ -13,6 +13,13 @@ export interface PaymentInformation {
 }
 
 export interface PaypalPaymentInformation {
-  payment_id: string;
-  payment_gateway: string;
+  subscriptionPlanId: number;
+}
+
+export interface PaypalCreateSubscriptionResponse {
+  approvalUrl: string;
+}
+
+export interface VerifySubscriptionPaymentResponse {
+  expired: boolean;
 }

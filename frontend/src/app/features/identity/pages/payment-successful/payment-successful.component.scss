@@ -139,3 +139,26 @@ qr-banner h1 {
 nz-divider {
   border-top: 2px solid #000;
 }
+
+
+.page-loading {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(255,255,255,.95);
+  z-index: 1000;
+}
+
+.spinner-container {
+  margin-top: -40px;
+  margin-left: -40px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1001;
+}

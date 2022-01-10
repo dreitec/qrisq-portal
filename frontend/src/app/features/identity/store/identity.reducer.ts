@@ -26,7 +26,7 @@ import {
   actionSignUpAddressChanged,
   actionVerifyEmailRequest,
   actionVerifyEmailRequestFailed,
-  actionVerifyEmailRequestSuccess,
+  actionVerifyEmailRequestSuccess, actionVerifyPaymentSuccess,
 } from './identity.actions';
 import { IdentityState } from './identity.models';
 
@@ -189,7 +189,6 @@ const reducer = createReducer(
               name: response.user.subscription.plan.name,
               feature: response.user.subscription.plan.feature,
               isCancelled: response.user.subscription.is_cancelled,
-              recurring: response.user.subscription.recurring,
               cancelled_at: response.user.subscription.cancelled_at,
               duration: response.user.subscription.plan.duration,
               price: response.user.subscription.plan.price,
@@ -199,7 +198,6 @@ const reducer = createReducer(
               name: '',
               feature: '',
               isCancelled: false,
-              recurring: false,
               cancelled_at: null,
               duration: null,
               price: 0,
@@ -304,10 +302,6 @@ const reducer = createReducer(
     ...state,
     payment: {
       paymentFailed: false,
-    },
-    user: {
-      ...state.signedUser.user,
-      hasPaid: true,
     }
   })),
 
@@ -335,7 +329,17 @@ const reducer = createReducer(
       ...state.signedUser,
       user: {
         ...state.signedUser.user,
-        hasPaid: true,
+      },
+    },
+  })),
+
+  on(actionVerifyPaymentSuccess, (state) => ({
+    ...state,
+    signedUser: {
+      ...state.signedUser,
+      user: {
+        ...state.signedUser.user,
+        hasPaid: true
       },
     },
   })),

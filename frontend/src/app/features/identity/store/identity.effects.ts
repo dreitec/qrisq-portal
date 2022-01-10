@@ -24,7 +24,7 @@ import {
   actionGeocodeLocationRequestSuccess,
   actionProcessPaymentRequestFailed,
   actionProcessPaymentRequestSuccess,
-  actionProcessPaypalPaymentRequest,
+  actionProcessPaypalPaymentRequest, actionProcessPaypalPaymentRequestFailed,
   actionRegisterFormSubmit,
   actionRegisterStart,
   actionServiceAreaAvailable,
@@ -38,7 +38,7 @@ import {
   actionUpdateGeolocationRequestSuccess,
   actionVerifyEmailRequest,
   actionVerifyEmailRequestFailed,
-  actionVerifyEmailRequestSuccess,
+  actionVerifyEmailRequestSuccess, actionVerifyPayment,
 } from './identity.actions';
 import { Store } from '@ngrx/store';
 import { selectCredentials, selectSignUp } from './identity.selectors';
@@ -48,6 +48,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { actionProcessPaymentRequest } from './identity.actions';
 import { QrPaymentService } from '../services/payment.service';
+import {PaypalCreateSubscriptionResponse, VerifySubscriptionPaymentResponse} from "@identity/models/Payment.models";
 
 @Injectable()
 export class IdentityEffects {
@@ -429,24 +430,22 @@ export class IdentityEffects {
   );
 
   effectProcessPaypalPaymentRequest = createEffect(
-    () =>
-      this.actions$.pipe(
+    () => {
+      return this.actions$.pipe(
         ofType(actionProcessPaypalPaymentRequest),
         switchMap((action) =>
-          this.paymentService
-            .addPaypalPaymentInformation(action.paypalPaymentInformation)
-            .pipe(
-              take(1),
-              map((response) => {
-                this.router.navigate([
-                  'identity',
-                  'sign-up',
-                  'payment-successful',
-                ]);
-              })
-            )
+          this.paymentService.createSubscriptionFromPaypal(action.paypalPaymentInformation).pipe(
+            take(1),
+            map((response: PaypalCreateSubscriptionResponse) => {
+              window.location.href = response.approvalUrl;
+            }),
+            catchError((error) => {
+              return of(actionProcessPaypalPaymentRequestFailed(error));
+            })
+          )
         )
-      ),
+      );
+    },
     {
       dispatch: false,
     }
@@ -462,7 +461,7 @@ export class IdentityEffects {
           this.notification.create(
             'success',
             'Payment',
-            'Payment has been processed successfully.',
+            'Subscription has been created successfully.',
             {
               nzPlacement: 'bottomRight',
             }
@@ -472,7 +471,7 @@ export class IdentityEffects {
     { dispatch: false }
   );
 
-  // success
+  // failed
   effectProcessPaymentRequestFailed = createEffect(
     () =>
       this.actions$.pipe(
@@ -490,6 +489,24 @@ export class IdentityEffects {
         })
       ),
     { dispatch: false }
+  );
+
+  // request
+  effectVerifyPaymentRequest = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actionVerifyPayment),
+      switchMap((action) =>
+        this.paymentService.verifySubscriptionPayment().pipe(
+          take(1),
+          map((response: VerifySubscriptionPaymentResponse) => {
+            return actionProcessPaymentRequestSuccess();
+          }),
+          catchError((error) => {
+            return of(actionProcessPaymentRequestFailed(error));
+          })
+        )
+      )
+    )
   );
 
   /* -------------------------------------------------------------------------- */

@@ -336,6 +336,8 @@ LOGIN_EXEMPT_PATHS = (
     r'api/storm-data',
     r'api/surge-data',
     r'api/wind-data',
+    r'api/webhook-paypal',
+    r'api/webhook-fluidpay'
 )
 
 
@@ -392,6 +394,8 @@ APPEND_SLASH = False
 PAYPAL_TEST = config("PAYPAL_TEST", True)
 PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID", "")
 PAYPAL_SECRET_KEY = config("PAYPAL_SECRET_KEY", "")
+PAYPAL_RETURN_URL = config("PAYPAL_RETURN_URL", "")
+PAYPAL_WEBHOOK_ID = config("PAYPAL_WEBHOOK_ID", "")
 
 
 #fluidpay
@@ -400,3 +404,4 @@ FLUID_PAY_API_KEY = config("FLUID_PAY_API_KEY", "")
 FLUID_PAY_SANDBOX_URL = config("FLUID_PAY_SANDBOX_URL", "")
 FLUID_PAY_PRODUCTION_URL = config("FLUID_PAY_PRODUCTION_URL", "")
 FLUID_PAY_PROCESSOR_ID = config("FLUID_PAY_PROCESSOR_ID", "")
+FLUID_PAY_WEBHOOK_SIGNATURE = config("FLUID_PAY_WEBHOOK_SIGNATURE", "")

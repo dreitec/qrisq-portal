@@ -69,17 +69,9 @@ class ClientUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-
-        # check payment expired or has user paid for service
-        user_payment = instance.payment.last()
-        has_paid = False
-        payment_expired = False
-        if user_payment:
-            payment_expired = user_payment.expires_at.timestamp() <= datetime.now().timestamp()
-            has_paid = not payment_expired
-
-        response['has_paid'] = True if has_paid and not response.get('subscription_plan', {}).get('is_cancelled', True) else False
-        response['payment_expired'] = payment_expired
+        expiration_date = response.get('subscription_plan', {}).get('expires_at', None)
+        response['has_paid'] = expiration_date is not None and expiration_date.timestamp() > datetime.now().timestamp()
+        response['payment_expired'] = not response['has_paid']
         return response
 
 

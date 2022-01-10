@@ -52,7 +52,6 @@ export class QrPaymentFormCardComponent implements OnInit {
   }
 
   submitForm(): void {
-    console.log(this.paymentForm.controls);
     for (const i in this.paymentForm.controls) {
       this.paymentForm.controls[i].markAsDirty();
       this.paymentForm.controls[i].updateValueAndValidity();

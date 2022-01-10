@@ -2,6 +2,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from django.contrib.gis.db import models
+from django.db import transaction
+
 from user_app.models import User
 
 
@@ -10,6 +12,8 @@ class SubscriptionPlan(models.Model):
     feature = models.TextField(blank=True, default="")
     price = models.FloatField(default=0)
     duration = models.PositiveSmallIntegerField(default=0)
+    paypal_plan_id = models.CharField(max_length=60, default="")
+    fluidpay_plan_id = models.CharField(max_length=60, default="")
 
     def __str__(self):
         return self.name
@@ -20,9 +24,9 @@ class UserSubscription(models.Model):
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name="users")
     subscribed_on = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    recurring = models.BooleanField(default=False)
     is_cancelled = models.BooleanField(default=False)
     cancelled_at = models.DateTimeField(default=None, null=True)
+    expires_at = models.DateTimeField(default=None, null=True)
 
     def cancel_subscription(self):
         self.is_cancelled = True
@@ -37,9 +41,11 @@ class UserPayment(models.Model):
                 ('fluidpay', 'FluidPay'),
             )
             
-    payment_id = models.CharField(max_length=20, null=True, default=None)
+    payment_id = models.CharField(max_length=60, null=True, default=None)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="payment")
     payment_gateway = models.CharField(max_length=30, choices=PAYMENT_CHOICES)
+    subscription_id = models.CharField(max_length=60)
+    user_subscription = models.ForeignKey(UserSubscription, on_delete=models.CASCADE, related_name="user_payments")
     price = models.FloatField(default=0)
     paid_at = models.DateTimeField()
     expires_at = models.DateTimeField()
@@ -47,17 +53,13 @@ class UserPayment(models.Model):
     def __str__(self):
         return self.payment_id
 
+    @transaction.atomic()
     def save(self, *args, **kwargs):
         if not self.id:
             now_time = datetime.now()
             self.paid_at = now_time
-            plan = self.user.subscription_plan.plan
-            if plan.duration == 1:
-                self.expires_at = now_time + relativedelta(months=1)
-            else:
-                year = now_time.year
-                self.expires_at = datetime.strptime(f"{year}-11-30 11:59:59PM", "%Y-%m-%d %I:%M:%S%p")
-        
+        self.user_subscription.expires_at = self.expires_at
+        self.user_subscription.save()
         super().save(*args, **kwargs)
 
 

@@ -67,11 +67,14 @@ environments:
       FLUID_PAY_PROCESSOR_ID: /copilot/apps/staging/secrets/fluid_pay_processor_id
       FLUID_PAY_PRODUCTION_URL: /copilot/apps/staging/secrets/fluid_pay_production_url
       FLUID_PAY_SANDBOX_URL: /copilot/apps/staging/secrets/fluid_pay_sandbox_url
+      FLUID_PAY_WEBHOOK_SIGNATURE: /copilot/apps/staging/secrets/fluid_pay_webhook_signature
       FROM_EMAIL: /copilot/apps/staging/secrets/from_email
       FRONTEND_DOMAIN: /copilot/apps/staging/secrets/frontend_domain
       PAYPAL_CLIENT_ID: /copilot/apps/staging/secrets/paypal_client_id
       PAYPAL_SECRET_KEY: /copilot/apps/staging/secrets/paypal_secret_key
       PAYPAL_TEST: /copilot/apps/staging/secrets/paypal_test
+      PAYPAL_WEBHOOK_ID: /copilot/apps/staging/secrets/paypal_webhook_id
+      PAYPAL_RETURN_URL: /copilot/apps/staging/secrets/paypal_return_url
       SECRET_KEY: /copilot/apps/staging/secrets/secret_key
       STORM_DB_HOST: /copilot/apps/staging/secrets/storm_db_host
       STORM_DB_NAME: /copilot/apps/staging/secrets/storm_db_name
@@ -110,11 +113,14 @@ environments:
       FLUID_PAY_PROCESSOR_ID: /copilot/apps/prod/secrets/fluid_pay_processor_id
       FLUID_PAY_PRODUCTION_URL: /copilot/apps/prod/secrets/fluid_pay_production_url
       FLUID_PAY_SANDBOX_URL: /copilot/apps/prod/secrets/fluid_pay_sandbox_url
+      FLUID_PAY_WEBHOOK_SIGNATURE: /copilot/apps/prod/secrets/fluid_pay_webhook_signature
       FROM_EMAIL: /copilot/apps/prod/secrets/from_email
       FRONTEND_DOMAIN: /copilot/apps/prod/secrets/frontend_domain
       PAYPAL_CLIENT_ID: /copilot/apps/prod/secrets/paypal_client_id
       PAYPAL_SECRET_KEY: /copilot/apps/prod/secrets/paypal_secret_key
       PAYPAL_TEST: /copilot/apps/prod/secrets/paypal_test
+      PAYPAL_WEBHOOK_ID: /copilot/apps/prod/secrets/paypal_webhook_id
+      PAYPAL_RETURN_URL: /copilot/apps/prod/secrets/paypal_return_url
       SECRET_KEY: /copilot/apps/prod/secrets/secret_key
       STORM_DB_HOST: /copilot/apps/prod/secrets/storm_db_host
       STORM_DB_NAME: /copilot/apps/prod/secrets/storm_db_name

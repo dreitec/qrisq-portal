@@ -11,7 +11,7 @@
   <div class="page-content">
     <!--  -->
     <!-- section-content-1 -->
-    <div nz-row nzJustify="center" class="section-content-1">
+    <div nz-row nzJustify="center" class="section-content-1" *ngIf="!loading">
       <!--  -->
       <!-- col-1 -->
       <div nz-col class="column-1" nzSpan="12">
@@ -46,5 +46,11 @@
         <qr-contact-us-form></qr-contact-us-form>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="page-loading" *ngIf="loading">
+  <div class="spinner-container">
+    <nz-spin nzSimple [nzSize]="'large'" [nzTip]="loadingMessage"></nz-spin>
   </div>
 </div>

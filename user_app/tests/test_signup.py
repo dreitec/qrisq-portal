@@ -66,8 +66,7 @@ class SignupTestCase(APITestCase):
                     'feature': '', 
                     'price': None, 
                     'duration': None
-                }), 
-                'recurring': False, 
+                }),
                 'is_cancelled': False, 
                 'cancelled_at': None
                 }, 
