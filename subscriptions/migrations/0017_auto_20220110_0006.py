@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userpayment',
             name='user_subscription',
-            field=models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, related_name='user_payments', to='subscriptions.usersubscription'),
+            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='user_payments', to='subscriptions.usersubscription', null=True),
             preserve_default=False,
         ),
         migrations.AddField(
