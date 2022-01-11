@@ -45,10 +45,10 @@ class FluidPay(object):
         r.raise_for_status()
         return r.json()
 
-    def __get(self, endpoint, errorOn404=True, return_raw_response=False):
+    def __get(self, endpoint, errorOn400=True, return_raw_response=False):
         url = self.base_url + endpoint
         r = requests.get(url, headers=self.headers)
-        if r.status_code != 404 or errorOn404:
+        if r.status_code != 400 or errorOn400:
             r.raise_for_status()
         if return_raw_response:
             return r
@@ -124,8 +124,8 @@ class FluidPay(object):
         user_email = user.email
         user_subscription = UserSubscription.objects.get(user_id=user.id)
 
-        response = self.__get("/vault/{}".format(customer_id), errorOn404=False, return_raw_response=True)
-        if response.status_code == 404:
+        response = self.__get("/vault/{}".format(customer_id), errorOn400=False, return_raw_response=True)
+        if response.status_code == 400:
 
             # Customer doesn't exist? Need to create it
             body = {
