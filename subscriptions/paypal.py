@@ -82,15 +82,17 @@ class PayPal:
         body = {
             "custom_id": user.id,
             "plan_id": paypal_plan_id,
-            "payment_preferences": {
-                "setup_fee": {
-                    "value": round(initial_charge_multiplier * plan_cost, 2),
-                    "currency_code": "USD"
+            "plan": {
+                "payment_preferences": {
+                    "setup_fee": {
+                        "value": round(initial_charge_multiplier * plan_cost, 2),
+                        "currency_code": "USD"
+                    }
                 }
             }
         }
         if len(self.paypal_return_url) > 0:
-            body["appliction_context"] = {
+            body["application_context"] = {
                 "return_url": self.paypal_return_url
             }
 
