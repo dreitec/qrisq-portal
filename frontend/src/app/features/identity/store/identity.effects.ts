@@ -496,7 +496,7 @@ export class IdentityEffects {
     this.actions$.pipe(
       ofType(actionVerifyPayment),
       switchMap((action) =>
-        this.paymentService.verifySubscriptionPayment().pipe(
+        this.paymentService.verifySubscriptionPayment(action.verifySubscriptionPaymentRequest).pipe(
           take(1),
           map((response: VerifySubscriptionPaymentResponse) => {
             return actionProcessPaymentRequestSuccess();

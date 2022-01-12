@@ -23,3 +23,7 @@ export interface PaypalCreateSubscriptionResponse {
 export interface VerifySubscriptionPaymentResponse {
   expired: boolean;
 }
+
+export interface VerifySubscriptionPaymentRequest {
+  paypalSubscriptionId?: string;
+}

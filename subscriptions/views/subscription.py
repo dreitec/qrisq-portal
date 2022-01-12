@@ -115,13 +115,26 @@ class VerifySubscriptionPaymentView(APIView):
         user_id = request.user.id
         max_time_seconds = 90
         stop_time = time.time() + max_time_seconds
+
+        # Wait for a payment to be completed (this may take a few moments because of webhooks).
         while time.time() < stop_time:
+            # Process the subscription id returned from paypal, if applicable.  This lets us confirm payment immediately
+            # rather than wait on webhooks for the first payment, which can take a couple of minutes and potentially leave
+            # the user stuck
+            paypal_subscription_id = request.GET.get('paypal_subscription_id', None)
+            if paypal_subscription_id is not None:
+                paypal_handler = subscriptions.paypal.PayPal()
+                user_payment = paypal_handler.process_initial_subscription_payment(request.user, paypal_subscription_id)
+                if user_payment is not None:
+                    user_payment.save()
+
+
             user_subscription = UserSubscription.objects.get(user_id=user_id)
-            logger.warning(user_subscription)
             if user_subscription.expires_at is not None and user_subscription.expires_at.timestamp() > datetime.now().timestamp():
                 return Response({
                     "expired": False
                 })
+            time.sleep(3)
 
         raise Exception("User's payment could not be confirmed.")
 

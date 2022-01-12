@@ -8,12 +8,10 @@ import logging
 import json
 
 from django.conf import settings
-
+from django.core.exceptions import ObjectDoesNotExist
 from paypalcheckoutsdk.core import SandboxEnvironment, LiveEnvironment, PayPalHttpClient
-from paypalcheckoutsdk.payments import CapturesGetRequest, CapturesRefundRequest
-from paypalhttp.http_error import HttpError
-
 import subscriptions.subscription_date_utils as subscription_date_utils
+from dateutil import relativedelta
 
 from subscriptions.models import PaymentRefund, UserSubscription, UserPayment, SubscriptionPlan
 from user_app.models import User
@@ -133,36 +131,79 @@ class PayPal:
         event_type = hook["event_type"]
         if event_type == "PAYMENT.SALE.COMPLETED" and "resource" in hook and "billing_agreement_id" in hook["resource"] \
                 and hook["resource"]["billing_agreement_id"] is not None:
+            amount_paid = hook["resource"]["amount"]["total"]
+            transaction_id = hook["resource"]["id"]
             subscription_id = hook["resource"]["billing_agreement_id"]
             subscription = self.get_subscription(subscription_id)
-            user_id = subscription["custom_id"]
-            paypal_plan_id = subscription["plan_id"]
-            amount_paid = hook["resource"]["amount"]["total"]
-            user = User.objects.get(id=user_id)
-            user_subscription = UserSubscription.objects.get(user_id=user_id)
-            plan = SubscriptionPlan.objects.get(paypal_plan_id=paypal_plan_id)
+            return self.__construct_payment_from_subscription(amount_paid, transaction_id, subscription)
+        return None
+
+    def __construct_payment_from_subscription(self, amount_paid, transaction_id, subscription):
+        try:
+            existing_user_payment = UserPayment.objects.get(payment_id=transaction_id)
+        except ObjectDoesNotExist:
+            existing_user_payment = None
+
+        if existing_user_payment is None:
+            subscription_id = subscription["id"]
             expires_at = subscription["billing_info"]["next_billing_time"]
             expires_at = dateutil.parser.isoparse(expires_at)
-            payment_id = hook["id"]
+            user_id = subscription["custom_id"]
+            paypal_plan_id = subscription["plan_id"]
             payment_gateway = "paypal"
+
+            user = User.objects.get(id=user_id)
+            plan = SubscriptionPlan.objects.get(paypal_plan_id=paypal_plan_id)
+            user_subscription = UserSubscription.objects.get(user_id=user_id)
+
             if subscription_date_utils.should_suspend_subscription(plan.name.upper(), expires_at):
                 expires_at = subscription_date_utils.get_next_start_of_hurricane_season()
                 reason = "We are temporarily pausing billing on your QRISQ subscription until the next hurricane season begin on June 1st. You may continue to access the qrisq website in the meantime."
                 self.suspend_subscription(subscription_id, reason)
-            user_payment = UserPayment(
+
+            return UserPayment(
                 user=user,
-                payment_id=payment_id,
+                payment_id=transaction_id,
                 payment_gateway=payment_gateway,
                 price=amount_paid,
                 subscription_id=subscription_id,
                 user_subscription=user_subscription,
                 expires_at=expires_at.date().isoformat() + "T11:59:59Z"
             )
-            return user_payment
+
+        return None
+
+    def process_initial_subscription_payment(self, user, subscription_id):
+        subscription = self.get_subscription(subscription_id)
+        subscrption_user_id = str(subscription["custom_id"])
+        user_id = str(user.id)
+        if subscrption_user_id != user_id:
+            raise Exception("Subscription {} exists in paypal, but it doesn't belong to user {}.".format(subscription_id, user.id))
+        start_date = datetime.date.today() - relativedelta.relativedelta(days=1)
+        end_date = datetime.date.today() + relativedelta.relativedelta(days=1)
+        subscription_transactions = self.get_subscription_transactions(subscription_id, start_date, end_date)
+        recent_completed_transaction = None
+        if "transactions" not in subscription_transactions:
+            return None
+
+        for transaction in subscription_transactions["transactions"]:
+            if transaction["status"] == "COMPLETED":
+                recent_completed_transaction = transaction
+                break
+        if recent_completed_transaction is not None:
+            transaction_id = recent_completed_transaction["id"]
+            amount_paid = recent_completed_transaction["amount_with_breakdown"]["gross_amount"]["value"]
+            return self.__construct_payment_from_subscription(amount_paid, transaction_id, subscription)
+
         return None
 
     def get_subscription(self, subscription_id):
         return self.__get("/v1/billing/subscriptions/{}".format(subscription_id))
+
+    def get_subscription_transactions(self, subscription_id, start_date, end_date):
+        start_date_str = start_date.isoformat() + "T00:00:00.000Z"
+        end_date_str = end_date.isoformat() + "T00:00:00.000Z"
+        return self.__get("/v1/billing/subscriptions/{}/transactions?start_time={}&end_time={}".format(subscription_id, start_date_str, end_date_str))
 
     def resume_subscription(self, subscription_id, reason):
         body = {

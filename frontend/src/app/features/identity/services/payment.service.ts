@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '@env';
 import {
   PaymentInformation,
-  PaypalPaymentInformation,
+  PaypalPaymentInformation, VerifySubscriptionPaymentRequest,
 } from '../models/Payment.models';
 
 @Injectable({
@@ -48,9 +48,10 @@ export class QrPaymentService {
     );
   }
 
-  verifySubscriptionPayment() {
+  verifySubscriptionPayment(verifySubscriptionPaymentRequest: VerifySubscriptionPaymentRequest) {
     return this.httpClient.get(
-      environment.API_URL + '/verify-subscription-payment',
+      `${environment.API_URL}/verify-subscription-payment${verifySubscriptionPaymentRequest.paypalSubscriptionId
+        ? `?paypal_subscription_id=${encodeURIComponent(verifySubscriptionPaymentRequest.paypalSubscriptionId)}` : ``}`
     );
   }
 

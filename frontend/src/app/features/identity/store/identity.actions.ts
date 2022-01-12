@@ -9,7 +9,7 @@ import { GeocodedAddress } from '../models/Geocoding.models';
 import { HttpSignInResponse } from '../models/HttpSignInResponse.models';
 import {
   PaymentInformation, PaypalCreateSubscriptionResponse,
-  PaypalPaymentInformation,
+  PaypalPaymentInformation, VerifySubscriptionPaymentRequest,
 } from '../models/Payment.models';
 import { UpdateGeolocationRequestParameters } from '../models/UpdateGeolocation.models';
 import { SignUpState } from './identity.models';
@@ -213,7 +213,8 @@ export const actionResetPayment = createAction(
 );
 
 export const actionVerifyPayment = createAction(
-  '[Identity] Process Verify Payment'
+  '[Identity] Process Verify Payment',
+  props<{ verifySubscriptionPaymentRequest: VerifySubscriptionPaymentRequest }>()
 );
 
 export const actionVerifyPaymentSuccess = createAction(
