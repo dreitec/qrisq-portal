@@ -1,3 +1,5 @@
+import time
+
 import requests
 import json
 import logging
@@ -30,13 +32,22 @@ class FluidPay(object):
             'Authorization': self.api_key
         }
 
-    def __post(self, endpoint, body, raw=False):
+    def __post(self, endpoint, body, raw=False, attempt=1, retries=0):
         url = self.base_url + endpoint
-        if raw:
-            r = requests.post(url, headers=self.headers, data=body)
-        else:
-            r = requests.post(url, headers=self.headers, json=body)
-        r.raise_for_status()
+        try:
+            if raw:
+                r = requests.post(url, headers=self.headers, data=body)
+            else:
+                r = requests.post(url, headers=self.headers, json=body)
+            r.raise_for_status()
+        except:
+            if attempt <= retries:
+                logging.info("Retry request to {}".format(url))
+                time.sleep(attempt)
+                return self.__post(endpoint, body, raw, attempt=attempt+1, retries=retries)
+            else:
+                raise
+
         return r.json()
 
     def __delete(self, endpoint):
@@ -148,12 +159,12 @@ class FluidPay(object):
                     "email": user_email
                 }
             }
-            self.__post("/vault/customer", body)
+            response = self.__post("/vault/customer", body, retries=3)
         else:
             response.raise_for_status()
             update_payment_method = True
+            response = response.json()
 
-        response = response.json()
         payment_method_id = response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
         billing_address_id = response["data"]["data"]["customer"]["addresses"][0]["id"]
         today = datetime.date.today()
@@ -188,6 +199,16 @@ class FluidPay(object):
                     "expiration_date": validated_data.get('expiration_date'),
                     "cvc": validated_data.get("cvc")
                 }
+            },
+            "billing_address": {
+                "first_name": validated_data.get("first_name"),
+                "last_name": validated_data.get("last_name"),
+                "line_1": validated_data.get("billing_address"),
+                "city": validated_data.get("city"),
+                "state": validated_data.get("state"),
+                "country": "US",
+                "postal_code": validated_data.get("zip_code"),
+                "email": user_email
             }
         }
         response = self.__post("/transaction", transaction_data)
@@ -195,7 +216,7 @@ class FluidPay(object):
         payment_gateway = "fluidpay"
         response_code = response["data"]["response_code"]
 
-        if not settings.FLUIDPAY_TEST and response_code != self.APPROVAL_RESPONSE_CODE:
+        if response_code != self.APPROVAL_RESPONSE_CODE:
             raise Exception("Response code of {} was received from the server, but expected {}".format(response_code, self.APPROVAL_RESPONSE_CODE))
 
         # Create the subscription record
