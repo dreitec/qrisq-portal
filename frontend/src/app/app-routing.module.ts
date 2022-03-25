@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 
 // pages
 import { QrMainLayoutComponent } from './pages/main/main.component';
-import { QrAdminLayoutComponent } from './pages/admin/admin.component';
 import { QrAccountCreatedPageComponent } from './features/identity/pages/account-created/account-created.component';
 import { QrCheckServiceAreaPageComponent } from './features/identity/pages/check-service-area/check-service-area.component';
 import { QrFaqPageComponent } from './pages/storm-data/faq-page/faq-page.component';
@@ -24,7 +23,6 @@ import { QrPaymentPageComponent } from './features/identity/pages/payment/paymen
 import { QrRegisterPageComponent } from './features/identity/pages/register/register-page.component';
 import { QrServiceAreaAvailablePageComponent } from './features/identity/pages/service-area-available/service-area-available.component';
 import { QrStormPageComponent } from './features/storm/pages/storm/storm-page.component';
-import { QrAdminPanelPageComponent } from './features/admin/pages/admin-panel/admin-panel.component';
 import { QrStormFreePageComponent } from './features/storm/pages/storm-free/storm-free.component';
 import { QrServiceAreaUnavailablePageComponent } from './features/identity/pages/service-area-unavailable/service-area-unavailable.component';
 import { QrContactUsPageComponent } from './features/contact-us/pages/contact-us/contact-us.component';
@@ -186,8 +184,7 @@ const routes: Routes = [
 
   {
     path: 'admin',
-    component: QrAdminLayoutComponent,
-    children: [],
+    loadChildren: () => import('./features/admin/admin.module').then(({ QrAdminModule }) => QrAdminModule)
   },
 
   /* ------------------------------------ - ----------------------------------- */

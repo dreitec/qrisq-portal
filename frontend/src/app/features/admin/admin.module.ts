@@ -2,7 +2,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 
 // modules
 import { QrCoreModule } from '@app/core/core.module';
@@ -13,7 +12,15 @@ import { QrAdminService } from './services/admin.service';
 // ngx-page-scroll-core
 import { NgxPageScrollCoreModule } from 'ngx-page-scroll-core';
 
+import { QrAdminRoutingModule } from './admin-routing.module';
+
 // pages
+import { QrAdminLayoutComponent } from '@app/features/admin/pages/layout/layout.component';
+import { QrAdminDashboardComponent } from './pages/dashboard/dashboard.component';
+import { QrAdminAdministratorsComponent } from './pages/administrators/administrators.component';
+import { QrAdminUsersComponent } from './pages/users/users.component';
+import { QrAdminBillingComponent } from './pages/billing/billing.component';
+import { QrAdminSettingsComponent } from './pages/settings/settings.component';
 import { QrAdminPanelPageComponent } from './pages/admin-panel/admin-panel.component';
 
 // components
@@ -25,6 +32,12 @@ import { QrAdminPanelSubscriptionPlanInsertComponent } from './components/qr-adm
 @NgModule({
   declarations: [
     QrAdminPanelPageComponent,
+    QrAdminLayoutComponent,
+    QrAdminDashboardComponent,
+    QrAdminAdministratorsComponent,
+    QrAdminUsersComponent,
+    QrAdminBillingComponent,
+    QrAdminSettingsComponent,
     QrAdminPanelClientUserSearchComponent,
     QrAdminPanelSubscriptionPlanSearchComponent,
     QrAdminPanelSubscriptionPlanUpdateComponent,
@@ -40,8 +53,18 @@ import { QrAdminPanelSubscriptionPlanInsertComponent } from './components/qr-adm
     QrSharedModule,
 
     NgxPageScrollCoreModule,
+
+    QrAdminRoutingModule,
   ],
-  exports: [QrAdminPanelPageComponent],
+  exports: [
+    QrAdminPanelPageComponent,
+    QrAdminDashboardComponent,
+    QrAdminAdministratorsComponent,
+    QrAdminUsersComponent,
+    QrAdminBillingComponent,
+    QrAdminSettingsComponent,
+    QrAdminLayoutComponent,
+  ],
   providers: [QrAdminService],
 })
 export class QrAdminModule {}
