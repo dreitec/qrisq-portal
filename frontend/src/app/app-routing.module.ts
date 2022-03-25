@@ -184,7 +184,11 @@ const routes: Routes = [
 
   {
     path: 'admin',
-    loadChildren: () => import('./features/admin/admin.module').then(({ QrAdminModule }) => QrAdminModule)
+    loadChildren: () =>
+      import('./features/admin/admin.module').then(
+        ({ QrAdminModule }) => QrAdminModule
+      ),
+    canActivate: [QrAdminGuard],
   },
 
   /* ------------------------------------ - ----------------------------------- */

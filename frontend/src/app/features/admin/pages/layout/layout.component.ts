@@ -1,4 +1,11 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'qr-admin-layout',
@@ -6,7 +13,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./layout.component.scss'],
 })
 export class QrAdminLayoutComponent {
+  public isMenuCollapsed = true;
+  @Output() logout = new EventEmitter<Event>();
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  onLogout($event) {
+    this.logout.emit($event);
+  }
 }

@@ -4,7 +4,22 @@
       <img src="/assets/images/qrisq-logo-3d.png" alt="Qrisq" class="logo" />
     </a>
 
-    <i nz-icon nzType="down" nzTheme="outline"></i>
+    <div class="header-title"></div>
+
+    <a nz-dropdown [nzDropdownMenu]="menu" class="user-menu">
+      Hi Admin
+      <i nz-icon nzType="down"></i>
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item>
+          <a routerLink="/">Web site</a>
+        </li>
+        <li nz-menu-item>
+          <a (click)="onLogout($event)">Logout</a>
+        </li>
+      </ul>
+    </nz-dropdown-menu>
   </div>
 
   <div class="admin-sidebar">

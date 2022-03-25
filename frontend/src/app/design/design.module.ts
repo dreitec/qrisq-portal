@@ -31,6 +31,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 import { CreditCardOutline } from '@ant-design/icons-angular/icons';
 import { InfoCircleOutline } from '@ant-design/icons-angular/icons';
@@ -77,6 +78,7 @@ import { en_US } from 'ng-zorro-antd/i18n';
     NzSliderModule,
     NzSpaceModule,
     NzPopconfirmModule,
+    NzDropDownModule,
   ],
   imports: [NzIconModule.forRoot(icons)],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
