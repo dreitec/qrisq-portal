@@ -8,17 +8,19 @@
   </div>
 
   <div class="admin-sidebar">
-    <a [routerLink]="['/admin']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <a
+      routerLink="/admin"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       Dashboard
     </a>
-    <a [routerLink]="['/admin/administrators']" routerLinkActive="active">
+    <a routerLink="/admin/administrators" routerLinkActive="active">
       Administrators
     </a>
-    <a [routerLink]="['/admin/users']" routerLinkActive="active"> Users </a>
-    <a [routerLink]="['/admin/billing']" routerLinkActive="active"> Billing </a>
-    <a [routerLink]="['/admin/settings']" routerLinkActive="active">
-      Settings
-    </a>
+    <a routerLink="/admin/users" routerLinkActive="active"> Users </a>
+    <a routerLink="/admin/billing" routerLinkActive="active"> Billing </a>
+    <a routerLink="/admin/settings" routerLinkActive="active"> Settings </a>
   </div>
 
   <div class="admin-content">
