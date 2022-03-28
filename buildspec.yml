@@ -4,5 +4,6 @@ version: 0.2
 phases:
   build:
     commands:
-      - VERSION=(git rev-parse --short HEAD)
-      - ./build-and-deploy.sh
+      - VERSION=$(git rev-parse --short HEAD)
+      - chmod +x build-and-deploy.sh
+      - ./build-and-deploy.sh $VERSION

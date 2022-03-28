@@ -4,8 +4,7 @@ set -e
 AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query Account --output text)
 AWS_REGION="us-east-1"
 
-#VERSION=$1
-VERSION=$(git rev-parse --short HEAD)
+VERSION=$1
 
 DOCKER_TAG_UI=${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_REGION}.amazonaws.com/qrisq-ui:${VERSION}
 DOCKER_TAG_API=${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_REGION}.amazonaws.com/qrisq-api:${VERSION}
