@@ -1,4 +1,4 @@
-FROM python:3.9-alpine
+FROM public.ecr.aws/docker/library/python:3.9-alpine
 
 ENV PYTHONUNBUFFERED 1
 

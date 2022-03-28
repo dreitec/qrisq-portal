@@ -1,4 +1,4 @@
-FROM nginx:1.20.1
+FROM public.ecr.aws/nginx/nginx:1.20.2
 
 # Add nodejs
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
