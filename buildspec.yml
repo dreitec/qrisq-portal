@@ -4,6 +4,7 @@ version: 0.2
 phases:
   build:
     commands:
-      - VERSION=$(git rev-parse --short HEAD)
+      - PIPELINE_EXECUTION_ID=$(aws codepipeline get-pipeline-state --region ${AWS_REGION} --name my-pipeline --query 'stageStates[?actionStates[?latestExecution.externalExecutionId==`'${CODEBUILD_BUILD_ID}'`]].latestExecution.pipelineExecutionId' --output text)
+        SOURCE_REPO_COMMIT_HASH=$(aws codepipeline get-pipeline-execution --pipeline-name my-pipeline --pipeline-execution-id $PIPELINE_EXECUTION_ID --query "pipelineExecution.artifactRevisions[?name=='src'].revisionId" --output text)
       - chmod +x build-and-deploy.sh
-      - ./build-and-deploy.sh $VERSION
+      - ./build-and-deploy.sh $SOURCE_REPO_COMMIT_HASH
