@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qrisq-ui
+  namespace: qrisq
+  labels:
+    app: qrisq-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qrisq-ui
+  template:
+    metadata:
+      labels:
+        app: qrisq-ui
+    spec:
+      containers:
+        - name: qrisq-ui
+          image: {{DOCKER_IMAGE_UI}}
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: QRISQ_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: qrisq
+                  key: QRISQ_ENV
+          ports:
+            - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qrisq-api
+  namespace: qrisq
+  labels:
+    app: qrisq-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qrisq-api
+  template:
+    metadata:
+      labels:
+        app: qrisq-api
+    spec:
+      containers:
+        - name: qrisq-api
+          image: {{DOCKER_IMAGE_API}}
+          env:
+            - name: QRISQ_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: qrisq
+                  key: QRISQ_ENV
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: LOG_LEVEL
+              value: debug
+          ports:
+            - containerPort: 8000

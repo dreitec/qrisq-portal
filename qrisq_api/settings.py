@@ -7,6 +7,46 @@ from django.urls import reverse_lazy
 
 from decouple import config, Csv
 
+
+import os
+
+import boto3
+
+
+if "QRISQ_ENV" in os.environ and os.environ["QRISQ_ENV"].lower() in ["dev", "staging", "prod"]:
+    def get_resources_from(ssm_details):
+        results = ssm_details['Parameters']
+        resources = [result for result in results]
+        next_token = ssm_details.get('NextToken', None)
+        return resources, next_token
+
+    client = boto3.client('ssm')
+    param_prefix = "/copilot/apps/{}/secrets/".format(os.environ["QRISQ_ENV"].lower())
+    next_token = ' '
+    resources = []
+    while next_token is not None:
+        ssm_details = client.describe_parameters(MaxResults=50,
+                                                 ParameterFilters=[{
+                                                     "Key": "Name",
+                                                     "Option": "BeginsWith",
+                                                     "Values": [param_prefix]
+                                                 }],
+                                                 NextToken=next_token)
+        current_batch, next_token = get_resources_from(ssm_details)
+        resources += current_batch
+
+    for param in resources:
+        param_name = param["Name"]
+        response = client.get_parameter(Name=param_name,WithDecryption=True)
+        param_value = response["Parameter"]["Value"]
+        env_var_name = param_name[param_name.rindex("/")+1:].upper()
+        print("Set {} from SSM {}".format(env_var_name, param_name))
+        os.environ[env_var_name] = param_value
+else:
+    print("Not reading data from parameter store.")
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -184,7 +224,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True,
         },
         'core': {

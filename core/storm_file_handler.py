@@ -51,7 +51,7 @@ def get_latest_files():
     for fl in file_list:
         # conditional statement to remove folder name from the list
         key = fl.get('Key').replace(latest_folder, '')
-        if key != '/':
+        if key != '/' and not key.endswith(".gz"):
             filename = fl.get('Key').split('/')[-1]
             s3_files.add(filename)
             s3_files_map.append({

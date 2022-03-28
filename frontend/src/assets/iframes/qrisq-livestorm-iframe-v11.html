@@ -10,6 +10,8 @@
       rel="stylesheet"
       href="./Qrisq Livestorm Iframe Version 1.0_files/leaflet.css"
     />
+    <script src="/assets/environment.js"></script>
+    <script src="./Qrisq Livestorm Iframe Version 1.0_files/aws-sdk-2.2.32.min.js.download"></script>
     <script src="./Qrisq Livestorm Iframe Version 1.0_files/aws-sdk-2.2.32.min.js.download"></script>
     <script src="./Qrisq Livestorm Iframe Version 1.0_files/leaflet.js.download"></script>
     <script src="./Qrisq Livestorm Iframe Version 1.0_files/js/jquery-1.6.3.min.js"></script>
@@ -35,9 +37,11 @@
       var year_storm_advisory_utc_array = null;
       var most_recent_year_storm_advisory_utc_index = null;
 
+      var identityPoolId = window.env.COGNITO_IDENTITY_POOL
+
       AWS.config.region = 'us-east-1'; // Region
       AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'us-east-1:eb7e5361-02a5-4b2a-b8e0-786f0f24a850',
+        IdentityPoolId: identityPoolId,
       });
 
       var lambda = new AWS.Lambda();
@@ -1197,7 +1201,7 @@
     <!--
 	<div id="container_top">
 	</div>
-	
+
 	<div id="container_middle">
 	</div>
 	-->

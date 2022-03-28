@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { selectSignedUser } from '@app/features/identity/store/identity.selectors';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { StormData } from '../../models/storm.models';
-import { actionStormDataFetchRequest } from '../../store/storm.actions';
-import { selectStormData } from '../../store/storm.selectors';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {StormData} from '../../models/storm.models';
+import {DomSanitizer} from '@angular/platform-browser';
+import {environment} from '@env';
 import * as AWS from 'aws-sdk';
+
 
 @Component({
   selector: 'qr-storm-free-page',
@@ -29,7 +27,7 @@ export class QrStormFreePageComponent implements OnInit {
     strictBounds: true,
   };
   isDataLoaded = false;
-
+  identityPoolId: string = environment.COGNITO_IDENTITY_POOL;
   stormData: StormData;
   stormName: string;
   stormAdv: string;
@@ -40,12 +38,12 @@ export class QrStormFreePageComponent implements OnInit {
     address: string;
   };
 
-  constructor(private store: Store, private router: Router) {}
+  constructor(private store: Store, private router: Router, private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     AWS.config.region = 'us-east-1';
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: 'us-east-1:eb7e5361-02a5-4b2a-b8e0-786f0f24a850',
+      IdentityPoolId: this.identityPoolId
     });
     this.getStormData();
     // this.store.dispatch(actionStormDataFetchRequest({ freeMode: true }));
@@ -65,7 +63,7 @@ export class QrStormFreePageComponent implements OnInit {
   getStormData() {
     AWS.config.region = 'us-east-1';
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: 'us-east-1:eb7e5361-02a5-4b2a-b8e0-786f0f24a850',
+      IdentityPoolId: this.identityPoolId
     });
     var lambda = new AWS.Lambda();
     var input;

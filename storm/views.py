@@ -83,9 +83,18 @@ class WindDataView(APIView):
         get_latest_files()
 
         files = os.listdir('storm_files')
-        wind_files = sorted(filter(lambda fil: fil.startswith('wind'), files))
+        #wind_files = sorted(filter(lambda fil: fil.startswith('wind'), files))
+
+        json_file = None
+        js_file = None
+        for file in files:
+            if file.startswith("wind") and file.endswith(".json"):
+                json_file = file
+            elif file.startswith("wind") and file.endswith(".js"):
+                js_file = file
+
         response_data = {
-            'js_data': wind_js_parser(f"storm_files/{wind_files[0]}"),
-            'json_data': json.dumps(compressed_geojson_parser(f"storm_files/{wind_files[1]}"))
+            'js_data': wind_js_parser(f"storm_files/{js_file}"),
+            'json_data': json.dumps(compressed_geojson_parser(f"storm_files/{json_file}"))
         }
         return Response(response_data)

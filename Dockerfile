@@ -17,3 +17,9 @@ ADD requirements.txt /qrisq/
 RUN pip install -r /qrisq/requirements.txt
 
 COPY ./ /qrisq
+
+RUN pip install gunicorn
+
+EXPOSE 8000
+
+ENTRYPOINT ["sh", "/qrisq/run_production.sh"]
