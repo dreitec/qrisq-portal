@@ -8,7 +8,8 @@ phases:
       - chmod +x ./kubectl
       - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
       - kubectl version --short --client
-      - PIPELINE_EXECUTION_ID=$(aws codepipeline get-pipeline-state --region ${AWS_REGION} --name my-pipeline --query 'stageStates[?actionStates[?latestExecution.externalExecutionId==`'${CODEBUILD_BUILD_ID}'`]].latestExecution.pipelineExecutionId' --output text)
-        SOURCE_REPO_COMMIT_HASH=$(aws codepipeline get-pipeline-execution --pipeline-name my-pipeline --pipeline-execution-id $PIPELINE_EXECUTION_ID --query "pipelineExecution.artifactRevisions[?name=='src'].revisionId" --output text)
+      - aws eks update-kubeconfig --name qrisq-${QRISQ_ENV}-clsuter
+      - PIPELINE_EXECUTION_ID=$(aws codepipeline get-pipeline-state --region ${AWS_REGION} --name qrisq-portal --query 'stageStates[?actionStates[?latestExecution.externalExecutionId==`'${CODEBUILD_BUILD_ID}'`]].latestExecution.pipelineExecutionId' --output text)
+        SOURCE_REPO_COMMIT_HASH=$(aws codepipeline get-pipeline-execution --pipeline-name qrisq-portal --pipeline-execution-id $PIPELINE_EXECUTION_ID --query "pipelineExecution.artifactRevisions[?name=='src'].revisionId" --output text)
       - chmod +x build-and-deploy.sh
       - ./build-and-deploy.sh $SOURCE_REPO_COMMIT_HASH
