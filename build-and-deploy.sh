@@ -20,12 +20,12 @@ DOCKER_TAG_API=${API_IMAGE}:${VERSION}
 
 PROCESSING_TEMPLATE=$(cat deployment.yaml | sed "s|{{DOCKER_IMAGE_UI}}|${DOCKER_TAG_UI}|g" | sed "s|{{DOCKER_IMAGE_API}}|${DOCKER_TAG_API}|g")
 
-docker build . -t ${DOCKER_TAG_API}
+docker build . -t ${DOCKER_TAG_API} --cache-from ${API_IMAGE}:${MOST_RECENT_API}
 docker push ${DOCKER_TAG_API}
 
 cd frontend
 
-docker build . -t ${DOCKER_TAG_UI}
+docker build . -t ${DOCKER_TAG_UI} --cache-from ${UI_IMAGE}:${MOST_RECENT_UI}
 docker push ${DOCKER_TAG_UI}
 
 echo "$PROCESSING_TEMPLATE" | kubectl apply -f -
