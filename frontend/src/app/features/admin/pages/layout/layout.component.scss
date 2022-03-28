@@ -32,17 +32,16 @@
   top: 70px;
   bottom: 0;
   left: 0;
-  width: 200px;
-  padding-top: 20px;
+  width: 180px;
+  padding-top: 10px;
   background: #f3f3f3;
 
   a {
     display: flex;
     align-items: center;
-    height: 50px;
+    height: 45px;
     padding: 0 25px;
     color: #000;
-    text-decoration: none;
 
     &.active {
       font-weight: 600;
@@ -51,7 +50,8 @@
 }
 
 .admin-content {
-  width: calc(100% - 200px);
+  width: calc(100% - 180px);
   margin-top: 70px;
-  margin-left: 200px;
+  margin-left: 180px;
+  padding: 20px;
 }
