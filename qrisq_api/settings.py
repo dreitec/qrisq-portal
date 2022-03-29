@@ -220,7 +220,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': log_file,
+            'filename': qrisq_log,
             'when': 'midnight',
             'backupCount': 50,
             'formatter': 'verbose',
