@@ -192,6 +192,11 @@ else:
         }
     }
 
+# I don't even know why we are using log file on a server when Cloudwatch exists, but I'm leaving this in to preserve the old implementation.
+qrisq_log = "logs/qrisq.log"
+os.makedirs("logs", exist_ok=True)
+log_file = Path(qrisq_log)
+log_file.touch(exist_ok=True)
 
 # Logger
 LOGGING = {
@@ -215,7 +220,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': 'logs/qrisq.log',
+            'filename': log_file,
             'when': 'midnight',
             'backupCount': 50,
             'formatter': 'verbose',
