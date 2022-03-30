@@ -1,0 +1,31 @@
+.header {
+  display: flex;
+  align-items: center;
+
+  h5 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    margin-right: auto;
+  }
+
+  .ant-input-affix-wrapper {
+    max-width: 200px;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+
+  .ant-select {
+    margin-right: 20px;
+  }
+
+  > button {
+    margin-left: auto;
+  }
+}
+
+.save {
+  margin-right: 8px;
+}
