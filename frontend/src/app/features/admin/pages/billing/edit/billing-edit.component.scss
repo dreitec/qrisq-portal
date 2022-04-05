@@ -1,0 +1,25 @@
+.form {
+  margin-top: 20px;
+
+  nz-date-picker {
+    width: 100%;
+  }
+}
+
+.discount {
+  display: flex;
+  align-items: center;
+
+  input {
+    margin-right: 10px;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+
+  button + button {
+    margin-left: 20px;
+  }
+}

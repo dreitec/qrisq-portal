@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
-interface ItemData {
-  id: string;
-  type: string;
-  city: string;
-  countriy: string;
-  state: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  discount: number;
-  users: number;
-}
+import { NzModalService } from 'ng-zorro-antd/modal';
+import moment from 'moment';
+import { AdminBillingItem } from '../../models/AdminUser.models';
+import { QrAdminBillingEditComponent } from './edit/billing-edit.component';
+import { states } from '../../store/states';
 
 @Component({
   selector: 'qr-admin-billing',
@@ -19,78 +11,103 @@ interface ItemData {
   styleUrls: ['./billing.component.scss'],
 })
 export class QrAdminBillingComponent implements OnInit {
-  editCache: { [key: string]: { edit: boolean; data: ItemData } } = {};
-  listOfData: ItemData[] = [];
-  selectedType = null;
-  selectedCity = null;
-  selectedCountry = null;
-  selectedState = null;
-  selectedStatus = null;
+  states = states;
+  data: AdminBillingItem[] = [];
+  items: AdminBillingItem[] = [];
+  filterType = '';
+  filterCity = '';
+  filterCountry = '';
+  filterState = '';
+  filterStatus = '';
 
-  constructor() {}
+  constructor(private modal: NzModalService) {}
 
-  ngOnInit(): void {
-    const data = [];
-    for (let i = 0; i < 100; i++) {
-      data.unshift({
-        id: `${i + 1}`,
-        type: ['Country', 'State', 'City'][Math.floor(Math.random() * 3)],
-        city: 'Slidell',
-        countriy: 'Pinellas',
-        state: 'Florida',
-        startDate: '3/29/22',
-        endDate: '',
-        status: ['Active', 'Pending'][Math.floor(Math.random() * 2)],
-        discount: Math.floor(Math.random() * 100),
-        users: Math.floor(Math.random() * 1000) + 1,
-      });
-    }
-    this.listOfData = data;
-    this.updateEditCache();
-  }
+  ngOnInit(): void {}
 
-  startEdit(id: string): void {
-    this.editCache[id].edit = true;
-  }
-
-  cancelEdit(id: string): void {
-    const index = this.listOfData.findIndex((item) => item.id === id);
-    this.editCache[id] = {
-      data: { ...this.listOfData[index] },
-      edit: false,
-    };
-  }
-
-  saveEdit(id: string): void {
-    const index = this.listOfData.findIndex((item) => item.id === id);
-    Object.assign(this.listOfData[index], this.editCache[id].data);
-    this.editCache[id].edit = false;
-  }
-
-  updateEditCache(): void {
-    this.listOfData.forEach((item) => {
-      this.editCache[item.id] = {
-        edit: false,
-        data: { ...item },
-      };
+  filterData() {
+    this.items = this.data.filter((item) => {
+      if (this.filterType) {
+        if (item.type !== this.filterType) return false;
+      }
+      const _city = this.filterCity.trim();
+      if (_city) {
+        if (!item.city.includes(_city)) return false;
+      }
+      const _country = this.filterCountry.trim();
+      if (_country) {
+        if (!item.country.includes(_country)) return false;
+      }
+      if (this.filterState) {
+        if (item.state !== this.filterState) return false;
+      }
+      if (this.filterStatus) {
+        if (item.status !== this.filterStatus) return false;
+      }
+      return true;
     });
   }
 
-  addRow(): void {
-    // this.listOfData = [
-    //   {
-    //     id: `${this.listOfData.length + 1}`,
-    //     type: '',
-    //     city: '',
-    //     countriy: '',
-    //     state: '',
-    //     startDate: '',
-    //     endDate: '',
-    //     status: '',
-    //     discount: 0,
-    //     users: 0,
-    //   },
-    //   ...this.listOfData,
-    // ];
+  clearFilters(): void {
+    this.filterType = '';
+    this.filterCity = '';
+    this.filterCountry = '';
+    this.filterState = '';
+    this.filterStatus = '';
+    this.filterData();
+  }
+
+  dateToString(date) {
+    return date ? moment(date).format('MM/DD/yy') : '';
+  }
+
+  discountToString(discount) {
+    return discount ? `${discount}%` : '';
+  }
+
+  showEdit(item?: AdminBillingItem): void {
+    const modal = this.modal.create({
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzFooter: null,
+      nzWidth: 600,
+      nzContent: QrAdminBillingEditComponent,
+      nzComponentParams: {
+        item,
+      },
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (!result) return;
+
+      const newItem: AdminBillingItem = {
+        ...result.data,
+        status: '',
+        users: 0,
+      };
+
+      if (newItem.id) {
+        this.data = this.data.map((item) =>
+          item.id === newItem.id ? newItem : item
+        );
+      } else {
+        newItem.id = `${this.data.length + 1}`;
+        this.data = [newItem, ...this.data];
+      }
+      this.filterData();
+    });
+  }
+
+  showDeleteConfirm(item: AdminBillingItem): void {
+    this.modal.confirm({
+      nzTitle: `Are you sure delete this contract?`,
+      nzContent: `Id: ${item.id}`,
+      nzOkText: 'Delete',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.data = this.data.filter(({ id }) => id !== item.id);
+        this.filterData();
+      },
+    });
   }
 }

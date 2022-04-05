@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
 
-  h5 {
+  h3 {
     margin-bottom: 0;
     padding-bottom: 0;
     margin-right: auto;
@@ -17,7 +17,8 @@
   display: flex;
   align-items: center;
 
-  .ant-select {
+  nz-select,
+  input {
     margin-right: 20px;
   }
 
@@ -26,6 +27,29 @@
   }
 }
 
-.save {
-  margin-right: 8px;
+.clear-btn {
+  padding: 4px 0;
+}
+
+.actions {
+  padding-top: 0;
+  padding-bottom: 0;
+
+  .ant-dropdown-trigger {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.actions-menu li {
+  padding: 5px 15px;
 }

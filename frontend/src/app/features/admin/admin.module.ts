@@ -20,6 +20,7 @@ import { QrAdminDashboardComponent } from './pages/dashboard/dashboard.component
 import { QrAdminAdministratorsComponent } from './pages/administrators/administrators.component';
 import { QrAdminUsersComponent } from './pages/users/users.component';
 import { QrAdminBillingComponent } from './pages/billing/billing.component';
+import { QrAdminBillingEditComponent } from './pages/billing/edit/billing-edit.component';
 import { QrAdminSettingsComponent } from './pages/settings/settings.component';
 import { QrAdminPanelPageComponent } from './pages/admin-panel/admin-panel.component';
 
@@ -37,6 +38,7 @@ import { QrAdminPanelSubscriptionPlanInsertComponent } from './components/qr-adm
     QrAdminAdministratorsComponent,
     QrAdminUsersComponent,
     QrAdminBillingComponent,
+    QrAdminBillingEditComponent,
     QrAdminSettingsComponent,
     QrAdminPanelClientUserSearchComponent,
     QrAdminPanelSubscriptionPlanSearchComponent,
