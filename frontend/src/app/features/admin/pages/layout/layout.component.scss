@@ -1,0 +1,57 @@
+.admin-layout {
+  display: flex;
+}
+
+.admin-header {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  padding: 0 20px;
+  background-color: #000;
+
+  .logo {
+    height: 50px;
+  }
+
+  .header-title {
+    flex: 1;
+  }
+
+  .user-menu {
+    color: #fff;
+  }
+}
+
+.admin-sidebar {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 70px;
+  bottom: 0;
+  left: 0;
+  width: 180px;
+  padding-top: 10px;
+  background: #f3f3f3;
+
+  a {
+    display: flex;
+    align-items: center;
+    height: 45px;
+    padding: 0 25px;
+    color: #000;
+
+    &.active {
+      font-weight: 600;
+    }
+  }
+}
+
+.admin-content {
+  width: calc(100% - 180px);
+  margin-top: 70px;
+  margin-left: 180px;
+  padding: 20px;
+}

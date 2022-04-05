@@ -1,0 +1,44 @@
+<div class="admin-layout">
+  <div class="admin-header">
+    <a routerLink="/">
+      <img src="/assets/images/qrisq-logo-3d.png" alt="Qrisq" class="logo" />
+    </a>
+
+    <div class="header-title"></div>
+
+    <a nz-dropdown [nzDropdownMenu]="menu" class="user-menu">
+      Hi Admin
+      <i nz-icon nzType="down"></i>
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item>
+          <a routerLink="/">Web site</a>
+        </li>
+        <li nz-menu-item>
+          <a (click)="onLogout($event)">Logout</a>
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+
+  <div class="admin-sidebar">
+    <a
+      routerLink="/admin"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Dashboard
+    </a>
+    <a routerLink="/admin/administrators" routerLinkActive="active">
+      Administrators
+    </a>
+    <a routerLink="/admin/users" routerLinkActive="active"> Users </a>
+    <a routerLink="/admin/billing" routerLinkActive="active"> Billing </a>
+    <a routerLink="/admin/settings" routerLinkActive="active"> Settings </a>
+  </div>
+
+  <div class="admin-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

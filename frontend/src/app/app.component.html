@@ -1,14 +1,1 @@
-<qr-layout class="main-layout">
-  <qr-header
-    [isUserLogin]="isUserLogin"
-    [userFirstName]="userFirstName"
-    [isAdmin]="isAdmin"
-    (logout)="onLogout($event)"
-  ></qr-header>
-
-  <qr-content>
-    <router-outlet></router-outlet>
-  </qr-content>
-  <qr-footer class="footer-wrapper"></qr-footer>
-</qr-layout>
-
+<router-outlet></router-outlet>

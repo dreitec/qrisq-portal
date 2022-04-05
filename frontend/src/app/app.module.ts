@@ -20,7 +20,6 @@ import { QrCoreModule } from '@core/core.module';
 import { QrDesignModule } from '@app/design/design.module';
 import { QrSharedModule } from '@shared/shared.module';
 import { QrIdentityModule } from './features/identity/identity.module';
-import { QrAdminModule } from './features/admin/admin.module';
 
 // features
 import { QrStormModule } from './features/storm/storm.module';
@@ -30,6 +29,7 @@ import { environment } from '@env';
 import { AppComponent } from './app.component';
 
 // pages
+import { QrMainLayoutComponent } from './pages/main/main.component';
 import { QrHistoricalPageComponent } from './pages/storm-data/historical-page/historical-page.component';
 import { QrFaqPageComponent } from './pages/storm-data/faq-page/faq-page.component';
 import { QrForecastPageComponent } from './pages/storm-data/forecast-page/forecast-page.component';
@@ -58,10 +58,10 @@ registerLocaleData(en);
 @NgModule({
   declarations: [
     AppComponent,
+    QrMainLayoutComponent,
     QrHomePageComponent,
     QrHomeownersPageComponent,
     QrGovernmentPageComponent,
-    QrHomeownersPageComponent,
     QrInsurancePageComponent,
     QrFaqPageComponent,
     QrForecastPageComponent,
@@ -99,7 +99,6 @@ registerLocaleData(en);
     // features
     QrIdentityModule,
     QrStormModule,
-    QrAdminModule,
     QrContactUsModule,
   ],
   bootstrap: [AppComponent],

@@ -1,0 +1,134 @@
+<div class="header">
+  <h3 nz-typography>Billing</h3>
+  <nz-input-group [nzPrefix]="suffixIconSearch">
+    <input type="text" nz-input placeholder="Search..." />
+  </nz-input-group>
+  <ng-template #suffixIconSearch>
+    <i nz-icon nzType="search"></i>
+  </ng-template>
+</div>
+<br />
+
+<div class="toolbar">
+  <nz-select
+    nzAllowClear
+    nzPlaceHolder="Type..."
+    [(ngModel)]="filterType"
+    (ngModelChange)="filterData()"
+    style="width: 120px"
+  >
+    <nz-option nzLabel="Country" nzValue="Country"></nz-option>
+    <nz-option nzLabel="State" nzValue="State"></nz-option>
+    <nz-option nzLabel="City" nzValue="City"></nz-option>
+  </nz-select>
+  <input
+    nz-input
+    placeholder="City..."
+    [(ngModel)]="filterCity"
+    (input)="filterData()"
+    style="width: 120px"
+  />
+  <input
+    nz-input
+    placeholder="County/Parish.."
+    [(ngModel)]="filterCountry"
+    (input)="filterData()"
+    style="width: 150px"
+  />
+  <nz-select
+    nzShowSearch
+    nzAllowClear
+    nzPlaceHolder="State..."
+    [(ngModel)]="filterState"
+    (ngModelChange)="filterData()"
+    style="width: 150px"
+  >
+    <nz-option
+      *ngFor="let item of states"
+      [nzValue]="item"
+      [nzLabel]="item"
+    ></nz-option>
+  </nz-select>
+  <nz-select
+    nzAllowClear
+    nzPlaceHolder="Status..."
+    [(ngModel)]="filterStatus"
+    (ngModelChange)="filterData()"
+    style="width: 120px"
+  >
+    <nz-option nzLabel="Active" nzValue="Active"></nz-option>
+    <nz-option nzLabel="Pending" nzValue="Pending"></nz-option>
+  </nz-select>
+  <button nz-button (click)="showEdit()" nzType="primary">New</button>
+</div>
+<a
+  nz-button
+  nzType="link"
+  [disabled]="
+    !filterType &&
+    !filterCity &&
+    !filterCountry &&
+    !filterState &&
+    !filterStatus
+  "
+  (click)="clearFilters()"
+  class="clear-btn"
+  >Clear all filters</a
+>
+
+<nz-table
+  #editRowTable
+  nzBordered
+  nzShowPagination
+  nzShowSizeChanger
+  [nzData]="items"
+  nzTableLayout="fixed"
+>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Type</th>
+      <th>City</th>
+      <th>County/Parish</th>
+      <th>State</th>
+      <th>Start date</th>
+      <th>End Date</th>
+      <th>Status</th>
+      <th>Discount %</th>
+      <th>Users</th>
+      <th nzWidth="90px" nzAlign="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of editRowTable.data">
+      <td>{{ data.id }}</td>
+      <td>{{ data.type }}</td>
+      <td>{{ data.city }}</td>
+      <td>{{ data.country }}</td>
+      <td>{{ data.state }}</td>
+      <td>{{ dateToString(data.startDate) }}</td>
+      <td>{{ dateToString(data.endDate) }}</td>
+      <td>{{ data.status }}</td>
+      <td>{{ discountToString(data.discount) }}</td>
+      <td>{{ data.users }}</td>
+      <td nzAlign="center" class="actions">
+        <div
+          nz-dropdown
+          nzPlacement="bottomRight"
+          [nzDropdownMenu]="menu"
+          class="actions"
+        >
+          <i nz-icon nzType="more" nzTheme="outline"></i>
+        </div>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu class="actions-menu">
+            <li nz-menu-item (click)="showEdit(data)">Edit</li>
+            <li nz-menu-item nzDanger (click)="showDeleteConfirm(data)">
+              Delete
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
