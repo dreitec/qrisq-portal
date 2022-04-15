@@ -11,36 +11,68 @@ import { states } from '../../../store/states';
   styleUrls: ['./billing-edit.component.scss'],
 })
 export class QrAdminBillingEditComponent implements OnInit {
+  type: string;
   states = states;
-  validateForm!: FormGroup;
+  form!: FormGroup;
   @Input() item?: AdminBillingItem;
 
   constructor(private modal: NzModalRef, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
+    const type = this.item?.type;
+    const name = this.item?.name;
+    this.form = this.fb.group({
       id: this.item?.id,
-      type: [this.item?.type, [Validators.required]],
-      city: this.item?.city,
-      country: this.item?.country,
-      state: [this.item?.state, [Validators.required]],
+      type: [type, [Validators.required]],
+      city: {
+        value: type === 'C' ? name : '',
+        disabled: type !== 'C',
+      },
+      country: {
+        value: type === 'P' ? name : '',
+        disabled: type !== 'P',
+      },
+      state: {
+        value: type === 'S' ? name : '',
+        disabled: type !== 'S',
+      },
       startDate: this.item?.startDate || new Date(),
       endDate: this.item?.endDate,
       discount: [this.item?.discount, [Validators.min(0), Validators.max(100)]],
     });
   }
 
-  disabledStartDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, new Date()) < 0;
+  changeType(type) {
+    this.form.controls.city.disable();
+    this.form.controls.city.setValue('');
+    this.form.controls.country.disable();
+    this.form.controls.country.setValue('');
+    this.form.controls.state.disable();
+    this.form.controls.state.setValue('');
+    if (type === 'C') {
+      this.form.controls.city.enable();
+    }
+    if (type === 'P') {
+      this.form.controls.country.enable();
+    }
+    if (type === 'S') {
+      this.form.controls.state.enable();
+    }
+  }
 
-  disabledEndDate = (current: Date): boolean =>
-    differenceInCalendarDays(current, new Date()) < 0;
+  disabledStartDate(current: Date): boolean {
+    return differenceInCalendarDays(current, new Date()) < 0;
+  }
+
+  disabledEndDate(current: Date): boolean {
+    return differenceInCalendarDays(current, new Date()) < 0;
+  }
 
   closeModal(): void {
     this.modal.destroy();
   }
 
   submitForm(): void {
-    this.modal.destroy({ data: this.validateForm.value });
+    this.modal.destroy({ data: this.form.value });
   }
 }

@@ -41,15 +41,19 @@ export interface AdminUsersHttpGetResponseModel {
   total_records: number;
 }
 
+export interface AdminBillingData {
+  results: AdminBillingItem[];
+  totalRecords: number;
+  totalPages: number;
+}
+
 export interface AdminBillingItem {
-  id: string;
+  id: number;
   type: string;
-  city: string;
-  country: string;
-  state: string;
+  name: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: number;
   discount: number;
   users: number;
 }

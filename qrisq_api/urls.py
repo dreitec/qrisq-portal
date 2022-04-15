@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/', include('user_app.urls')),
     path('api/', include('subscriptions.urls')),
     path('api/', include('storm.urls')),
+    path('api/', include('billing.urls')),
 ] + static(settings.MEDIA_URL, view=static_file_server, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -15,6 +15,8 @@ import {
   ClientUsersHttpGetResponseModel,
 } from '../models/ClientUser.models';
 
+import { AdminBillingData } from '../models/AdminUser.models';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -133,6 +135,46 @@ export class QrAdminService {
   deleteSubscriptionPlan(subscriptionPlanId) {
     return this.httpClient.delete(
       environment.API_URL + '/subscription-plans/' + subscriptionPlanId,
+      {
+        headers: { 'Content-type': 'application/json; charset=utf-8' },
+      }
+    );
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 billing                                    */
+  /* -------------------------------------------------------------------------- */
+
+  fetchBilling() {
+    return this.httpClient.get<AdminBillingData>(
+      environment.API_URL + '/billing/',
+      {
+        headers: {
+          'Content-type': 'application/json; charset=utf-8',
+        },
+      }
+    );
+  }
+
+  addBilling(params) {
+    return this.httpClient.post(environment.API_URL + '/billing/', params, {
+      headers: { 'Content-type': 'application/json; charset=utf-8' },
+    });
+  }
+
+  updateBilling(id, params) {
+    return this.httpClient.put(
+      environment.API_URL + '/billing/' + id + '/',
+      params,
+      {
+        headers: { 'Content-type': 'application/json; charset=utf-8' },
+      }
+    );
+  }
+
+  deleteBilling(id) {
+    return this.httpClient.delete(
+      environment.API_URL + '/billing/' + id + '/',
       {
         headers: { 'Content-type': 'application/json; charset=utf-8' },
       }
