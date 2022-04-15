@@ -33,6 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     '/users',
     '/clients',
     '/subscription-plans',
+    '/billing',
   ];
 
   constructor(

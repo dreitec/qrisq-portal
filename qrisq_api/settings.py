@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     'user_app',
     'subscriptions',
     'storm',
+    'billing',
 ]
 
 MIDDLEWARE = [

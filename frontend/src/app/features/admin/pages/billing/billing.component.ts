@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import moment from 'moment';
+import { of } from 'rxjs';
+import { states } from '../../store/states';
+import { QrAdminService } from '../../services/admin.service';
 import { AdminBillingItem } from '../../models/AdminUser.models';
 import { QrAdminBillingEditComponent } from './edit/billing-edit.component';
-import { states } from '../../store/states';
+import { catchError, map, take } from 'rxjs/operators';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'qr-admin-billing',
@@ -18,11 +22,26 @@ export class QrAdminBillingComponent implements OnInit {
   filterCity = '';
   filterCountry = '';
   filterState = '';
-  filterStatus = '';
+  filterStatus = null;
 
-  constructor(private modal: NzModalService) {}
+  constructor(
+    private adminService: QrAdminService,
+    private modal: NzModalService,
+    private notification: NzNotificationService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.adminService
+      .fetchBilling()
+      .pipe(
+        take(1),
+        map((response) => response)
+      )
+      .subscribe((data) => {
+        this.data = data.results;
+        this.filterData();
+      });
+  }
 
   filterData() {
     this.items = this.data.filter((item) => {
@@ -31,14 +50,14 @@ export class QrAdminBillingComponent implements OnInit {
       }
       const _city = this.filterCity.trim();
       if (_city) {
-        if (!item.city.includes(_city)) return false;
+        if (item.type === 'C' && !item.name.includes(_city)) return false;
+      }
+      if (this.filterState) {
+        if (item.type === 'S' && item.name !== this.filterState) return false;
       }
       const _country = this.filterCountry.trim();
       if (_country) {
-        if (!item.country.includes(_country)) return false;
-      }
-      if (this.filterState) {
-        if (item.state !== this.filterState) return false;
+        if (item.type === 'P' && !item.name.includes(_country)) return false;
       }
       if (this.filterStatus) {
         if (item.status !== this.filterStatus) return false;
@@ -54,6 +73,22 @@ export class QrAdminBillingComponent implements OnInit {
     this.filterState = '';
     this.filterStatus = '';
     this.filterData();
+  }
+
+  getType(item) {
+    return {
+      C: 'City',
+      S: 'State',
+      P: 'Country',
+    }[item.type];
+  }
+
+  getState(item) {
+    return {
+      [0]: 'Pending',
+      [1]: 'Active',
+      [-1]: 'Expired',
+    }[item.status];
   }
 
   dateToString(date) {
@@ -81,19 +116,67 @@ export class QrAdminBillingComponent implements OnInit {
 
       const newItem: AdminBillingItem = {
         ...result.data,
-        status: '',
+        name: result.data.city || result.data.country || result.data.state,
+        status: result.data.status || 0,
+        discount: result.data.discount || 0,
         users: 0,
       };
 
       if (newItem.id) {
-        this.data = this.data.map((item) =>
-          item.id === newItem.id ? newItem : item
-        );
+        this.adminService
+          .updateBilling(newItem.id, newItem)
+          .pipe(
+            take(1),
+            catchError((error) => {
+              this.notification.create(
+                'error',
+                'Error',
+                'Something went wrong.'
+              );
+              return of(error);
+            })
+          )
+          .subscribe((response) => {
+            this.notification.create(
+              'success',
+              'Success',
+              'Billing updated successfully!.',
+              { nzPlacement: 'bottomRight' }
+            );
+            this.data = this.data.map((item) =>
+              item.id === newItem.id ? response : item
+            );
+            this.filterData();
+          });
       } else {
-        newItem.id = `${this.data.length + 1}`;
-        this.data = [newItem, ...this.data];
+        this.adminService
+          .addBilling({
+            ...newItem,
+            status: newItem.status || 0,
+            discount: newItem.discount || 0,
+          })
+          .pipe(
+            take(1),
+            catchError((error) => {
+              this.notification.create(
+                'error',
+                'Error',
+                'Something went wrong.'
+              );
+              return of(error);
+            })
+          )
+          .subscribe((response) => {
+            this.notification.create(
+              'success',
+              'Success',
+              'Billing added successfully!.',
+              { nzPlacement: 'bottomRight' }
+            );
+            this.data = [response, ...this.data];
+            this.filterData();
+          });
       }
-      this.filterData();
     });
   }
 
@@ -105,8 +188,29 @@ export class QrAdminBillingComponent implements OnInit {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.data = this.data.filter(({ id }) => id !== item.id);
-        this.filterData();
+        this.adminService
+          .deleteBilling(item.id)
+          .pipe(
+            take(1),
+            catchError((error) => {
+              this.notification.create(
+                'error',
+                'Error',
+                'Something went wrong.'
+              );
+              return of(error);
+            })
+          )
+          .subscribe(() => {
+            this.notification.create(
+              'success',
+              'Success',
+              'Billing deleted successfully!.',
+              { nzPlacement: 'bottomRight' }
+            );
+            this.data = this.data.filter(({ id }) => id !== item.id);
+            this.filterData();
+          });
       },
     });
   }

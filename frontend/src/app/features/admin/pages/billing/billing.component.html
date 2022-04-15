@@ -17,9 +17,9 @@
     (ngModelChange)="filterData()"
     style="width: 120px"
   >
-    <nz-option nzLabel="Country" nzValue="Country"></nz-option>
-    <nz-option nzLabel="State" nzValue="State"></nz-option>
-    <nz-option nzLabel="City" nzValue="City"></nz-option>
+    <nz-option nzLabel="City" nzValue="C"></nz-option>
+    <nz-option nzLabel="State" nzValue="S"></nz-option>
+    <nz-option nzLabel="Country" nzValue="P"></nz-option>
   </nz-select>
   <input
     nz-input
@@ -56,8 +56,8 @@
     (ngModelChange)="filterData()"
     style="width: 120px"
   >
-    <nz-option nzLabel="Active" nzValue="Active"></nz-option>
-    <nz-option nzLabel="Pending" nzValue="Pending"></nz-option>
+    <nz-option nzLabel="Pending" [nzValue]="0"></nz-option>
+    <nz-option nzLabel="Active" [nzValue]="1"></nz-option>
   </nz-select>
   <button nz-button (click)="showEdit()" nzType="primary">New</button>
 </div>
@@ -76,17 +76,10 @@
   >Clear all filters</a
 >
 
-<nz-table
-  #editRowTable
-  nzBordered
-  nzShowPagination
-  nzShowSizeChanger
-  [nzData]="items"
-  nzTableLayout="fixed"
->
+<nz-table nzBordered nzShowPagination nzShowSizeChanger nzTableLayout="fixed">
   <thead>
     <tr>
-      <th>Id</th>
+      <th>No</th>
       <th>Type</th>
       <th>City</th>
       <th>County/Parish</th>
@@ -100,17 +93,17 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of editRowTable.data">
-      <td>{{ data.id }}</td>
-      <td>{{ data.type }}</td>
-      <td>{{ data.city }}</td>
-      <td>{{ data.country }}</td>
-      <td>{{ data.state }}</td>
-      <td>{{ dateToString(data.startDate) }}</td>
-      <td>{{ dateToString(data.endDate) }}</td>
-      <td>{{ data.status }}</td>
-      <td>{{ discountToString(data.discount) }}</td>
-      <td>{{ data.users }}</td>
+    <tr *ngFor="let item of items; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td>{{ getType(item) }}</td>
+      <td>{{ item.type === 'C' ? item.name : '' }}</td>
+      <td>{{ item.type === 'P' ? item.name : '' }}</td>
+      <td>{{ item.type === 'S' ? item.name : '' }}</td>
+      <td>{{ dateToString(item.startDate) }}</td>
+      <td>{{ dateToString(item.endDate) }}</td>
+      <td>{{ getState(item) }}</td>
+      <td>{{ discountToString(item.discount) }}</td>
+      <td>{{ item.users }}</td>
       <td nzAlign="center" class="actions">
         <div
           nz-dropdown
@@ -122,8 +115,8 @@
         </div>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu class="actions-menu">
-            <li nz-menu-item (click)="showEdit(data)">Edit</li>
-            <li nz-menu-item nzDanger (click)="showDeleteConfirm(data)">
+            <li nz-menu-item (click)="showEdit(item)">Edit</li>
+            <li nz-menu-item nzDanger (click)="showDeleteConfirm(item)">
               Delete
             </li>
           </ul>

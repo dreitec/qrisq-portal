@@ -8,29 +8,41 @@
   }}
 </div>
 
-<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" class="form">
+<form nz-form [formGroup]="form" (ngSubmit)="submitForm()" class="form">
   <div nz-row>
     <div nz-col nzSpan="12">
       <nz-form-item>
         <nz-form-label [nzSpan]="10" nzRequired>Type</nz-form-label>
         <nz-form-control [nzSpan]="14" nzErrorTip="Please select type!">
-          <nz-select formControlName="type" nzPlaceHolder="Select type">
-            <nz-option nzValue="State" nzLabel="State"></nz-option>
-            <nz-option nzValue="City" nzLabel="City"></nz-option>
-            <nz-option nzValue="Country" nzLabel="Country/Parish"></nz-option>
+          <nz-select
+            formControlName="type"
+            nzPlaceHolder="Select type"
+            (ngModelChange)="changeType($event)"
+          >
+            <nz-option nzValue="C" nzLabel="City"></nz-option>
+            <nz-option nzValue="P" nzLabel="Country/Parish"></nz-option>
+            <nz-option nzValue="S" nzLabel="State"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="10">City</nz-form-label>
+        <nz-form-label
+          [nzSpan]="10"
+          [nzRequired]="form.controls.type.value === 'C'"
+          >City</nz-form-label
+        >
         <nz-form-control [nzSpan]="14">
           <input nz-input formControlName="city" placeholder="Enter city" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="10">Country/Parish</nz-form-label>
+        <nz-form-label
+          [nzSpan]="10"
+          [nzRequired]="form.controls.type.value === 'P'"
+          >Country/Parish</nz-form-label
+        >
         <nz-form-control [nzSpan]="14">
           <input
             nz-input
@@ -41,7 +53,11 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label [nzSpan]="10" nzRequired>State</nz-form-label>
+        <nz-form-label
+          [nzSpan]="10"
+          [nzRequired]="form.controls.type.value === 'S'"
+          >State</nz-form-label
+        >
         <nz-form-control [nzSpan]="14" nzErrorTip="Please select state!">
           <nz-select
             nzShowSearch
@@ -105,7 +121,17 @@
 
   <div class="actions">
     <button nz-button (click)="closeModal()" type="button">Cancel</button>
-    <button nz-button nzType="primary" [disabled]="!validateForm.valid">
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="
+        !form.valid ||
+        (form.controls.type.value === 'C' && form.controls.city.value === '') ||
+        (form.controls.type.value === 'P' &&
+          form.controls.country.value === '') ||
+        (form.controls.type.value === 'S' && form.controls.state.value === '')
+      "
+    >
       Submit
     </button>
   </div>
