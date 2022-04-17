@@ -16,6 +16,7 @@
     [(ngModel)]="filterType"
     (ngModelChange)="filterData()"
     style="width: 120px"
+    nzDisabled
   >
     <nz-option nzLabel="Country" nzValue="P"></nz-option>
     <nz-option nzLabel="Not Country" nzValue="Not-P"></nz-option>
@@ -26,6 +27,7 @@
     [(ngModel)]="filterCity"
     (input)="filterData()"
     style="width: 120px"
+    [disabled]="true"
   />
   <input
     nz-input
@@ -33,6 +35,7 @@
     [(ngModel)]="filterCountry"
     (input)="filterData()"
     style="width: 150px"
+    [disabled]="true"
   />
   <nz-select
     nzShowSearch
@@ -41,6 +44,7 @@
     [(ngModel)]="filterState"
     (ngModelChange)="filterData()"
     style="width: 150px"
+    nzDisabled
   >
     <nz-option
       *ngFor="let item of states"
@@ -54,6 +58,7 @@
     [(ngModel)]="filterStatus"
     (ngModelChange)="filterData()"
     style="width: 120px"
+    nzDisabled
   >
     <nz-option nzLabel="Pending" [nzValue]="0"></nz-option>
     <nz-option nzLabel="Active" [nzValue]="1"></nz-option>
