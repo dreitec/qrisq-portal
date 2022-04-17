@@ -1,0 +1,31 @@
+$submit-button-bg-color: #a1cc75;
+$submit-button-color: #f3f3f3;
+$cancel-button-bg-color: #666666;
+$inactive-button-bg-color: #cccccc;
+
+// button styles
+.submit-btn {
+  background-color: $submit-button-bg-color;
+  border-color: $submit-button-bg-color;
+  color: $submit-button-color;
+}
+
+.cancel-btn {
+  background-color: $cancel-button-bg-color;
+  border-color: $cancel-button-bg-color;
+  color: $submit-button-color;
+}
+
+.inactive-btn {
+  background-color: $inactive-button-bg-color;
+  border-color: $inactive-button-bg-color;
+  color: $submit-button-color;
+}
+
+// custom styles for ant elements
+.ant-btn,
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector {
+  border-radius: 4px;
+}
