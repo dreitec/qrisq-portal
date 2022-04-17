@@ -104,7 +104,7 @@ export class QrAdminBillingComponent implements OnInit {
       nzMaskClosable: false,
       nzClosable: false,
       nzFooter: null,
-      nzWidth: 600,
+      nzWidth: 680,
       nzContent: QrAdminBillingEditComponent,
       nzComponentParams: {
         item,

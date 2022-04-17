@@ -21,9 +21,10 @@ export class QrAdminBillingEditComponent implements OnInit {
   ngOnInit(): void {
     const type = this.item?.type;
     const name = this.item?.name;
+    console.log('type = ', type);
     this.form = this.fb.group({
       id: this.item?.id,
-      type: [type, [Validators.required]],
+      type: [type || '', [Validators.required]],
       city: {
         value: type === 'C' ? name : '',
         disabled: type !== 'C',

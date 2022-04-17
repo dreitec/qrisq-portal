@@ -8,12 +8,22 @@ $inactive-button-bg-color: #cccccc;
   background-color: $submit-button-bg-color;
   border-color: $submit-button-bg-color;
   color: $submit-button-color;
+
+  &:disabled {
+    background-color: $inactive-button-bg-color;
+    border-color: $inactive-button-bg-color;
+  }
 }
 
 .cancel-btn {
   background-color: $cancel-button-bg-color;
   border-color: $cancel-button-bg-color;
   color: $submit-button-color;
+
+  &:disabled {
+    background-color: $inactive-button-bg-color;
+    border-color: $inactive-button-bg-color;
+  }
 }
 
 .inactive-btn {

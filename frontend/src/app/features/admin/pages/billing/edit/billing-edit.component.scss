@@ -1,25 +1,36 @@
-.form {
-  margin-top: 20px;
+@import '../../../../../app.component.scss';
 
-  nz-date-picker {
-    width: 100%;
+.billing-edit-content {
+  padding: 0 1rem;
+
+  h4 {
+    margin-bottom: 0.5rem;
   }
-}
 
-.discount {
-  display: flex;
-  align-items: center;
+  .form {
+    margin-top: 1.25rem;
 
-  input {
-    margin-right: 10px;
+    nz-form-label {
+      text-align: start;
+    }
+  
+    nz-date-picker {
+      width: 100%;
+    }
   }
-}
-
-.actions {
-  display: flex;
-  justify-content: flex-end;
-
-  button + button {
-    margin-left: 20px;
+  
+  .discount {
+    display: flex;
+    align-items: center;
+  
+    input {
+      margin-right: 10px;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
   }
 }
