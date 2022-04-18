@@ -39,7 +39,10 @@ export class QrAdminBillingEditComponent implements OnInit {
       },
       startDate: this.item?.startDate || new Date(),
       endDate: this.item?.endDate,
-      discount: [this.item?.discount, [Validators.min(0), Validators.max(100)]],
+      discount: {
+        value: this.item?.discount || 100,
+        disabled: true,
+      },
     });
   }
 
