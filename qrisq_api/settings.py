@@ -373,6 +373,7 @@ LOGIN_EXEMPT_PATHS = (
     r'api/auth/signup',
     r'api/check-service-area',
     r'api/subscription-plans',
+    r'api/subscription-plans-discount',
     r'api/swagger$',
     r'api/verify-email',
     r'api/health-check',
