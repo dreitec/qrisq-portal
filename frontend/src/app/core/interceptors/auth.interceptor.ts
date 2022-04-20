@@ -33,6 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     '/users',
     '/clients',
     '/subscription-plans',
+    '/subscription-plans-discount',
     '/billing',
   ];
 
@@ -63,6 +64,13 @@ export class AuthInterceptor implements HttpInterceptor {
     if (
       request.url.includes('/subscription-plans') &&
       request.method === 'GET'
+    ) {
+      return next.handle(request.clone({ url: request.url }));
+    }
+
+    if (
+      request.url.includes('/subscription-plans-discount') &&
+      request.method === 'POST'
     ) {
       return next.handle(request.clone({ url: request.url }));
     }

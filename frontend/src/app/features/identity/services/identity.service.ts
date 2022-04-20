@@ -53,6 +53,19 @@ export class QrIdentityService {
     );
   }
 
+  fetchSubscriptionPlansWithDiscount(state: string) {
+    return this.httpClient
+      .post(
+        environment.API_URL + '/subscription-plans-discount',
+        { state },
+        { headers: { 'Content-type': 'application/json; charset=utf-8' } }
+      )
+      .pipe(
+        take(1),
+        map((response: any) => response)
+      );
+  }
+
   fetchSubscriptionPlans() {
     return this.httpClient
       .get(environment.API_URL + '/subscription-plans', {

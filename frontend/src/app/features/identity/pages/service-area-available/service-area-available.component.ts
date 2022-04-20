@@ -22,14 +22,29 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
     private store: Store
   ) {}
 
-  signUp$ = this.store.select(selectSignUp);
-  subscriptionPlans$ = this.identityService.fetchSubscriptionPlans().pipe(
-    take(1),
-    tap((response) => console.log(response)),
-    map((subscriptionPlans: SubscriptionPlan[]) => subscriptionPlans)
-  );
+  myState = ''
+  subscriptionPlans = []
 
-  ngOnInit(): void {}
+  signUp$ = this.store.select(selectSignUp);
+
+  ngOnInit(): void {
+    this.signUp$
+      .pipe(
+        take(1),
+        map((signUpData) => signUpData)
+      )
+      .subscribe((signUpData) => {
+        this.myState = signUpData.addressState || '';
+      });
+
+    this.identityService.fetchSubscriptionPlansWithDiscount(this.myState).pipe(
+        take(1),
+        map((subscriptionPlans: SubscriptionPlan[]) => subscriptionPlans)
+      )
+      .subscribe((subscriptionPlans) => {
+        this.subscriptionPlans = subscriptionPlans;
+      });
+  }
 
   public onRegister(planId: number): void {
     this.store.dispatch(actionRegisterStart({ subscriptionPlanId: planId }));
