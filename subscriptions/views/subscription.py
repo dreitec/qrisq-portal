@@ -3,6 +3,7 @@ import json
 import logging
 import time
 from django.conf import settings
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -14,7 +15,7 @@ from qrisq_api.pagination import CustomPagination
 from user_app.permissions import IsAdminUser
 from user_app.models import User
 from user_app.utils import mail_sender
-from subscriptions.models import SubscriptionPlan, UserSubscription, UserPayment
+from subscriptions.models import Discount, SubscriptionPlan, UserSubscription, UserPayment
 from subscriptions.serializers import SubscriptionPlanSerializer, FluidPayTransactionSerializer
 import subscriptions.paypal
 import subscriptions.fluidpay
@@ -35,6 +36,28 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
             return []
         return super().get_permissions()
 
+class SubscriptionPlanDiscountView(APIView):
+    def post(self, request, *args, **kwargs):
+        state = request.data.get('state', '')
+        all_plans = SubscriptionPlan.objects.all().order_by('id')
+        result_plans = []
+        for plan in all_plans:
+            cond1 = Q(state=state)
+            cond2 = Q(plan=plan)
+            filtered_discounts = Discount.objects.filter(cond1 & cond2)
+            discount = 0.0
+            if len(filtered_discounts) > 0:
+                discount = filtered_discounts[0].discount
+            result_plans.append({
+                "id": plan.id,
+                "name": plan.name,
+                "feature": plan.feature,
+                "price": plan.price,
+                "duration": plan.duration,
+                "discount": discount
+            })
+            
+        return Response(result_plans)
 
 class CancelSubscriptionView(APIView):
     permission_classes = (IsAuthenticated,)

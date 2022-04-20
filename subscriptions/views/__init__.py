@@ -1,2 +1,2 @@
-from .subscription import SubscriptionPlanViewSet, CancelSubscriptionView, CreateSubscriptionView, FluidPayWebhookView, PaypalWebhookView, VerifySubscriptionPaymentView
+from .subscription import SubscriptionPlanViewSet, SubscriptionPlanDiscountView, CancelSubscriptionView, CreateSubscriptionView, FluidPayWebhookView, PaypalWebhookView, VerifySubscriptionPaymentView
 

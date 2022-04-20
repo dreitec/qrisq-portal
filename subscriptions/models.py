@@ -68,3 +68,11 @@ class PaymentRefund(models.Model):
     payment = models.OneToOneField(UserPayment, on_delete=models.DO_NOTHING, related_name="refund")
     # refund_transaction_id = models.CharField(max_length=20, unique=True)
     payment_gateway = models.CharField(max_length=30, choices = UserPayment.PAYMENT_CHOICES)
+
+class Discount(models.Model):
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name="discount")
+    state = models.CharField(max_length=20)
+    discount = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.state

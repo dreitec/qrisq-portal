@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
-from subscriptions.views import SubscriptionPlanViewSet, CancelSubscriptionView, CreateSubscriptionView, PaypalWebhookView, FluidPayWebhookView, VerifySubscriptionPaymentView
+from subscriptions.views import SubscriptionPlanViewSet, SubscriptionPlanDiscountView, CancelSubscriptionView, CreateSubscriptionView, PaypalWebhookView, FluidPayWebhookView, VerifySubscriptionPaymentView
 
 router = SimpleRouter(trailing_slash=False)
 router.register('subscription-plans', SubscriptionPlanViewSet, basename="subscription-plans")
@@ -11,6 +11,7 @@ router.register('subscription-plans', SubscriptionPlanViewSet, basename="subscri
 urlpatterns = router.urls
 
 urlpatterns += [
+    path("subscription-plans-discount", SubscriptionPlanDiscountView.as_view(), name="subscription-plans-discount"),
     path("create-subscription", CreateSubscriptionView.as_view(), name="create-subscription"),
     path("cancel-subscription", CancelSubscriptionView.as_view(), name="cancel-subscription"),
     path('webhook-paypal', PaypalWebhookView.as_view(), name="webhook-paypal"),
