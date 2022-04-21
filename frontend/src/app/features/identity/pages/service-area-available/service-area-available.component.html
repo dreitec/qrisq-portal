@@ -29,7 +29,12 @@
       <ng-container *ngIf="subscriptionPlans">
         <div nz-col *ngFor="let subscriptionPlan of subscriptionPlans">
           <div class="price-section">
-            <h3>${{ subscriptionPlan.price * (100 - subscriptionPlan.discount) / 100 }}</h3>
+            <h3>
+              ${{
+                (subscriptionPlan.price * (100 - subscriptionPlan.discount)) /
+                  100
+              }}
+            </h3>
             <h4>{{ subscriptionPlan.name }}*</h4>
           </div>
           <button

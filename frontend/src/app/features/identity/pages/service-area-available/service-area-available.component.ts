@@ -1,15 +1,11 @@
-// angular
 import { Component, OnInit } from '@angular/core';
-
-// store
 import { Store } from '@ngrx/store';
-import { actionRegisterStart } from '../../store/identity.actions';
+import { map, take } from 'rxjs/operators';
 
-import { QrIdentityService } from '../../services/identity.service';
-import { selectSignUp } from '../../store/identity.selectors';
-import { Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
 import { SubscriptionPlan } from '../../models/SubscriptionPlan.model';
+import { QrIdentityService } from '../../services/identity.service';
+import { actionRegisterStart } from '../../store/identity.actions';
+import { selectSignUp } from '../../store/identity.selectors';
 
 @Component({
   selector: 'qr-service-area-available-page',
@@ -22,22 +18,24 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
     private store: Store
   ) {}
 
-  myState = ''
-  subscriptionPlans = []
+  subscriptionPlans = [];
 
   signUp$ = this.store.select(selectSignUp);
 
   ngOnInit(): void {
-    this.signUp$
-      .pipe(
-        take(1),
-        map((signUpData) => signUpData)
-      )
-      .subscribe((signUpData) => {
-        this.myState = signUpData.addressState || '';
-      });
+    const myThis = this;
+    this.signUp$.subscribe({
+      next: (signUpData) =>
+        signUpData.addressState &&
+        myThis.fetchSubscriptionPlans(signUpData.addressState),
+      error: (err) => console.error(err),
+    });
+  }
 
-    this.identityService.fetchSubscriptionPlansWithDiscount(this.myState).pipe(
+  fetchSubscriptionPlans(state: string): void {
+    this.identityService
+      .fetchSubscriptionPlansWithDiscount(state)
+      .pipe(
         take(1),
         map((subscriptionPlans: SubscriptionPlan[]) => subscriptionPlans)
       )
