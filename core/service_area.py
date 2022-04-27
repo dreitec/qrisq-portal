@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def service_area_finder(latitude, longitude):
     surge_file = 'qrisq-service-area-surge-20210114.wkt'
-    wind_file = 'qrisq-service-area-wind-20210114.wkt'
+    wind_file = 'qrisq-service-area-wind-03252022.wkt'
 
     try:
         logger.info("Checking for wind WKT file existence")
