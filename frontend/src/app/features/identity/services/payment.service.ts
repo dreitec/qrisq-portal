@@ -16,15 +16,7 @@ export class QrPaymentService {
     return this.httpClient.post(
       environment.API_URL + '/create-subscription',
       {
-        first_name: paymentInformation.firstName,
-        last_name: paymentInformation.lastName,
-        card_number: paymentInformation.cardNumber,
-        expiration_date: paymentInformation.expirationDate,
-        cvc: paymentInformation.cvc,
-        billing_address: paymentInformation.billingAddress,
-        city: paymentInformation.city,
-        state: paymentInformation.state,
-        zip_code: paymentInformation.zipCode,
+        token: paymentInformation.token,
         amount: paymentInformation.amount,
         subscription_plan_id: paymentInformation.subscriptionPlanId,
         payment_gateway: 'fluidpay'

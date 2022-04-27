@@ -51,6 +51,7 @@
     "cors": "^2.8.5",
     "deck.gl": "^8.4.13",
     "express": "^4.17.1",
+    "fluidpay-tokenizer": "^1.10.0",
     "guid-typescript": "^1.0.9",
     "gzipy": "^0.0.2",
     "hex-rgb": "^5.0.0",

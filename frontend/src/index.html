@@ -13,9 +13,6 @@
       href="./assets/icons/qrisq-favicon-32x32.png"
     />
 
-    <!-- Add tokenizer.js file to head or end of body based upon your application setup -->
-    <script src="https://app.fluidpay.com/tokenizer/tokenizer.js"></script>
-
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlHWmrd_KayZ_qN4vs07B3pysLQZ2Dq10&libraries=places&language=en"></script> -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWrBf7hkK6LQdlv7ul98DzcyoFdF1OzLM&libraries=geometry,places&language=en"></script>
     <script src="./assets/environment.js"></script>
@@ -29,46 +26,6 @@
     <script src="./assets/lib/shp2geojson/lib/jszip-utils.js"></script>
     <script src="./assets/lib/elabel.js" type="text/javascript"></script>
     <script src="./assets/lib/pako.js" type="text/javascript"></script>
-
-    <script>
-      var example = new Tokenizer({
-        apikey: 'pub_28IpFFyqkBUo05gAQFKFVNquxcD',
-        container: document.querySelector('#subscription-payment'),
-        submission: (resp) => { console.log(resp) },
-        settings: {
-          payment: {
-            calculateFees: true,
-            showTitle: true,
-            placeholderCreditCard: '0000 0000 0000 0000',
-            showExpDate: true,
-            showCVV: true,
-            ach: {
-              sec_code: 'web', // Default web - web, ccd, ppd, tel
-              showSecCode: false // Default false - true to show sec code dropdown
-            },
-            card: {
-              strict_mode: false, // Set to true to allow for 19 digit cards
-              requireCVV: false // Default false - true to require cvv
-            }
-          },
-          user: {
-            showInline: true,
-            showName: true,
-            showEmail: true,
-            showPhone: true,
-            showTitle: true
-          },
-          shipping: {
-            show: true,
-            showTitle: true
-          },
-          billing: {
-            show: true,
-            showTitle: true
-          }
-        }
-      })
-    </script>
 
     <!-- <script type="text/javascript">
       AWS.config.region = 'us-east-1';
@@ -381,6 +338,5 @@
   </head>
   <body>
     <app-root></app-root>
-    <div id="subscription-payment"></div>
   </body>
 </html>

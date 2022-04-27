@@ -48,6 +48,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     address = models.JSONField(default=dict, null=True)
+    address_line_1 = models.CharField(max_length=100, blank=True, default="")
+    address_line_2 = models.CharField(max_length=100, blank=True, default="")
     street_number = models.CharField(max_length=100, blank=True, default="")
     city = models.CharField(max_length=50, blank=True, default="")
     state = models.CharField(max_length=30, blank=True, default="")

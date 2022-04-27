@@ -9,6 +9,8 @@
   <div class="form-section">
     <h3>Select payment method</h3>
 
+    
+
     <div *ngIf="payment$ | async as payment" class="alert-container">
       <nz-alert
         *ngIf="payment.paymentFailed"
@@ -139,16 +141,28 @@
       </div>
     </div>
 
+    <!-- <div id="subscription-payment"></div> -->
+
     <div nz-row nzJustify="center">
       <div nz-col>
-        <ng-container *ngIf="signedUser">
-          <qr-payment-form-credit-card
-            [hidden]="paymentMethod !== 'card'"
-            [amount]="signedUser.user.subscription.price"
-            [subscriptionPlanId]="signedUser.user.subscription.id"
-            (submitPayment)="onCreditCardPaymentSubmit($event)"
-          ></qr-payment-form-credit-card>
+        <!-- credit card information form -->
+        <form nz-form class="credit-card-form" [hidden]="paymentMethod !== 'card'" (ngSubmit)="onCreditCardPaymentSubmit()">
+          <div id="subscription-payment"></div>
+          
+          <!-- submit -->
+          <button
+            class="submit-button"
+            nz-button
+            nzType="primary"
+            nzDanger
+            nzSize="large"
+            nzBlock
+          >
+            Submit
+          </button>
+        </form>
 
+        <ng-container>
           <qr-payment-form-paypal [hidden]="paymentMethod !== 'paypal'">
             <input type="image"
                    name="submit"

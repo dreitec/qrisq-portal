@@ -11,7 +11,7 @@ import subscriptions.subscription_date_utils as subscription_date_utils
 import dateutil.parser
 from django.conf import settings
 from subscriptions.models import UserPayment, SubscriptionPlan, UserSubscription
-from user_app.models import User
+from user_app.models import User, UserProfile
 
 
 class FluidPay(object):
@@ -133,7 +133,10 @@ class FluidPay(object):
         update_payment_method = False
         customer_id = self.customer_id_prefix + str(user.id)
         user_email = user.email
+        tokenizer_token = validated_data.get("token")
         user_subscription = UserSubscription.objects.get(user_id=user.id)
+        user_user = User.objects.get(id=user.id)
+        user_profile = UserProfile.objects.get(user_id=user.id)
 
         response = self.__get("/vault/{}".format(customer_id), errorOn400=False, return_raw_response=True)
         if response.status_code == 400:
@@ -142,20 +145,21 @@ class FluidPay(object):
             body = {
                 "id": customer_id,
                 "default_payment": {
-                    "card": {
-                        "number": validated_data.get('card_number'),
-                        "expiration_date": validated_data.get('expiration_date'),
-                        "cvc": validated_data.pop('cvc')
-                    }
+                    "token": tokenizer_token
+                    # "card": {
+                    #     "number": validated_data.get('card_number'),
+                    #     "expiration_date": validated_data.get('expiration_date'),
+                    #     "cvc": validated_data.pop('cvc')
+                    # }
                 },
                 "default_billing_address": {
-                    "first_name": validated_data.get("first_name"),
-                    "last_name": validated_data.get("last_name"),
-                    "line_1": validated_data.get("billing_address"),
-                    "city": validated_data.get("city"),
-                    "state": validated_data.get("state"),
+                    "first_name": user_user.first_name,
+                    "last_name": user_user.last_name,
+                    "line_1": user_profile.address_line_1,
+                    "city": user_profile.city,
+                    "state": user_profile.state,
                     "country": "US",
-                    "postal_code": validated_data.get("zip_code"),
+                    "postal_code": user_profile.zip_code,
                     "email": user_email
                 }
             }
@@ -172,13 +176,13 @@ class FluidPay(object):
         plan_cost = int(subscription_plan.price * 100)
         next_billing_date, initial_charge_multiplier = subscription_date_utils.get_initial_subscription_billing_date(plan_type, today)
 
-        if update_payment_method:
-            body = {
-                "number": validated_data.get('card_number'),
-                "expiration_date": validated_data.get('expiration_date'),
-                "cvc": validated_data.get('cvc')
-            }
-            self.__post("/vault/customer/{}/card/{}".format(customer_id, payment_method_id), body)
+        # if update_payment_method:
+        #     body = {
+        #         # "number": validated_data.get('card_number'),
+        #         # "expiration_date": validated_data.get('expiration_date'),
+        #         # "cvc": validated_data.get('cvc')
+        #     }
+        #     self.__post("/vault/customer/{}/{}".format(customer_id, tokenizer_token), body)
 
         # Charge them for prorated amount upfront
         transaction_data = {
@@ -190,24 +194,25 @@ class FluidPay(object):
             "currency": "USD",
             "description": "Prorated subscription charge for subscription",
             "email_receipt": True,
-            "email_address": user.email,
+            "email_address": user_email,
             "create_vault_record": False,
             "payment_method": {
-                "card": {
-                    "entry_type": "keyed",
-                    "number": validated_data.get('card_number'),
-                    "expiration_date": validated_data.get('expiration_date'),
-                    "cvc": validated_data.get("cvc")
-                }
+                "token": tokenizer_token
+                # "card": {
+                #     "entry_type": "keyed",
+                #     "number": validated_data.get('card_number'),
+                #     "expiration_date": validated_data.get('expiration_date'),
+                #     "cvc": validated_data.get("cvc")
+                # }
             },
             "billing_address": {
-                "first_name": validated_data.get("first_name"),
-                "last_name": validated_data.get("last_name"),
-                "line_1": validated_data.get("billing_address"),
-                "city": validated_data.get("city"),
-                "state": validated_data.get("state"),
+                "first_name": user_user.first_name,
+                "last_name": user_user.last_name,
+                "line_1": user_profile.address_line_1,
+                "city": user_profile.city,
+                "state": user_profile.state,
                 "country": "US",
-                "postal_code": validated_data.get("zip_code"),
+                "postal_code": user_profile.zip_code,
                 "email": user_email
             }
         }

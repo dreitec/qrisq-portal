@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
+import Tokenizer from 'fluidpay-tokenizer';
 import {
   PaymentInformation,
   PaypalPaymentInformation,
@@ -42,7 +43,43 @@ export class QrPaymentPageComponent implements OnInit {
     private store: Store
   ) {}
 
+  example: any;
+
   ngOnInit(): void {
+    this.example = new Tokenizer({
+      url: 'https://sandbox.convenupay.com',
+      apikey: 'pub_28IpFFyqkBUo05gAQFKFVNquxcD',
+      container: document.querySelector('#subscription-payment'),
+      submission: (resp) => {
+        const { status, token = '' } = resp;
+        if (status === 'success' && token) {
+          this.store.dispatch(actionProcessPaymentRequest({
+            paymentInformation: {
+              token,
+              amount: 10,
+              subscriptionPlanId: 1,
+            }
+          }));
+        }
+      },
+      settings: {
+        payment: {
+          calculateFees: true,
+          showTitle: true,
+          placeholderCreditCard: '0000 0000 0000 0000',
+          showExpDate: true,
+          showCVV: true,
+          ach: {
+            sec_code: 'web', // Default web - web, ccd, ppd, tel
+            showSecCode: false // Default false - true to show sec code dropdown
+          },
+          card: {
+            strict_mode: false, // Set to true to allow for 19 digit cards
+            requireCVV: false // Default false - true to require cvv
+          }
+        }
+      }
+    });
     this.store.dispatch(actionResetPayment());
     this.store
       .select(selectSignedUser)
@@ -55,8 +92,9 @@ export class QrPaymentPageComponent implements OnInit {
     this.paypalPaymentFailed = false;
   }
 
-  onCreditCardPaymentSubmit(paymentInformation: PaymentInformation) {
-    this.store.dispatch(actionProcessPaymentRequest({ paymentInformation }));
+  onCreditCardPaymentSubmit() {
+    this.example.submit();
+    // this.store.dispatch(actionProcessPaymentRequest({ paymentInformation }));
   }
 
   onPaypalPaymentSubmit() {

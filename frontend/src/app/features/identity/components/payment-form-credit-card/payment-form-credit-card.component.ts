@@ -58,26 +58,27 @@ export class QrPaymentFormCardComponent implements OnInit {
     }
     if (this.paymentForm.status === 'VALID') {
       const paymentInformation: PaymentInformation = {
-        firstName: this.paymentForm.get('firstName').value,
-        lastName: this.paymentForm.get('lastName').value,
-        cardNumber: this.paymentForm.get('cardNumber').value,
-        expirationDate: this.paymentForm.get('expirationDate').value,
-        cvc: this.paymentForm.get('cvc').value,
-        billingAddress: this.paymentForm.get('billingAddress').value,
-        city: this.paymentForm.get('city').value,
-        state: this.paymentForm.get('state').value,
-        zipCode: this.paymentForm.get('zipPostalCode').value,
+        // firstName: this.paymentForm.get('firstName').value,
+        // lastName: this.paymentForm.get('lastName').value,
+        // cardNumber: this.paymentForm.get('cardNumber').value,
+        // expirationDate: this.paymentForm.get('expirationDate').value,
+        // cvc: this.paymentForm.get('cvc').value,
+        // billingAddress: this.paymentForm.get('billingAddress').value,
+        // city: this.paymentForm.get('city').value,
+        // state: this.paymentForm.get('state').value,
+        // zipCode: this.paymentForm.get('zipPostalCode').value,
         amount: this.amount,
         subscriptionPlanId: this.subscriptionPlanId,
+        token: '',
       };
-      paymentInformation.cardNumber = paymentInformation.cardNumber.replace(
-        /\s/g,
-        ''
-      );
-      paymentInformation.expirationDate = paymentInformation.expirationDate.replace(
-        /\s/g,
-        ''
-      );
+      // paymentInformation.cardNumber = paymentInformation.cardNumber.replace(
+      //   /\s/g,
+      //   ''
+      // );
+      // paymentInformation.expirationDate = paymentInformation.expirationDate.replace(
+      //   /\s/g,
+      //   ''
+      // );
       this.submitPayment.emit(paymentInformation);
     }
   }
