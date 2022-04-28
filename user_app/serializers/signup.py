@@ -1,3 +1,4 @@
+from email.policy import default
 import logging
 
 from django.conf import settings
@@ -22,7 +23,9 @@ class SignupSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(max_length=255)
     phone_number = serializers.CharField(max_length=15)
     address = serializers.JSONField()
-    street_number = serializers.CharField(max_length=30)
+    address_line_1 = serializers.CharField(max_length=100)
+    address_line_2 = serializers.CharField(max_length=100, required=False, allow_null=True, allow_blank=True)
+    street_number = serializers.CharField(max_length=30, required=False, allow_null=True, allow_blank=True)
     city = serializers.CharField(max_length=30)
     state = serializers.CharField(max_length=30)
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
@@ -74,20 +77,20 @@ class SignupSerializer(serializers.Serializer):
             raise err
         
         # Send user registration email
-        context = {
-            'full_name': f"{first_name} {last_name}",
-            'domain': settings.DOMAIN
-        }
-        try:
-            mail_sender(
-                template='user_app/registration_confirmation.html',
-                context=context,
-                subject="User Registered",
-                recipient_list=[email]
-            )
-        except Exception as error:
-            logger.warning(f"Failed sending email to user; Error: {str(error)}")
-            raise Exception("Error sending email to User.")
+        # context = {
+        #     'full_name': f"{first_name} {last_name}",
+        #     'domain': settings.DOMAIN
+        # }
+        # try:
+        #     mail_sender(
+        #         template='user_app/registration_confirmation.html',
+        #         context=context,
+        #         subject="User Registered",
+        #         recipient_list=[email]
+        #     )
+        # except Exception as error:
+        #     logger.warning(f"Failed sending email to user; Error: {str(error)}")
+        #     raise Exception("Error sending email to User.")
         
         logger.info(f"User {email} created successfully.")
         return user

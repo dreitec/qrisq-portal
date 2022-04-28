@@ -74,6 +74,8 @@ export const actionGeocodeLocationRequestSuccess = createAction(
     state?: string;
     streetName?: string;
     streetNumber?: string;
+    line1?: string;
+    line2?: string;
     zip?: string;
   }>()
 );
@@ -219,7 +221,7 @@ export const actionVerifyPayment = createAction(
 
 export const actionVerifyPaymentSuccess = createAction(
   '[Identity] Process Verify Payment Success'
-)
+);
 
 // request
 export const actionProcessPaymentRequest = createAction(

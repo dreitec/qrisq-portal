@@ -155,6 +155,8 @@ export class IdentityEffects {
                 state?: string;
                 streetName?: string;
                 streetNumber?: string;
+                line1?: string;
+                line2?: string;
                 zip?: string;
               } = {
                 formattedAddress: '',
@@ -163,6 +165,8 @@ export class IdentityEffects {
                 state: '',
                 streetName: '',
                 streetNumber: '',
+                line1: '',
+                line2: '',
                 zip: '',
               };
 
@@ -206,7 +210,16 @@ export class IdentityEffects {
                   address.zip = components.find(includesZip).long_name;
                   address.displayText += address.zip;
                 }
+
+                // get address_line_1 and address_line_2
+                const address_blocks = address.formattedAddress.split(', ');
+                if (address_blocks.length > 4) {
+                  address.line2 = address_blocks[1];
+                }
+                address.line1 = address_blocks[0];
               }
+
+              console.log('address = ', address);
               return actionGeocodeLocationRequestSuccess(address);
             })
           )

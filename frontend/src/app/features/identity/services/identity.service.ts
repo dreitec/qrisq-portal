@@ -95,6 +95,8 @@ export class QrIdentityService {
         lng: signUp.longitude,
         displayText: signUp.addressDisplayText,
       },
+      address_line_1: signUp.addressLine1,
+      address_line_2: signUp.addressLine2,
       street_number: signUp.addressStreetNumber,
       city: signUp.addressCity,
       state: signUp.addressState,
