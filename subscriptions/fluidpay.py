@@ -146,16 +146,11 @@ class FluidPay(object):
                 "id": customer_id,
                 "default_payment": {
                     "token": tokenizer_token
-                    # "card": {
-                    #     "number": validated_data.get('card_number'),
-                    #     "expiration_date": validated_data.get('expiration_date'),
-                    #     "cvc": validated_data.pop('cvc')
-                    # }
                 },
                 "default_billing_address": {
                     "first_name": user_user.first_name,
                     "last_name": user_user.last_name,
-                    "line_1": user_profile.address_line_1,
+                    "address_line_1": user_profile.address_line_1,
                     "city": user_profile.city,
                     "state": user_profile.state,
                     "country": "US",
@@ -166,7 +161,6 @@ class FluidPay(object):
             response = self.__post("/vault/customer", body, retries=3)
         else:
             response.raise_for_status()
-            update_payment_method = True
             response = response.json()
 
         payment_method_id = response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
@@ -175,14 +169,6 @@ class FluidPay(object):
         plan_type = subscription_plan.name.upper()
         plan_cost = int(subscription_plan.price * 100)
         next_billing_date, initial_charge_multiplier = subscription_date_utils.get_initial_subscription_billing_date(plan_type, today)
-
-        # if update_payment_method:
-        #     body = {
-        #         # "number": validated_data.get('card_number'),
-        #         # "expiration_date": validated_data.get('expiration_date'),
-        #         # "cvc": validated_data.get('cvc')
-        #     }
-        #     self.__post("/vault/customer/{}/{}".format(customer_id, tokenizer_token), body)
 
         # Charge them for prorated amount upfront
         transaction_data = {
@@ -197,18 +183,17 @@ class FluidPay(object):
             "email_address": user_email,
             "create_vault_record": False,
             "payment_method": {
-                "token": tokenizer_token
-                # "card": {
-                #     "entry_type": "keyed",
-                #     "number": validated_data.get('card_number'),
-                #     "expiration_date": validated_data.get('expiration_date'),
-                #     "cvc": validated_data.get("cvc")
-                # }
+                "customer": {
+                    "id": customer_id,
+                    "payment_method_type": "card",
+                    "payment_method_id": payment_method_id,
+                    "billing_address_id": billing_address_id
+                }
             },
             "billing_address": {
                 "first_name": user_user.first_name,
                 "last_name": user_user.last_name,
-                "line_1": user_profile.address_line_1,
+                "address_line_1": user_profile.address_line_1,
                 "city": user_profile.city,
                 "state": user_profile.state,
                 "country": "US",
@@ -231,12 +216,11 @@ class FluidPay(object):
                 "id": customer_id,
                 "payment_method_id": payment_method_id,
                 "payment_method_type": "card",
-                "billing_address_id": billing_address_id,
-
+                "billing_address_id": billing_address_id
             },
             "billing_cycle_interval": subscription_plan.duration,
             "billing_days": "1",
-            "next_bill_date":  next_billing_date.strftime('%Y-%m-%d')
+            "next_bill_date": next_billing_date.strftime('%Y-%m-%d')
         }
         response = self.__post("/recurring/subscription", body)
         subscription_id = response["data"]["id"]
@@ -260,5 +244,3 @@ class FluidPay(object):
 
     def cancel_subscription(self, subscription_id):
         return self.__get("/recurring/subscription/{}/status/cancelled".format(subscription_id))
-
-
