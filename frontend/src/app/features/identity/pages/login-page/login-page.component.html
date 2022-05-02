@@ -1,11 +1,4 @@
-<div class="main-container">
-  <qr-banner [imageUrl]="'/assets/images/main-banner-insurance.jpg'">
-    <div class="banner-content">
-      <h1>Welcome to Q-risq</h1>
-      <p>Please login.</p>
-    </div>
-  </qr-banner>
-
+<div class="login-page main-container">
   <div class="form-section">
     <div nz-row nzJustify="center">
       <div nz-col>
@@ -55,17 +48,34 @@
 
             <!-- submit -->
             <nz-form-item>
-              <nz-form-control>
-                <button
-                  class="submit-button"
-                  nz-button
-                  nzType="primary"
-                  nzDanger
-                  nzSize="large"
-                  nzBlock
-                >
-                  Login
-                </button>
+              <nz-form-control nz-row>
+                <div nz-row nzJustify="center">
+                  <button
+                    class="submit-button"
+                    nz-button
+                    nzType="primary"
+                    nzDanger
+                    nzSize="large"
+                    nz-col
+                    nzSpan="8"
+                    nzBlock
+                  >
+                    Login
+                  </button>
+                  <button
+                    class="register-button"
+                    nz-button
+                    nzType="primary"
+                    nzSize="large"
+                    nz-col
+                    nzOffset="2"
+                    nzSpan="8"
+                    (click)="onRegisterClick($event)"
+                    nzBlock
+                  >
+                    Register
+                  </button>
+                </div>
               </nz-form-control>
             </nz-form-item>
           </form>
@@ -84,22 +94,6 @@
             </button>
           </nz-col>
         </div>
-      </div>
-    </div>
-
-    <nz-divider></nz-divider>
-    <!-- footer -->
-    <div nz-row class="section-footer">
-      <div nz-col nzSpan="8" class="section-footer-ourservices">
-        <qr-our-services-card></qr-our-services-card>
-      </div>
-
-      <div nz-col nzSpan="8" class="section-footer-trackstorm">
-        <qr-track-storm-card></qr-track-storm-card>
-      </div>
-
-      <div nz-col nzSpan="8" class="section-footer-messageform">
-        <qr-contact-us-form></qr-contact-us-form>
       </div>
     </div>
   </div>

@@ -18,6 +18,10 @@ qr-header {
   z-index: 999;
 }
 
+qr-content {
+  min-height: calc(100vh - 120px);
+}
+
 .footer-wrapper {
   background-color: #595959;
 }

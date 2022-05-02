@@ -10,8 +10,9 @@ import { QrIdentityService } from '../../services/identity.service';
   styleUrls: ['./forgot-password.component.scss'],
 })
 export class QrForgotPasswordPageComponent implements OnInit {
+  email = '';
   isLoading = false;
-
+  isSent = false;
   forgotPasswordForm: FormGroup;
 
   constructor(
@@ -35,12 +36,8 @@ export class QrForgotPasswordPageComponent implements OnInit {
       .subscribe(
         (response) => {
           this.isLoading = false;
-          this.notification.create(
-            'success',
-            'Success',
-            'Password reset email has been sent. Please check your mail inbox.',
-            { nzPlacement: 'bottomRight' }
-          );
+          this.isSent = true;
+          this.email = email;
           this.forgotPasswordForm.reset({});
         },
         (error) => {

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { actionSignOut } from '@app/features/identity/store/identity.actions';
-import { selectCredentials } from '@app/features/identity/store/identity.selectors';
 import { Store } from '@ngrx/store';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { CredentialsState } from '@app/features/identity/store/identity.models';
+import { selectCredentials } from '@app/features/identity/store/identity.selectors';
 
 @Component({
   selector: 'qr-home-page',
@@ -13,7 +12,15 @@ import { switchMap, take, tap } from 'rxjs/operators';
 export class QrHomePageComponent implements OnInit {
   constructor(private router: Router, private store: Store) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.store
+      .select(selectCredentials)
+      .subscribe((credentials: CredentialsState) => {
+        if (!credentials) {
+          this.router.navigate(['/identity/login']);
+        }
+      });
+  }
 
   OnSignUp() {
     this.router.navigate(['/identity/sign-up']);

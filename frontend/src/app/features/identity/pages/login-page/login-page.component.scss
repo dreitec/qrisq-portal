@@ -6,6 +6,14 @@
 
 // }
 
+.login-page {
+  min-height: calc(100vh - 120px);
+
+  .form-section {
+    margin-top: 100px;
+  }
+}
+
 nz-card.banner {
   /* background-im
   age: -webkit-linear-gradient(
@@ -323,11 +331,7 @@ nz-card.form {
   [nz-form] {
     text-align: center;
     nz-form-item:last-child {
-      margin: 0 auto;
-      width: 130px;
-      [nzDanger] {
-        margin-top: 10px;
-      }
+      margin: 20px auto 0;
     }
   }
 }

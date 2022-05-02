@@ -22,8 +22,6 @@
   </ng-template>
 
   <ng-template #submenuTitleLoginTpl>
-    Login
-    <i nz-icon nzType="down"></i>
   </ng-template>
 
   <ng-template #submenuTitleUserTpl>
@@ -57,54 +55,6 @@
     role="navigation"
   >
     <ul class="navbar-nav" nz-menu nzMode="horizontal">
-      <li nz-submenu [nzTitle]="submenuTitleStormDataTpl">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a
-              [routerLink]="['storm-data/forecast']"
-              (click)="isMenuCollapsed = true"
-              >Forecast</a
-            >
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-            <a
-              [routerLink]="['storm-data/hindcast']"
-              (click)="isMenuCollapsed = true"
-              >Hindcast</a
-            >
-          </li>
-        </ul>
-      </li>
-
-      <li nz-submenu [nzTitle]="submenuTitleServicesTpl">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a
-              [routerLink]="['services/homeowners']"
-              (click)="isMenuCollapsed = true"
-              >Homeowners</a
-            >
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-            <a
-              [routerLink]="['services/government']"
-              (click)="isMenuCollapsed = true"
-              >Government</a
-            >
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-            <a
-              [routerLink]="['services/insurance']"
-              (click)="isMenuCollapsed = true"
-              >Insurance</a
-            >
-          </li>
-        </ul>
-      </li>
-
       <div
         *ngIf="
           isUserLogin;
@@ -112,9 +62,9 @@
           else loginMenuItem
         "
       ></div>
-      <ng-template #loginMenuItem
-        ><li nz-submenu [nzTitle]="submenuTitleLoginTpl">
-          <ul>
+      <ng-template #loginMenuItem>
+        <li nz-submenu [nzTitle]="submenuTitleLoginTpl">
+          <!-- <ul>
             <li nz-menu-item nzMatchRouter>
               <a
                 [routerLink]="['identity/login']"
@@ -136,11 +86,60 @@
                 >Contact Us</a
               >
             </li>
+          </ul> -->
+        </li>
+      </ng-template>
+
+      <ng-template #userMenuItem>
+        <li nz-submenu [nzTitle]="submenuTitleStormDataTpl">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              <a
+                [routerLink]="['storm-data/forecast']"
+                (click)="isMenuCollapsed = true"
+                >Forecast</a
+              >
+            </li>
+  
+            <li nz-menu-item nzMatchRouter>
+              <a
+                [routerLink]="['storm-data/hindcast']"
+                (click)="isMenuCollapsed = true"
+                >Hindcast</a
+              >
+            </li>
           </ul>
-        </li></ng-template
-      >
-      <ng-template #userMenuItem
-        ><li nz-submenu [nzTitle]="submenuTitleUserTpl">
+        </li>
+  
+        <li nz-submenu [nzTitle]="submenuTitleServicesTpl">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              <a
+                [routerLink]="['services/homeowners']"
+                (click)="isMenuCollapsed = true"
+                >Homeowners</a
+              >
+            </li>
+  
+            <li nz-menu-item nzMatchRouter>
+              <a
+                [routerLink]="['services/government']"
+                (click)="isMenuCollapsed = true"
+                >Government</a
+              >
+            </li>
+  
+            <li nz-menu-item nzMatchRouter>
+              <a
+                [routerLink]="['services/insurance']"
+                (click)="isMenuCollapsed = true"
+                >Insurance</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li nz-submenu [nzTitle]="submenuTitleUserTpl">
           <ul>
             <!-- <li nz-menu-item [nzDisabled]="true" nzMatchRouter>
               <a

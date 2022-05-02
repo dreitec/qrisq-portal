@@ -56,6 +56,10 @@ export class QrLoginPageComponent implements OnInit {
     }
   }
 
+  onRegisterClick($event) {
+    this.router.navigate(['identity', 'sign-up']);
+  }
+
   onForgotPasswordClick($event) {
     this.router.navigate(['identity', 'forgot-password']);
   }
