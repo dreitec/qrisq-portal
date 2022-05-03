@@ -45,7 +45,7 @@ export class QrRegisterPageComponent implements OnInit {
     const firstName = [null, [Validators.required]];
     const lastName = [null, [Validators.required]];
     const email = [null, [Validators.email, Validators.required]];
-    const password = [null, [Validators.required, Validators.minLength(8)]];
+    const password = [null, [Validators.required, Validators.minLength(12)]];
     const checkPassword = [null, [Validators.required, passwordFieldValidator]];
     const phoneNumber = [null, [Validators.required]];
 

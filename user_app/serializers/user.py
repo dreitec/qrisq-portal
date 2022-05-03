@@ -143,9 +143,9 @@ class _PasswordUpdateSerializer(serializers.Serializer):
             error['confirm_password'] = "Passwords didn't match."
 
         import re
-        if not re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*_+=\\<>?,./-]).{8,}$",
+        if not re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*_+=\\<>?,./-]).{12,}$",
                         data['new_password']):
-            error['new_password'] = "Password must contain at least 8 characters with one number and one special character."
+            error['new_password'] = "Password must contain at least 12 characters with one number and one special character."
         
         if not check_password(data['old_password'], user.password):
             error['old_password'] = "Invalid old password."

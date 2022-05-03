@@ -48,11 +48,11 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError({'confirm_password': ["Passwords didn't match."]})
 
         import re
-        if not re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*_+=\\<>?,./-]).{8,}$",
+        if not re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*_+=\\<>?,./-]).{12,}$",
                         data['new_password']):
             raise serializers.ValidationError(
                 {'password': [
-                    "Password must contain at least 8 characters with one number and one special character."
+                    "Password must contain at least 12 characters with one number and one special character."
                 ]})
         return data
 

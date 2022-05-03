@@ -70,7 +70,7 @@ export class QrAdminPanelPageComponent implements OnInit {
     state: ['', [Validators.required]],
     zipCode: ['', [Validators.required]],
     isAdmin: [true],
-    password: [null, [Validators.required, Validators.minLength(8)]],
+    password: [null, [Validators.required, Validators.minLength(12)]],
     checkPassword: [null, [Validators.required, this.passwordFieldValidator]],
   });
 

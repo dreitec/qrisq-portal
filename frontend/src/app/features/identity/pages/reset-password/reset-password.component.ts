@@ -86,7 +86,7 @@ export class QrResetPasswordPageComponent implements OnInit {
         [
           Validators.required,
           Validators.pattern(
-            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{12,}$/
           ),
         ],
       ],
