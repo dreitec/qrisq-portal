@@ -4,11 +4,17 @@ from core.validators import NUMERIC_VALIDATOR
 from .managers import StormManager
 
 
+class StormAdvisory(models.Model):
+    storm_advisory_id = models.IntegerField()
+    year = models.CharField(max_length=4, validators=[NUMERIC_VALIDATOR], null=True)
+    tcid = models.CharField(max_length=4, null=True)
+    adv = models.CharField(max_length=2, null=True)
+    issued_datetime = models.DateTimeField(null=True)
+    last_processed_datetime = models.DateTimeField(null=True)
+
 class StormData(models.Model):
     qid = models.IntegerField()
-    year = models.CharField(max_length=4, validators=[NUMERIC_VALIDATOR], null=True)
-    adv = models.CharField(max_length=255, null=True)
-    tcid = models.CharField(max_length=255, null=True)
+    storm_advisory = models.ForeignKey(StormAdvisory, on_delete=models.CASCADE, related_name="advisory")
     riskthreat = models.CharField(max_length=255, null=True)
     maxflood = models.DecimalField(max_digits=10, decimal_places=5, null=True)
     maxwind = models.DecimalField(max_digits=10, decimal_places=5, null=True)
@@ -30,3 +36,8 @@ class StormData(models.Model):
     class Meta:
         managed = False
         db_table = 'addressstormdata'
+
+class GlobalConfig(models.Model):
+    lookback_period = models.IntegerField()
+    lookback_override = models.BooleanField(default=False)
+    active_storm = models.BooleanField(default=False)

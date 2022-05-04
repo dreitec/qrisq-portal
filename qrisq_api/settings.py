@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'subscriptions',
     'storm',
     'billing',
+    'settings',
 ]
 
 MIDDLEWARE = [
@@ -159,7 +160,7 @@ import sys
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': config('DB_NAME', default="qrisq_db"),
             'USER': config('DB_USER', default="postgres"),
             'PASSWORD': config('DB_PASSWORD', default="password"),
@@ -170,7 +171,7 @@ if 'test' in sys.argv:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': config('DB_NAME', default="qrisq_db"),
             'USER': config('DB_USER', default="postgis"),
             'PASSWORD': config('DB_PASSWORD', default="password"),
@@ -181,7 +182,7 @@ else:
             }
         },
         'storm': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': config('STORM_DB_NAME', default="qrisq_db"),
             'USER': config('STORM_DB_USER', default="postgis"),
             'PASSWORD': config('STORM_DB_PASSWORD', default="password"),
