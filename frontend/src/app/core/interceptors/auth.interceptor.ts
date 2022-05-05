@@ -35,6 +35,7 @@ export class AuthInterceptor implements HttpInterceptor {
     '/subscription-plans',
     '/subscription-plans-discount',
     '/billing',
+    '/global-config',
   ];
 
   constructor(

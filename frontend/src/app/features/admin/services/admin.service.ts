@@ -16,6 +16,7 @@ import {
 } from '../models/ClientUser.models';
 
 import { AdminBillingData } from '../models/AdminUser.models';
+import { GlobalConfigModel } from '../models/GlobalConfig.models';
 
 @Injectable({
   providedIn: 'root',
@@ -178,6 +179,28 @@ export class QrAdminService {
       {
         headers: { 'Content-type': 'application/json; charset=utf-8' },
       }
+    );
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                          Settings / Global Config                          */
+  /* -------------------------------------------------------------------------- */
+
+  // fetch
+  fetchGlobalConfig() {
+    return this.httpClient.get<GlobalConfigModel>(
+      environment.API_URL + '/global-config',
+      {
+        headers: { 'Content-type': 'application/json; charset=utf-8' },
+      }
+    );
+  }
+
+  // update
+  updateGlobalConfig(params) {
+    return this.httpClient.post<GlobalConfigModel>(
+      environment.API_URL + '/global-config',
+      params,
     );
   }
 }

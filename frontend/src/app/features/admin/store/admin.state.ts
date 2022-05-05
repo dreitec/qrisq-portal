@@ -1,7 +1,7 @@
 import { HttpRequestStatus } from '@app/shared/enums/HttpRequestStatus.enum';
 import { AdminUser } from '../models/AdminUser.models';
 import { ClientUser } from '../models/ClientUser.models';
-import { AdminUserGetAllResponse } from './admin.';
+import { GlobalConfigModel } from '../models/GlobalConfig.models';
 
 export interface AdminState {
   adminUser: {
@@ -18,6 +18,7 @@ export interface AdminState {
       error: string;
     };
   };
+  globalConfig: GlobalConfigModel;
 }
 
 export const initialState: AdminState = {
@@ -29,4 +30,9 @@ export const initialState: AdminState = {
     data: [],
     request: { status: HttpRequestStatus.NONE, error: '' },
   },
+  globalConfig: {
+    lookback_period: 0,
+    lookback_override: false,
+    active_storm: false,
+  }
 };
