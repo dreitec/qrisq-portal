@@ -1,0 +1,25 @@
+.settings-group {
+  margin-bottom: 2rem;
+
+  .control-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .control-item label {
+    margin: 0 0.5rem 0 0;
+  }
+
+  .control-item input {
+    max-width: 100px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .switch-item {
+    display: flex;
+    align-items: center;
+    margin-right: 2rem;
+  }
+}

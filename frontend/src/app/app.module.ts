@@ -48,8 +48,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 // stateEE
 import { reducers, storageSyncReducer } from './core/store/state';
-import { QrStormEffects } from './features/storm/store/storm.effects';
+import { AdminEffects } from './features/admin/store/admin.effects';
 import { IdentityEffects } from './features/identity/store/identity.effects';
+import { QrStormEffects } from './features/storm/store/storm.effects';
 import { QrContactUsService } from './features/contact-us/services/contact-us.service';
 import { QrContactUsModule } from './features/contact-us/contact-us.module';
 
@@ -79,7 +80,7 @@ registerLocaleData(en);
     // store
     StoreModule.forRoot(reducers, { metaReducers: [storageSyncReducer] }),
     StoreRouterConnectingModule.forRoot(),
-    EffectsModule.forRoot([IdentityEffects, QrStormEffects]),
+    EffectsModule.forRoot([AdminEffects, IdentityEffects, QrStormEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
