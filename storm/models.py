@@ -36,8 +36,3 @@ class StormData(models.Model):
     class Meta:
         managed = False
         db_table = 'addressstormdata'
-
-class GlobalConfig(models.Model):
-    lookback_period = models.IntegerField()
-    lookback_override = models.BooleanField(default=False)
-    active_storm = models.BooleanField(default=False)
