@@ -36,6 +36,7 @@ export const initialState: AdminState = {
     lookback_period: 0,
     lookback_override: false,
     active_storm: false,
+    geocode_users: false,
   },
   loading: {
     globalConfig: false,

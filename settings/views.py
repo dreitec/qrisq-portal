@@ -18,6 +18,7 @@ class GlobalConfigViewSet(APIView):
         global_config.lookback_period = request.data.get('lookback_period')
         global_config.lookback_override = request.data.get('lookback_override')
         global_config.active_storm = request.data.get('active_storm')
+        global_config.geocode_users = request.data.get('geocode_users')
         global_config.save()
 
         serializer = GlobalConfigSerializer(global_config)

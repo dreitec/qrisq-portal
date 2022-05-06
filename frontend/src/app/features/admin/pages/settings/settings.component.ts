@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { GlobalConfigModel } from '../../models/GlobalConfig.models';
 import { LoadingStatusModel } from '../../models/LoadingStatus.models';
 import {
@@ -38,6 +36,7 @@ export class QrAdminSettingsComponent {
       this.lookBackHrs = data.lookback_period;
       this.overrideEnabled = data.lookback_override;
       this.activeStormEnabled = data.active_storm;
+      this.geocodeEnabled = data.geocode_users;
     });
     this.loadingStatus$.subscribe((data: LoadingStatusModel) => {
       this.isLoading = data.globalConfig || false;
@@ -52,6 +51,7 @@ export class QrAdminSettingsComponent {
           lookback_period: Number(this.lookBackHrs),
           lookback_override: this.overrideEnabled,
           active_storm: this.activeStormEnabled,
+          geocode_users: this.geocodeEnabled,
         },
       })
     );

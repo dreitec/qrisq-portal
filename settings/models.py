@@ -7,3 +7,4 @@ class GlobalConfig(models.Model):
     lookback_period = models.IntegerField()
     lookback_override = models.BooleanField(default=False)
     active_storm = models.BooleanField(default=False)
+    geocode_users = models.BooleanField(default=True)

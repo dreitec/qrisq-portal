@@ -12,4 +12,5 @@ class GlobalConfigSerializer(serializers.HyperlinkedModelSerializer):
             "lookback_period",
             "lookback_override",
             "active_storm",
+            "geocode_users",
         )
