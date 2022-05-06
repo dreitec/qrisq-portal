@@ -1,7 +1,12 @@
 import { HttpRequestStatus } from './../../../shared/enums/HttpRequestStatus.enum';
 import { Action, createReducer, on } from '@ngrx/store';
 import { AdminState, initialState } from './admin.state';
-import { actionAdminUserGetAllRequest, actionFetchGlobalConfigRequestSuccess } from './admin.actions';
+import {
+  actionAdminUserGetAllRequest,
+  actionGlobalConfigRequestFailed,
+  actionGlobalConfigRequestSuccess,
+  actionUpdateLoadingStatus,
+} from './admin.actions';
 
 const reducer = createReducer(
   initialState,
@@ -15,9 +20,27 @@ const reducer = createReducer(
       },
     },
   })),
-  on(actionFetchGlobalConfigRequestSuccess, (state, { data }) => ({
+  on(actionGlobalConfigRequestSuccess, (state, { data }) => ({
     ...state,
     globalConfig: data,
+    loading: {
+      ...state.loading,
+      globalConfig: false,
+    },
+  })),
+  on(actionGlobalConfigRequestFailed, (state, data) => ({
+    ...state,
+    loading: {
+      ...state.loading,
+      globalConfig: false,
+    },
+  })),
+  on(actionUpdateLoadingStatus, (state, data) => ({
+    ...state,
+    loading: {
+      ...state.loading,
+      ...data,
+    },
   }))
 );
 

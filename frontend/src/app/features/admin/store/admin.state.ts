@@ -2,6 +2,7 @@ import { HttpRequestStatus } from '@app/shared/enums/HttpRequestStatus.enum';
 import { AdminUser } from '../models/AdminUser.models';
 import { ClientUser } from '../models/ClientUser.models';
 import { GlobalConfigModel } from '../models/GlobalConfig.models';
+import { LoadingStatusModel } from '../models/LoadingStatus.models';
 
 export interface AdminState {
   adminUser: {
@@ -19,6 +20,7 @@ export interface AdminState {
     };
   };
   globalConfig: GlobalConfigModel;
+  loading: LoadingStatusModel;
 }
 
 export const initialState: AdminState = {
@@ -34,5 +36,8 @@ export const initialState: AdminState = {
     lookback_period: 0,
     lookback_override: false,
     active_storm: false,
-  }
+  },
+  loading: {
+    globalConfig: false,
+  },
 };

@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { createAction, props } from '@ngrx/store';
 import { AdminUser } from '../models/AdminUser.models';
 import { GlobalConfigModel } from '../models/GlobalConfig.models';
+import { LoadingStatusModel } from '../models/LoadingStatus.models';
 
 // request
 
@@ -23,27 +24,19 @@ export const actionAdminUserGetAllRequestFailed = createAction(
   props<{ error: HttpErrorResponse }>()
 );
 
+// update `loading` status
+export const actionUpdateLoadingStatus = createAction(
+  '[Admin] Update Loading Status',
+  props<LoadingStatusModel>()
+);
+
 /* -------------------------------------------------------------------------- */
 /*                          Settings / Global Config                          */
 /* -------------------------------------------------------------------------- */
 
-// request
+// fetch request
 export const actionFetchGlobalConfigRequest = createAction(
   '[Settings] Fetch Global Config Request'
-);
-
-// success
-export const actionFetchGlobalConfigRequestSuccess = createAction(
-  '[Settings] Fetch Global Config Request Success',
-  props<{
-    data: GlobalConfigModel;
-  }>()
-);
-
-// failed
-export const actionFetchGlobalConfigRequestFailed = createAction(
-  '[Settings] Fetch Global Config Request Failed',
-  props<{ error: HttpErrorResponse }>()
 );
 
 // update request
@@ -54,16 +47,16 @@ export const actionUpdateGlobalConfigRequest = createAction(
   }>()
 );
 
-// update success
-export const actionUpdateGlobalConfigRequestSuccess = createAction(
-  '[Settings] Update Global Config Request Success',
+// request success
+export const actionGlobalConfigRequestSuccess = createAction(
+  '[Settings] Global Config Request Success',
   props<{
     data: GlobalConfigModel;
   }>()
 );
 
-// update failed
-export const actionUpdateGlobalConfigRequestFailed = createAction(
-  '[Settings] Update Global Config Request Failed',
+// request failed
+export const actionGlobalConfigRequestFailed = createAction(
+  '[Settings] Global Config Request Failed',
   props<{ error: HttpErrorResponse }>()
 );

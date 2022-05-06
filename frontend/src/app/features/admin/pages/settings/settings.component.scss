@@ -15,6 +15,10 @@
     max-width: 100px;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+
+    &:disabled {
+      color: rgba(118, 118, 118, 0.3);
+    }
   }
 
   .switch-item {

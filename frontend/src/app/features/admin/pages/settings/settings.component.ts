@@ -3,8 +3,16 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GlobalConfigModel } from '../../models/GlobalConfig.models';
-import { actionFetchGlobalConfigRequest, actionUpdateGlobalConfigRequest } from '../../store/admin.actions';
-import { selectGlobalConfig } from '../../store/admin.selectors';
+import { LoadingStatusModel } from '../../models/LoadingStatus.models';
+import {
+  actionFetchGlobalConfigRequest,
+  actionUpdateGlobalConfigRequest,
+  actionUpdateLoadingStatus,
+} from '../../store/admin.actions';
+import {
+  selectGlobalConfig,
+  selectLoadingStatus,
+} from '../../store/admin.selectors';
 
 @Component({
   selector: 'qr-admin-settings',
@@ -12,10 +20,7 @@ import { selectGlobalConfig } from '../../store/admin.selectors';
   styleUrls: ['./settings.component.scss'],
 })
 export class QrAdminSettingsComponent {
-
-  constructor(
-    private store: Store
-  ) {}
+  constructor(private store: Store) {}
 
   isLoading = false;
   lookBackHrs = 0;
@@ -24,6 +29,7 @@ export class QrAdminSettingsComponent {
   geocodeEnabled = false;
 
   globalConfig$ = this.store.select(selectGlobalConfig);
+  loadingStatus$ = this.store.select(selectLoadingStatus);
 
   ngOnInit(): void {
     this.store.dispatch(actionFetchGlobalConfigRequest());
@@ -33,19 +39,21 @@ export class QrAdminSettingsComponent {
       this.overrideEnabled = data.lookback_override;
       this.activeStormEnabled = data.active_storm;
     });
-  }
-
-  onBlur() {
-    console.log('Look Back hrs: ', this.lookBackHrs);
+    this.loadingStatus$.subscribe((data: LoadingStatusModel) => {
+      this.isLoading = data.globalConfig || false;
+    });
   }
 
   onSave() {
-    this.store.dispatch(actionUpdateGlobalConfigRequest({
-      data: {
-        lookback_period: Number(this.lookBackHrs),
-        lookback_override: this.overrideEnabled,
-        active_storm: this.activeStormEnabled
-      }
-    }));
+    this.store.dispatch(actionUpdateLoadingStatus({ globalConfig: true }));
+    this.store.dispatch(
+      actionUpdateGlobalConfigRequest({
+        data: {
+          lookback_period: Number(this.lookBackHrs),
+          lookback_override: this.overrideEnabled,
+          active_storm: this.activeStormEnabled,
+        },
+      })
+    );
   }
 }
