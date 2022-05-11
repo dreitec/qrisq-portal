@@ -46,21 +46,21 @@ export class QrAdminBillingComponent implements OnInit {
   filterData() {
     this.items = this.data.filter((item) => {
       if (this.filterType) {
-        if (item.type !== this.filterType) return false;
+        if (item.type !== this.filterType) { return false; }
       }
-      const _city = this.filterCity.trim();
-      if (_city) {
-        if (item.type === 'C' && !item.name.includes(_city)) return false;
+      const city = this.filterCity.trim();
+      if (city) {
+        if (item.type === 'C' && !item.name.includes(city)) { return false; }
       }
       if (this.filterState) {
-        if (item.type === 'S' && item.name !== this.filterState) return false;
+        if (item.type === 'S' && item.name !== this.filterState) { return false; }
       }
-      const _country = this.filterCountry.trim();
-      if (_country) {
-        if (item.type === 'P' && !item.name.includes(_country)) return false;
+      const country = this.filterCountry.trim();
+      if (country) {
+        if (item.type === 'P' && !item.name.includes(country)) { return false; }
       }
       if (this.filterStatus) {
-        if (item.status !== this.filterStatus) return false;
+        if (item.status !== this.filterStatus) { return false; }
       }
       return true;
     });
@@ -112,19 +112,27 @@ export class QrAdminBillingComponent implements OnInit {
     });
 
     modal.afterClose.subscribe((result) => {
-      if (!result) return;
+      if (!result) { return; }
 
-      const newItem: AdminBillingItem = {
-        ...result.data,
-        name: result.data.city || result.data.country || result.data.state,
-        status: result.data.status || 0,
-        discount: result.data.discount || 0,
-        users: 0,
-      };
+      console.log('Result [data]: ', result.data);
+      const formData: FormData = new FormData();
+      if (result.data.id) {
+        formData.append('id', result.data.id);
+      }
+      formData.append('type', result.data.type);
+      formData.append('name', result.data.city || result.data.country || result.data.state);
+      formData.append('startDate', result.data.startDate);
+      formData.append('endDate', result.data.endDate);
+      formData.append('status', result.data.status || 0);
+      formData.append('discount', result.data.discount || 0);
+      formData.append('users', result.data.users || 0);
+      if (result.data.file) {
+        formData.append('file', result.data.file, result.data.file.name);
+      }
 
-      if (newItem.id) {
+      if (result.data.id) {
         this.adminService
-          .updateBilling(newItem.id, newItem)
+          .updateBilling(result.data.id, formData)
           .pipe(
             take(1),
             catchError((error) => {
@@ -144,17 +152,13 @@ export class QrAdminBillingComponent implements OnInit {
               { nzPlacement: 'bottomRight' }
             );
             this.data = this.data.map((item) =>
-              item.id === newItem.id ? response : item
+              item.id === result.data.id ? response : item
             );
             this.filterData();
           });
       } else {
         this.adminService
-          .addBilling({
-            ...newItem,
-            status: newItem.status || 0,
-            discount: newItem.discount || 0,
-          })
+          .addBilling(formData)
           .pipe(
             take(1),
             catchError((error) => {

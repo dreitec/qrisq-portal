@@ -56,4 +56,5 @@ export interface AdminBillingItem {
   status: number;
   discount: number;
   users: number;
+  file: File;
 }

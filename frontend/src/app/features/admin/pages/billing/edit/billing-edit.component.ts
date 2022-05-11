@@ -14,6 +14,7 @@ export class QrAdminBillingEditComponent implements OnInit {
   type: string;
   states = states;
   form!: FormGroup;
+  fileToUpload: File | null = null;
   @Input() item?: AdminBillingItem;
 
   constructor(private modal: NzModalRef, private fb: FormBuilder) {}
@@ -55,6 +56,7 @@ export class QrAdminBillingEditComponent implements OnInit {
     this.form.controls.state.setValue('');
     if (type === 'C') {
       this.form.controls.city.enable();
+      this.form.controls.state.enable();
     }
     if (type === 'P') {
       this.form.controls.country.enable();
@@ -76,7 +78,14 @@ export class QrAdminBillingEditComponent implements OnInit {
     this.modal.destroy();
   }
 
+  handleFileInput(event: any): void {
+    if (event.target.files) {
+      this.fileToUpload = event.target.files.item(0);
+    }
+  }
+  
   submitForm(): void {
-    this.modal.destroy({ data: this.form.value });
+    console.log('this.fileToUpload: ', this.fileToUpload);
+    this.modal.destroy({ data: { ...this.form.value, file: this.fileToUpload } });
   }
 }

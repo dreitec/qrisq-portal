@@ -21,7 +21,7 @@
               (ngModelChange)="changeType($event)"
             >
               <nz-option nzValue="S" nzLabel="State"></nz-option>
-              <nz-option nzValue="C" nzLabel="City" nzDisabled></nz-option>
+              <nz-option nzValue="C" nzLabel="City"></nz-option>
               <nz-option nzValue="P" nzLabel="Country/Parish" nzDisabled></nz-option>
               <nz-option nzValue="I" nzLabel="Insurance" nzDisabled></nz-option>
             </nz-select>
@@ -32,6 +32,7 @@
           <nz-form-label
             [nzSpan]="10"
             [nzRequired]="form.controls.type.value === 'C'"
+            [ngClass]="{'disabled': form.controls.type.value !== 'C'}"
             >City</nz-form-label
           >
           <nz-form-control [nzSpan]="14">
@@ -43,6 +44,7 @@
           <nz-form-label
             [nzSpan]="10"
             [nzRequired]="form.controls.type.value === 'P'"
+            [ngClass]="{'disabled': form.controls.type.value !== 'P'}"
             >Country/Parish</nz-form-label
           >
           <nz-form-control [nzSpan]="14">
@@ -57,7 +59,8 @@
         <nz-form-item>
           <nz-form-label
             [nzSpan]="10"
-            [nzRequired]="form.controls.type.value === 'S'"
+            [nzRequired]="form.controls.type.value === 'C' || form.controls.type.value === 'S'"
+            [ngClass]="{'disabled': form.controls.type.value !== 'C' && form.controls.type.value !== 'S'}"
             >State</nz-form-label
           >
           <nz-form-control [nzSpan]="14" nzErrorTip="Please select state!">
@@ -91,20 +94,20 @@
         </nz-form-item>
   
         <nz-form-item>
-          <nz-form-label [nzSpan]="10">End date</nz-form-label>
+          <nz-form-label [nzSpan]="10" [ngClass]="{'disabled': form.controls.type.value !== 'C'}">End date</nz-form-label>
           <nz-form-control [nzSpan]="14">
             <nz-date-picker
               nzFormat="MM/dd/yyyy"
               formControlName="endDate"
               [nzDisabledDate]="disabledEndDate"
               nzPlaceHolder="End (optional)"
-              nzDisabled
+              [nzDisabled]="form.controls.type.value !== 'C'"
             ></nz-date-picker>
           </nz-form-control>
         </nz-form-item>
   
         <nz-form-item>
-          <nz-form-label [nzSpan]="10">Discount</nz-form-label>
+          <nz-form-label [nzSpan]="10" [ngClass]="{'disabled': true}">Discount</nz-form-label>
           <nz-form-control [nzSpan]="9" [nzErrorTip]="discountTip">
             <div class="discount">
               <input type="number" nz-input formControlName="discount" />
@@ -117,6 +120,21 @@
               <ng-container *ngIf="control.hasError('min')"
                 >Min value is 0</ng-container
               >
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSpan]="10" [ngClass]="{'disabled': form.controls.type.value !== 'C'}" nzRequired>Upload shape</nz-form-label>
+          <nz-form-control [nzSpan]="14" class="upload-btn">
+            <p *ngIf="fileToUpload !== null; else elseBlock">
+              {{ fileToUpload.name }}
+            </p>
+            <ng-template #elseBlock>
+              <label  [ngClass]="{'disabled': form.controls.type.value !== 'C'}">
+                <input type="file" nz-input (change)="handleFileInput($event)" accept=".wkt" />
+                Upload
+              </label>
             </ng-template>
           </nz-form-control>
         </nz-form-item>

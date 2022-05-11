@@ -157,15 +157,13 @@ export class QrAdminService {
     );
   }
 
-  addBilling(params) {
-    return this.httpClient.post(environment.API_URL + '/billing/', params, {
-      headers: { 'Content-type': 'application/json; charset=utf-8' },
-    });
+  addBilling(formData) {
+    return this.httpClient.post(environment.API_URL + '/billing/', formData);
   }
 
   updateBilling(id, params) {
     return this.httpClient.put(
-      environment.API_URL + '/billing/' + id + '/',
+      environment.API_URL + '/billing/' + id,
       params,
       {
         headers: { 'Content-type': 'application/json; charset=utf-8' },
@@ -175,7 +173,7 @@ export class QrAdminService {
 
   deleteBilling(id) {
     return this.httpClient.delete(
-      environment.API_URL + '/billing/' + id + '/',
+      environment.API_URL + '/billing/' + id,
       {
         headers: { 'Content-type': 'application/json; charset=utf-8' },
       }
