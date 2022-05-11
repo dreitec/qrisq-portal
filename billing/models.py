@@ -17,3 +17,4 @@ class Billing(models.Model):
     end_date = models.DateField(default=None, null=True)
     discount = models.FloatField(default=0)
     users = models.IntegerField(default=0)
+    shape_file = models.CharField(max_length=999, default=None, null=True)

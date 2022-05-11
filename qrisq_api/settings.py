@@ -77,6 +77,7 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'corsheaders',
+    'storages',
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt.token_blacklist',
@@ -224,6 +225,18 @@ AWS_REGION = config('AWS_REGION', 'us-east-1')
 AWS_WKT_BUCKET = config('AWS_WKT_BUCKET', '')
 AWS_STORM_BUCKET = config('AWS_STORM_BUCKET', '')
 AWS_STORM_MOST_RECENT_FILE = config('AWS_STORM_MOST_RECENT_FILE', '')
+
+# AWS Credentials
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY', "")
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_KEY', "")
+# AWS_STORAGE_BUCKET_NAME = config('AWS_WKT_BUCKET', "")
+# AWS_S3_SIGNATURE_VERSION = 's3v4'
+# AWS_S3_REGION_NAME = 'us-east-1'
+AWS_S3_FILE_OVERWRITE = False
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# AWS_DEFAULT_ACL = None
+# AWS_S3_VERIFY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' 
 
 # SQS Credentials
 AWS_SQS_ACCESS_KEY_ID = config('AWS_SQS_ACCESS_KEY_ID', "")

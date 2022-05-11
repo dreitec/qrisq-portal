@@ -17,4 +17,5 @@ class BillingSerializer(serializers.HyperlinkedModelSerializer):
             "end_date",
             "discount",
             "users",
+            "shape_file"
         )
