@@ -19,7 +19,7 @@ class BillingViewSet(viewsets.ModelViewSet):
             # do your validation here e.g. file size/type check
 
             # organize a path for the file in bucket
-            file_directory_within_bucket = ''
+            file_directory_within_bucket = 'city_wkt'
 
             # synthesize a full file path note that we included the filename
             file_path_within_bucket = os.path.join(
