@@ -30,7 +30,7 @@ export class QrAdminBillingEditComponent implements OnInit {
         value: type === 'C' ? name : '',
         disabled: type !== 'C',
       },
-      country: {
+      county: {
         value: type === 'P' ? name : '',
         disabled: type !== 'P',
       },
@@ -50,8 +50,8 @@ export class QrAdminBillingEditComponent implements OnInit {
   changeType(type) {
     this.form.controls.city.disable();
     this.form.controls.city.setValue('');
-    this.form.controls.country.disable();
-    this.form.controls.country.setValue('');
+    this.form.controls.county.disable();
+    this.form.controls.county.setValue('');
     this.form.controls.state.disable();
     this.form.controls.state.setValue('');
     if (type === 'C') {
@@ -59,7 +59,7 @@ export class QrAdminBillingEditComponent implements OnInit {
       this.form.controls.state.enable();
     }
     if (type === 'P') {
-      this.form.controls.country.enable();
+      this.form.controls.county.enable();
     }
     if (type === 'S') {
       this.form.controls.state.enable();

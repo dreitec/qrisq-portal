@@ -4,14 +4,16 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Billing(models.Model):
-    TYPE = [("C", "city"), ("S", "state"), ("P", "country/parish")]
+    TYPE = [("C", "city"), ("S", "state"), ("P", "county/parish")]
     STATUS = [
         (0, "pending"),
         (1, "active"),
         (-1, "expired"),
     ]
     type = models.CharField(max_length=1, choices=TYPE)
-    name = models.CharField(max_length=60, default=None, null=True)
+    city = models.CharField(max_length=60, default=None, null=True)
+    county = models.CharField(max_length=60, default=None, null=True)
+    state = models.CharField(max_length=60, default=None, null=True)
     status = models.IntegerField(choices=STATUS, default=0)
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(default=None, null=True)

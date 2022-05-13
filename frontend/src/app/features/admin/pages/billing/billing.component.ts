@@ -20,7 +20,7 @@ export class QrAdminBillingComponent implements OnInit {
   items: AdminBillingItem[] = [];
   filterType = '';
   filterCity = '';
-  filterCountry = '';
+  filterCounty = '';
   filterState = '';
   filterStatus = null;
 
@@ -55,9 +55,9 @@ export class QrAdminBillingComponent implements OnInit {
       if (this.filterState) {
         if (item.type === 'S' && item.name !== this.filterState) { return false; }
       }
-      const country = this.filterCountry.trim();
-      if (country) {
-        if (item.type === 'P' && !item.name.includes(country)) { return false; }
+      const county = this.filterCounty.trim();
+      if (county) {
+        if (item.type === 'P' && !item.name.includes(county)) { return false; }
       }
       if (this.filterStatus) {
         if (item.status !== this.filterStatus) { return false; }
@@ -69,7 +69,7 @@ export class QrAdminBillingComponent implements OnInit {
   clearFilters(): void {
     this.filterType = '';
     this.filterCity = '';
-    this.filterCountry = '';
+    this.filterCounty = '';
     this.filterState = '';
     this.filterStatus = '';
     this.filterData();
@@ -79,7 +79,7 @@ export class QrAdminBillingComponent implements OnInit {
     return {
       C: 'City',
       S: 'State',
-      P: 'Country',
+      P: 'County',
     }[item.type];
   }
 
@@ -120,7 +120,9 @@ export class QrAdminBillingComponent implements OnInit {
         formData.append('id', result.data.id);
       }
       formData.append('type', result.data.type);
-      formData.append('name', result.data.city || result.data.country || result.data.state);
+      formData.append('city', result.data.city);
+      formData.append('county', result.data.county);
+      formData.append('state', result.data.state);
       formData.append('startDate', result.data.startDate);
       formData.append('endDate', result.data.endDate);
       formData.append('status', result.data.status || 0);

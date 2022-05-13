@@ -22,7 +22,7 @@
             >
               <nz-option nzValue="S" nzLabel="State"></nz-option>
               <nz-option nzValue="C" nzLabel="City"></nz-option>
-              <nz-option nzValue="P" nzLabel="Country/Parish" nzDisabled></nz-option>
+              <nz-option nzValue="P" nzLabel="County/Parish" nzDisabled></nz-option>
               <nz-option nzValue="I" nzLabel="Insurance" nzDisabled></nz-option>
             </nz-select>
           </nz-form-control>
@@ -45,13 +45,13 @@
             [nzSpan]="10"
             [nzRequired]="form.controls.type.value === 'P'"
             [ngClass]="{'disabled': form.controls.type.value !== 'P'}"
-            >Country/Parish</nz-form-label
+            >County/Parish</nz-form-label
           >
           <nz-form-control [nzSpan]="14">
             <input
               nz-input
-              formControlName="country"
-              placeholder="Enter country"
+              formControlName="county"
+              placeholder="Enter county"
             />
           </nz-form-control>
         </nz-form-item>
@@ -158,7 +158,7 @@
           !form.valid ||
           (form.controls.type.value === 'C' && form.controls.city.value === '') ||
           (form.controls.type.value === 'P' &&
-            form.controls.country.value === '') ||
+            form.controls.county.value === '') ||
           (form.controls.type.value === 'S' && form.controls.state.value === '')
         "
       >

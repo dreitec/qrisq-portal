@@ -18,8 +18,8 @@
     style="width: 120px"
     nzDisabled
   >
-    <nz-option nzLabel="Country" nzValue="P"></nz-option>
-    <nz-option nzLabel="Not Country" nzValue="Not-P"></nz-option>
+    <nz-option nzLabel="County" nzValue="P"></nz-option>
+    <nz-option nzLabel="Not County" nzValue="Not-P"></nz-option>
   </nz-select>
   <input
     nz-input
@@ -32,7 +32,7 @@
   <input
     nz-input
     placeholder="County/Parish.."
-    [(ngModel)]="filterCountry"
+    [(ngModel)]="filterCounty"
     (input)="filterData()"
     style="width: 150px"
     [disabled]="true"
@@ -71,7 +71,7 @@
   [disabled]="
     !filterType &&
     !filterCity &&
-    !filterCountry &&
+    !filterCounty &&
     !filterState &&
     !filterStatus
   "

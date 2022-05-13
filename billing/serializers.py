@@ -11,7 +11,9 @@ class BillingSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             "id",
             "type",
-            "name",
+            "city",
+            "county",
+            "state",
             "status",
             "start_date",
             "end_date",
