@@ -5,6 +5,7 @@ import { map, take } from 'rxjs/operators';
 import { SubscriptionPlan } from '../../models/SubscriptionPlan.model';
 import { QrIdentityService } from '../../services/identity.service';
 import { actionRegisterStart } from '../../store/identity.actions';
+import { SignUpState } from '../../store/identity.models';
 import { selectSignUp } from '../../store/identity.selectors';
 
 @Component({
@@ -26,13 +27,13 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
     const myThis = this;
     this.signUp$.subscribe({
       next: (signUpData) =>
-        signUpData.addressState &&
-        myThis.fetchSubscriptionPlans(signUpData.addressState),
+        signUpData &&
+        myThis.fetchSubscriptionPlans(signUpData),
       error: (err) => console.error(err),
     });
   }
 
-  fetchSubscriptionPlans(state: string): void {
+  fetchSubscriptionPlans(state: SignUpState): void {
     this.identityService
       .fetchSubscriptionPlansWithDiscount(state)
       .pipe(

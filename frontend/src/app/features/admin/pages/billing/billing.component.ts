@@ -50,14 +50,14 @@ export class QrAdminBillingComponent implements OnInit {
       }
       const city = this.filterCity.trim();
       if (city) {
-        if (item.type === 'C' && !item.name.includes(city)) { return false; }
+        if (item.type === 'C' && !item.city.includes(city)) { return false; }
       }
       if (this.filterState) {
-        if (item.type === 'S' && item.name !== this.filterState) { return false; }
+        if (item.type === 'S' && item.state !== this.filterState) { return false; }
       }
       const county = this.filterCounty.trim();
       if (county) {
-        if (item.type === 'P' && !item.name.includes(county)) { return false; }
+        if (item.type === 'P' && !item.county.includes(county)) { return false; }
       }
       if (this.filterStatus) {
         if (item.status !== this.filterStatus) { return false; }
@@ -114,22 +114,23 @@ export class QrAdminBillingComponent implements OnInit {
     modal.afterClose.subscribe((result) => {
       if (!result) { return; }
 
-      console.log('Result [data]: ', result.data);
       const formData: FormData = new FormData();
       if (result.data.id) {
         formData.append('id', result.data.id);
       }
       formData.append('type', result.data.type);
-      formData.append('city', result.data.city);
-      formData.append('county', result.data.county);
-      formData.append('state', result.data.state);
+      formData.append('city', result.data.city || '');
+      formData.append('county', result.data.county || '');
+      formData.append('state', result.data.state || '');
       formData.append('startDate', result.data.startDate);
       formData.append('endDate', result.data.endDate);
       formData.append('status', result.data.status || 0);
       formData.append('discount', result.data.discount || 0);
       formData.append('users', result.data.users || 0);
       if (result.data.file) {
-        formData.append('file', result.data.file, result.data.file.name);
+        const fileNames = result.data.file.name.split('.');
+        const newFileName = `${fileNames.slice(0, fileNames.length - 1)}_${new Date().getTime()}.${fileNames[fileNames.length - 1]}`;
+        formData.append('file', result.data.file, newFileName);
       }
 
       if (result.data.id) {

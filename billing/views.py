@@ -13,7 +13,7 @@ class BillingViewSet(viewsets.ModelViewSet):
     queryset = Billing.objects.all()
 
     def perform_create(self, serializer):
-        file_obj = self.request.FILES['file']
+        file_obj = self.request.FILES.get('file', None)
 
         if file_obj:
             # do your validation here e.g. file size/type check

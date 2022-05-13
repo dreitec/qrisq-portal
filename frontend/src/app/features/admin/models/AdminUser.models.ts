@@ -50,7 +50,9 @@ export interface AdminBillingData {
 export interface AdminBillingItem {
   id: number;
   type: string;
-  name: string;
+  city: string;
+  county: string;
+  state: string;
   startDate: string;
   endDate: string;
   status: number;
