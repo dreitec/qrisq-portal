@@ -20,6 +20,7 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
   ) {}
 
   subscriptionPlans = [];
+  isFetching = false;
 
   signUp$ = this.store.select(selectSignUp);
 
@@ -27,13 +28,14 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
     const myThis = this;
     this.signUp$.subscribe({
       next: (signUpData) =>
-        signUpData &&
-        myThis.fetchSubscriptionPlans(signUpData),
+        signUpData.addressCity && signUpData.addressState &&
+        !myThis.isFetching && myThis.fetchSubscriptionPlans(signUpData),
       error: (err) => console.error(err),
     });
   }
 
   fetchSubscriptionPlans(state: SignUpState): void {
+    this.isFetching = true;
     this.identityService
       .fetchSubscriptionPlansWithDiscount(state)
       .pipe(

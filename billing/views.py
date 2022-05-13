@@ -31,6 +31,5 @@ class BillingViewSet(viewsets.ModelViewSet):
 
             if not media_storage.exists(file_path_within_bucket): # avoid overwriting existing file
                 media_storage.save(file_path_within_bucket, file_obj)
-                file_url = media_storage.url(file_path_within_bucket)
-                serializer.save(shape_file=file_url)
+                serializer.save(shape_file=file_obj.name)
         return super().perform_create(serializer)

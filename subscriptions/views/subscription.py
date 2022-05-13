@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
+from billing.models import Billing
+from core.service_area import check_billing_city_shape
 from qrisq_api.pagination import CustomPagination
 from user_app.permissions import IsAdminUser
 from user_app.models import User
@@ -38,16 +40,30 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
 
 class SubscriptionPlanDiscountView(APIView):
     def post(self, request, *args, **kwargs):
-        state = request.data.get('state', '')
+        lat = request.data.get('lattitude', '')
+        lng = request.data.get('longitude', '')
+        city = request.data.get('addressCity', '')
+        state = request.data.get('addressState', '')
         all_plans = SubscriptionPlan.objects.all().order_by('id')
         result_plans = []
         for plan in all_plans:
+            # get discount by state
             cond1 = Q(state=state)
             cond2 = Q(plan=plan)
             filtered_discounts = Discount.objects.filter(cond1 & cond2)
             discount = 0.0
             if len(filtered_discounts) > 0:
                 discount = filtered_discounts[0].discount
+            
+            # get the highest discount by city
+            cond3 = Q(city=city)
+            cond4 = Q(discount__gt=discount)
+            filtered_billings = Billing.objects.filter((cond1 | cond3) & cond4).order_by('-discount')
+            for billing_item in filtered_billings:
+                if billing_item.shape_file:
+                    print(billing_item.shape_file)
+                    if check_billing_city_shape('./' + billing_item.shape_file, lat, lng):
+                        discount = billing_item.discount
             result_plans.append({
                 "id": plan.id,
                 "name": plan.name,
