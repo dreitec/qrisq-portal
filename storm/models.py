@@ -5,7 +5,6 @@ from .managers import StormManager
 
 
 class StormAdvisory(models.Model):
-    storm_advisory_id = models.IntegerField()
     year = models.CharField(max_length=4, validators=[NUMERIC_VALIDATOR], null=True)
     tcid = models.CharField(max_length=4, null=True)
     adv = models.CharField(max_length=2, null=True)
