@@ -4,15 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import Tokenizer from 'fluidpay-tokenizer';
 import {
-  PaymentInformation,
   PaypalPaymentInformation,
 } from '../../models/Payment.models';
+import { environment } from '@env';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { SignedUserState } from '../../store/identity.models';
 import {
   actionProcessPaymentRequest,
-  actionProcessPaymentRequestSuccess,
   actionProcessPaypalPaymentRequest,
   actionResetPayment,
 } from '../../store/identity.actions';
@@ -43,12 +42,12 @@ export class QrPaymentPageComponent implements OnInit {
     private store: Store
   ) {}
 
-  example: any;
+  tokenizer: any;
 
   ngOnInit(): void {
-    this.example = new Tokenizer({
-      url: 'https://sandbox.convenupay.com',
-      apikey: 'pub_28IpFFyqkBUo05gAQFKFVNquxcD',
+    this.tokenizer = new Tokenizer({
+      url: environment.production ? environment.FLUID_PAY_PRODUCTION_URL : environment.FLUID_PAY_SANDBOX_URL,
+      apikey: environment.FLUID_PAY_API_KEY,
       container: document.querySelector('#subscription-payment'),
       submission: (resp) => {
         const { status, token = '' } = resp;
@@ -93,8 +92,7 @@ export class QrPaymentPageComponent implements OnInit {
   }
 
   onCreditCardPaymentSubmit() {
-    this.example.submit();
-    // this.store.dispatch(actionProcessPaymentRequest({ paymentInformation }));
+    this.tokenizer.submit();
   }
 
   onPaypalPaymentSubmit() {
