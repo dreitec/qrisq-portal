@@ -183,12 +183,13 @@ class FluidPay(object):
             "email_address": user_email,
             "create_vault_record": False,
             "payment_method": {
-                "customer": {
-                    "id": customer_id,
-                    "payment_method_type": "card",
-                    "payment_method_id": payment_method_id,
-                    "billing_address_id": billing_address_id
-                }
+                "token": tokenizer_token
+                # "customer": {
+                #     "id": customer_id,
+                #     "payment_method_type": "card",
+                #     "payment_method_id": payment_method_id,
+                #     "billing_address_id": billing_address_id
+                # }
             },
             "billing_address": {
                 "first_name": user_user.first_name,
