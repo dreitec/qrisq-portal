@@ -58,57 +58,38 @@ export class QrStormPageComponent implements OnInit {
 
   ngOnInit() {
     this.isDataLoaded = true;
-    this.stormData = {
-      stormName: 'Hurricane Ida',
-      surgeRisk: 'L',
-      windRisk: 'L',
-      advisoryDate: 'Sun Aug 29 2021, 2PM',
-      landfallDate: new Date(),
-      landfallLocation: 'Near Brooklyn, NY',
-      stormDistance: 100,
-      userDataAvailable: true,
-      maxFlood: 10,
-      floodAdvisoryDate: 'Thu Sep 2 2021, 8AM',
-      windAdvisoryDate: 'Thu Sep 2 2021, 8AM',
-    };
-    this.userDataAvailable = true;
-    this.userGeolocation = {
-      address: '254 Broadway, New York, NY, 10007',
-      lattitude: 40.7127753,
-      longitude: -74.0059728,
-    };
-    // this.stormData = null;
-    // this.userDataAvailable = false;
-    // this.isDataLoaded = false;
-    // this.store
-    //   .select(selectSignedUser)
-    //   .pipe(
-    //     take(1),
-    //     map((signedUser) => ({
-    //       lattitude: signedUser.user.geolocation.lattitude,
-    //       longitude: signedUser.user.geolocation.longitude,
-    //       address: signedUser.user.address.displayText,
-    //     }))
-    //   )
-    //   .subscribe((userGeolocation) => {
-    //     this.userGeolocation = userGeolocation;
-    //     this.stormService
-    //       .getStormData(false)
-    //       .pipe(take(1))
-    //       .subscribe((stormData) => {
-    //         this.userDataAvailable = stormData.userDataAvailable;
-    //         this.stormData = stormData;
-    //         this.isDataLoaded = true;
-    //       });
-    //   });
+    this.stormData = null;
+    this.userDataAvailable = false;
+    this.isDataLoaded = false;
+    this.store
+      .select(selectSignedUser)
+      .pipe(
+        take(1),
+        map((signedUser) => ({
+          lattitude: signedUser.user.geolocation.lattitude,
+          longitude: signedUser.user.geolocation.longitude,
+          address: signedUser.user.address.displayText,
+        }))
+      )
+      .subscribe((userGeolocation) => {
+        this.userGeolocation = userGeolocation;
+        this.stormService
+          .getStormData(false)
+          .pipe(take(1))
+          .subscribe((stormData) => {
+            this.userDataAvailable = stormData.userDataAvailable;
+            this.stormData = stormData;
+            this.isDataLoaded = true;
+          });
+      });
 
-    // this.store.select(selectStormData).subscribe((stormData) => {
-    //   if (stormData) {
-    //     console.log(stormData);
-    //     this.stormData = stormData;
-    //     this.isDataLoaded = true;
-    //   }
-    // });
+    this.store.select(selectStormData).subscribe((stormData) => {
+      if (stormData) {
+        console.log(stormData);
+        this.stormData = stormData;
+        this.isDataLoaded = true;
+      }
+    });
   }
 
   onMapHelpClick() {

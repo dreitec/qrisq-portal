@@ -1,5 +1,5 @@
 <div>
-  <ng-container *ngIf="true">
+  <ng-container *ngIf="userDataAvailable">
     <agm-map
       [restriction]="restriction"
       [zoom]="zoom"
@@ -76,7 +76,7 @@
                 </div>
                 <div class="descs">
                   <p class="risk-desc">{{ item.shortDesc }} Speed</p>
-                  <p class="level-desc" *ngIf="item.speedDesc !== '-'">{{ item.speedDesc }}</p>
+                  <p class="level-desc">{{ item.speedDesc }}</p>
                 </div>
               </div>
             </ng-template>
