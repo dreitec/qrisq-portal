@@ -6,7 +6,7 @@ import round from 'round';
 @Component({
   selector: 'qr-storm-data',
   templateUrl: './qr-storm-data.component.html',
-  styleUrls: ['./qr-storm-data.component.css'],
+  styleUrls: ['./qr-storm-data.component.scss'],
 })
 export class QrStormDataComponent implements OnInit {
   @Input() mode: string;
@@ -20,6 +20,8 @@ export class QrStormDataComponent implements OnInit {
   @Input() landfallDate: Date;
   @Input() landfallLocation: string;
   @Input() stormDistance: number;
+  @Input() forecastAdvisory: number;
+  @Input() nextAdvisoryDate: number;
   @Input() userDataAvailable: boolean;
   @Input() isTrackAndConeChecked: boolean;
   @Input() maxFlood: number;

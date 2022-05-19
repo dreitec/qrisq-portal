@@ -1,115 +1,145 @@
 <div class="container">
   <div class="storm-name">
-    <h3>
-      <span
-        ><img height="40px" src="/assets/images/icon-triangle-green.png"
-      /></span>
-      {{ stormName }} Impact
-    </h3>
+    {{ stormName }} Impact
   </div>
 
-  <div class="user-address" *ngIf="userDataAvailable">
-    <h4>Expected at {{ userAddress }}</h4>
-  </div>
+  <div class="split-border"></div>
 
-  <div *ngIf="userDataAvailable" class="risk-header">
-    <ng-container
-      *ngIf="mode === 'surge'; then surgeRiskHeader; else windRiskHeader"
-    ></ng-container>
+  <div class="storm-detail" *ngIf="userDataAvailable">
+    <div [ngClass]="mode === 'surge' ? 'level-icon surge-' + surgeRisk : 'level-icon wind-' + windRisk">
+      <svg width="20px" height="17px" viewBox="0 0 20 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Rounded" transform="translate(-816.000000, -289.000000)">
+            <g id="Action" transform="translate(100.000000, 100.000000)">
+              <g id="-Round-/-Action-/-home" transform="translate(714.000000, 186.000000)">
+                <g transform="translate(0.000000, 0.000000)">
+                  <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
+                  <path d="M10,19 L10,14 L14,14 L14,19 C14,19.55 14.45,20 15,20 L18,20 C18.55,20 19,19.55 19,19 L19,12 L20.7,12 C21.16,12 21.38,11.43 21.03,11.13 L12.67,3.6 C12.29,3.26 11.71,3.26 11.33,3.6 L2.97,11.13 C2.63,11.43 2.84,12 3.3,12 L5,12 L5,19 C5,19.55 5.45,20 6,20 L9,20 C9.55,20 10,19.55 10,19 Z" id="🔹Icon-Color" fill="#1D1D1D"></path>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <div class="details-info">
+      <p class="user-address">{{ userAddress }}</p>
+      <a routerLink="/" routerLinkActive="active">Adjust address pin</a>
 
-    <ng-template #windRiskHeader
-      ><h1>
-        <span *ngIf="windLevels[windRisk].shortDesc !== 'Minimal'"
-          >Max Sustained Winds of</span
-        >
-        <span *ngIf="windLevels[windRisk].shortDesc === 'Minimal'"
-          >Minimal Wind Risk
-        </span>
-
-        <span
-          *ngIf="windLevels[windRisk].shortDesc !== 'Minimal'"
-          [style]="{
-            color: windLevels[windRisk].colorHex
-          }"
-          >{{ windLevels[windRisk].shortDesc }}
-        </span>
-        {{ windLevels[windRisk].speedDesc }}
-        <span class="icon-level">
-          <img [src]="windLevels[windRisk].iconUrl" />
-        </span></h1
-    ></ng-template>
-
-    <ng-template #surgeRiskHeader
-      ><h1>
-        <ng-container
-          *ngIf="
-            surgeLevels[surgeRisk].riskDesc === 'No';
-            then surgeRiskHeaderNo;
-            else surgeRiskHeaderOtherThanNo
-          "
-        ></ng-container>
-        <ng-template #surgeRiskHeaderNo>
-          No Surge Risk
-          <span class="icon-level">
-            <img [src]="surgeLevels[surgeRisk].iconUrl" />
-          </span>
-        </ng-template>
-
-        <ng-template #surgeRiskHeaderOtherThanNo>
-          <span
-            [style]="{
-              color: surgeLevels[surgeRisk].colorHex
-            }"
-            >{{ surgeLevels[surgeRisk].riskDesc }}</span
-          >
-          Surge Risk
-          <span class="icon-level">
-            <img [src]="surgeLevels[surgeRisk].iconUrl" />
-          </span>
-          (~{{ toFeet(maxFlood) }}ft above ground)
-        </ng-template>
-      </h1></ng-template
-    >
-  </div>
-
-  <div class="advisory-date">
-    <ng-container
-      *ngIf="
-        mode === 'surge';
-        then floodAdvisoryDateTpl;
-        else windAdvisoryDateTpl
-      "
-    ></ng-container>
-    <ng-template #floodAdvisoryDateTpl>
-      <h4>{{ floodAdvisoryDate }}</h4>
-    </ng-template>
-    <ng-template #windAdvisoryDateTpl>
-      <h4>{{ windAdvisoryDate }}</h4>
-    </ng-template>
-  </div>
-
-  <ng-container *ngIf="userDataAvailable">
-    <ng-container *ngIf="isTrackAndConeChecked">
       <ng-container
         *ngIf="
-          landfallLocation;
-          then landfallExpectedDataTpl;
-          else landfallExpectedNoDataTpl
+          surgeLevels[surgeRisk].riskDesc === 'No';
+          then surgeRiskHeaderNo;
+          else surgeRiskHeaderOtherThanNo
         "
       ></ng-container>
-
-      <ng-template #landfallExpectedDataTpl>
-        <div class="landfall-expected">
-          <h2>Landfall Expected - {{ toCDT(landfallDate) }}</h2>
-          <h4>Near {{ landfallLocation }}</h4>
-        </div>
+      <ng-template #surgeRiskHeaderNo>
+        <p class="no-risk">No Risk</p>
+      </ng-template>
+      <ng-template #surgeRiskHeaderOtherThanNo>
+        <ng-container
+          *ngIf="mode === 'surge'; then surgeRiskHeader; else windRiskHeader"
+        ></ng-container>
+        <ng-template #surgeRiskHeader>
+          <p class="detail-item">
+            <span class="detail-item-label">Peak surge risk:</span>
+            {{ surgeLevels[surgeRisk].riskDesc }} {{ toFeet(maxFlood) }}ft
+          </p>
+          <p class="expected-date">Expected: {{ floodAdvisoryDate }}</p>
+        </ng-template>
+        <ng-template #windRiskHeader>
+          <p class="detail-item">
+            <span class="detail-item-label">Wind speed:</span>
+            {{ windLevels[windRisk].speedDesc }}
+          </p>
+          <p class="expected-date">Expected: {{ windAdvisoryDate }}</p>
+        </ng-template>
       </ng-template>
 
-      <ng-template #landfallExpectedNoDataTpl>
-        <div class="landfall-expected">
-          <h2>No Landfall Expected</h2>
-        </div>
-      </ng-template>
+      <p class="detail-item">
+        <span class="detail-item-label">Distance between storm and property:</span>
+        {{ stormDistance }} ml
+      </p>
+    </div>
+  </div>
+
+  <div class="split-border" *ngIf="userDataAvailable"></div>
+
+  <div class="forecast-advisory" *ngIf="userDataAvailable">
+    <ng-container *ngIf="isTrackAndConeChecked">
+      <div class="level-icon"></div>
+      <div class="details-info">
+        <ng-container
+          *ngIf="
+            landfallLocation;
+            then landfallExpectedDataTpl;
+            else landfallExpectedNoDataTpl
+          "
+        ></ng-container>
+
+        <ng-template #landfallExpectedDataTpl>
+          <p class="sub-title">Forecast Advisory: {{ forecastAdvisory }}</p>
+          <p class="issued-datetime">Issued: </p>
+          <div class="landfall-expected">
+            <p class="item-label">Landfall Expected</p>
+            <p>{{ toCDT(landfallDate) }}</p>
+            <p>Near {{ landfallLocation }}</p>
+          </div>
+          <div class="properties">
+            <div class="properties-item">
+              <p class="item-label">Location:</p>
+              27.2 N, 88.0 W
+            </div>
+            <div class="properties-item">
+              <p class="item-label">Moving:</p>
+              NW at 16 mph
+            </div>
+            <div class="properties-item">
+              <p class="item-label">Wind:</p>
+              105 mph
+            </div>
+            <div class="properties-item">
+              <p class="item-label">Pressure:</p>
+              964 mb
+            </div>
+          </div>
+          <p class="next-forecast">
+            Next Forecast Available {{ nextAdvisoryDate }}
+          </p>
+        </ng-template>
+
+        <ng-template #landfallExpectedNoDataTpl>
+          <p class="no-landfall-expected">No Landfall Expected</p>
+        </ng-template>
+      </div>
     </ng-container>
-  </ng-container>
+  </div>
+
+  <div class="split-border"></div>
+
+  <div class="current-view-information">
+    <div class="eye-icon"></div>
+    <div class="information-content">
+      <p class="sub-title">Current view information</p>
+
+      <ng-container
+        *ngIf="
+          userDataAvailable;
+          then informationHasData;
+          else informationNoData
+        "
+      ></ng-container>
+      <ng-template #informationHasData>
+        <p>
+          It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem lpsum is that it has a more-or-less normal distribution of letters, as opposed to using ‘Content here, content here’, making it look like readable
+        </p>
+      </ng-template>
+      <ng-template #informationNoData>
+        <p>NHC storm Strength Desingation</p>
+        <p>
+          Water Depth - Lorem Lpsum is that it has a more-or-less normal distribution of letters, as opposed to using ‘Content here, content here’, making it look like readable
+        </p>
+      </ng-template>
+    </div>
+  </div>
 </div>

@@ -1,0 +1,11 @@
+<div class="card-container">
+  <div class="card-header" (click)="onCollapsed()">
+    <p>{{ title }}</p>
+    <div [ngClass]="isCollapsed ? 'arrow-btn is-collapsed' : 'arrow-btn'">
+      <img src="/assets/icons/arrow-down.png" />
+    </div>
+  </div>
+  <div class="card-content" *ngIf="isCollapsed">
+    <ng-content></ng-content>
+  </div>
+</div>

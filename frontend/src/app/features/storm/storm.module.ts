@@ -14,6 +14,7 @@ import { QrCoreModule } from '@app/core/core.module';
 import { QrDesignModule } from '@app/design/design.module';
 import { QrSharedModule } from '@app/shared/shared.module';
 import { QrStormFreePageComponent } from './pages/storm-free/storm-free.component';
+import { QrStormMapLegendCardComponent } from './components/qr-storm-map-legend-card/qr-storm-map-legend-card.component';
 import { QrStormMapIconComponent } from './components/qr-storm-map-icon/qr-storm-map-icon.component';
 import { QrStormMapNoDataComponent } from './components/qr-storm-map-no-data/qr-storm-map-no-data.component';
 
@@ -29,6 +30,7 @@ import { QrStormMapNoDataComponent } from './components/qr-storm-map-no-data/qr-
     QrStormDataComponent,
     QrStormMapIconComponent,
     QrStormMapNoDataComponent,
+    QrStormMapLegendCardComponent,
   ],
 
   imports: [

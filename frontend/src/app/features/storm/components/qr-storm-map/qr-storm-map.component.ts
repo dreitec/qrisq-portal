@@ -19,6 +19,7 @@ import { HurricaneIconSVG } from '../../common/svg';
   styleUrls: ['./qr-storm-map.component.scss'],
 })
 export class QrStormMapComponent implements OnInit {
+  @Input() isStormDataHidden: boolean;
   @Input() surgeGeoJSON: any;
   @Input() lineGeoJSON: Object;
   @Input() pointsGeoJSON: any;
@@ -30,7 +31,6 @@ export class QrStormMapComponent implements OnInit {
   @Input() surgeRisk: string;
   @Input() windRisk: string;
   @Input() stormDistance: number;
-  @Input() forecastAdvisory: number;
   @Input() centerStormIcon: string;
   @Input() mode: string;
   @Input() zoom: number;
@@ -130,6 +130,27 @@ export class QrStormMapComponent implements OnInit {
 
   get categories() {
     return WindRiskLevels;
+  }
+
+  get levelsList() {
+    return [
+      SurgeRiskLevels['N'],
+      SurgeRiskLevels['L'],
+      SurgeRiskLevels['M'],
+      SurgeRiskLevels['H'],
+    ];
+  }
+
+  get categoriesList() {
+    return [
+      WindRiskLevels['N'],
+      WindRiskLevels['TS'],
+      WindRiskLevels['1'],
+      WindRiskLevels['2'],
+      WindRiskLevels['3'],
+      WindRiskLevels['4'],
+      WindRiskLevels['5'],
+    ];
   }
 
   isChecked = true;
@@ -317,9 +338,9 @@ export class QrStormMapComponent implements OnInit {
     this.mapLoaded.emit(true);
     this.map = map;
 
-    const points = this.pointsGeoJSON.features;
-    this.stormLattitude = points[0].geometry.coordinates[1];
-    this.stormLongitude = points[0].geometry.coordinates[0];
+    // const points = this.pointsGeoJSON.features;
+    // this.stormLattitude = points[0].geometry.coordinates[1];
+    // this.stormLongitude = points[0].geometry.coordinates[0];
 
     // const geojsonLayer = new GeoJsonLayer({
     //   id: 'geojsonLayer',
@@ -349,31 +370,25 @@ export class QrStormMapComponent implements OnInit {
     // });
     // overlay.setMap(map);
 
-    this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-
-    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(
-      document.getElementById('forecast-advisory')
-    );
+    // this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
 
     this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
       document.getElementById('select-map-layer')
     );
 
     this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(
-      document.getElementById('property-surge-risk')
+      document.getElementById('property-risk')
     );
 
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(
       document.getElementById('legend-water-depth')
     );
 
-    this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(
-      document.getElementById('property-wind-risk')
-    );
+    return;
 
-    this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(
-      document.getElementById('user-data-not-available-message')
-    );
+    // this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(
+    //   document.getElementById('user-data-not-available-message')
+    // );
     // this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(
     //   document.getElementById('map-settings')
     // );

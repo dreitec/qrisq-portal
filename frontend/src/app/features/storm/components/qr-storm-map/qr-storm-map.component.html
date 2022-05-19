@@ -1,5 +1,5 @@
 <div>
-  <ng-container *ngIf="userDataAvailable">
+  <ng-container *ngIf="true">
     <agm-map
       [restriction]="restriction"
       [zoom]="zoom"
@@ -47,32 +47,51 @@
       <img src="assets/images/legend-water-depth.png" />
     </div> -->
 
-      <div id="property-surge-risk">
-        <ng-container *ngIf="userDataAvailable">
-          <ng-container *ngIf="mode === 'surge'">
-            <div class="legend-card">
-              <img src="assets/images/property-surge-risk.png" />
-            </div>
-          </ng-container>
-        </ng-container>
+      <div id="property-risk">
+        <qr-storm-map-legend-card [title]="mode === 'surge' ? 'Property Surge Risk' : 'Property Wind Risk'">
+          <div class="levels-list">
+            <ng-container
+              *ngIf="
+                mode === 'surge';
+                then propertySurgeRisk;
+                else propertyWindRisk
+              "
+            ></ng-container>
+            <ng-template #propertySurgeRisk>
+              <div class="level-item" *ngFor="let item of levelsList">
+                <div class="level-icon">
+                  <img [src]="item.iconUrl" />
+                </div>
+                <div class="descs">
+                  <p class="risk-desc">{{ item.riskDesc }} Risk</p>
+                  <p class="level-desc" *ngIf="item.levelDesc !== '-'">{{ item.levelDesc }}</p>
+                </div>
+              </div>
+              <p>Surge Contours and Approximate</p>
+            </ng-template>
+            <ng-template #propertyWindRisk>
+              <div class="level-item" *ngFor="let item of categoriesList">
+                <div class="level-icon">
+                  <img [src]="item.iconUrl" />
+                </div>
+                <div class="descs">
+                  <p class="risk-desc">{{ item.shortDesc }} Speed</p>
+                  <p class="level-desc" *ngIf="item.speedDesc !== '-'">{{ item.speedDesc }}</p>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </qr-storm-map-legend-card>
       </div>
 
       <div id="legend-water-depth">
         <ng-container *ngIf="userDataAvailable">
           <ng-container *ngIf="mode === 'surge'">
-            <div class="legend-card">
-              <img src="assets/images/legend-water-depth.png" />
-            </div>
-          </ng-container>
-        </ng-container>
-      </div>
-
-      <div id="property-wind-risk">
-        <ng-container *ngIf="userDataAvailable">
-          <ng-container *ngIf="mode !== 'surge'">
-            <div class="legend-card">
-              <img src="assets/images/property-wind-risk.png" />
-            </div>
+            <qr-storm-map-legend-card title="Storm Surge">
+              <div class="water-depth-image">
+                <img src="assets/images/legend-water-depth.png" />
+              </div>
+            </qr-storm-map-legend-card>
           </ng-container>
         </ng-container>
       </div>
@@ -107,25 +126,24 @@
         </ng-container>
       </ng-container>
 
-      <div id="forecast-advisory">
-        Forecast Advisory: {{ forecastAdvisory }}
-      </div>
-
       <!-- [iconUrl]="getUserLocationIcon(surgeRisk)" -->
 
-      <div id="select-map-layer">
-        <h1>Select Map Layer</h1>
-        <label
-          nz-checkbox
-          [(ngModel)]="isTrackAndConeChecked"
-          [nzDisabled]="activeLayer === 'vortex'"
-          >Track and Cone</label
-        >
-        <nz-radio-group [(ngModel)]="activeLayer">
-          <label nz-radio nzValue="surge">Storm Surge</label>
-          <label nz-radio nzValue="wind">Max Winds</label>
-          <label nz-radio nzValue="vortex">Wind Vortex</label>
-        </nz-radio-group>
+      <div id="select-map-layer" [ngClass]="{'is-storm-data-hidden': isStormDataHidden}">
+        <qr-storm-map-legend-card title="Map Layer">
+          <div class="layers-list">
+            <label
+              nz-checkbox
+              [(ngModel)]="isTrackAndConeChecked"
+              [nzDisabled]="activeLayer === 'vortex'"
+              >Track and Cone</label
+            >
+            <nz-radio-group [(ngModel)]="activeLayer">
+              <label nz-radio nzValue="surge">Storm Surge</label>
+              <label nz-radio nzValue="wind">Max Winds</label>
+              <label nz-radio nzValue="vortex">Wind Vortex</label>
+            </nz-radio-group>
+          </div>
+        </qr-storm-map-legend-card>
       </div>
       <!-- 
     <div id="map-settings" *ngIf="false">
