@@ -129,7 +129,7 @@
       <!-- [iconUrl]="getUserLocationIcon(surgeRisk)" -->
 
       <div id="select-map-layer" [ngClass]="{'is-storm-data-hidden': isStormDataHidden}">
-        <qr-storm-map-legend-card title="Map Layer">
+        <qr-storm-map-legend-card title="Map Layer" [isMapLayer]="true">
           <div class="layers-list">
             <label
               nz-checkbox

@@ -1,5 +1,6 @@
 <div class="card-container">
   <div class="card-header" (click)="onCollapsed()">
+    <img *ngIf="isMapLayer" src="/assets/icons/map-layer.png" />
     <p>{{ title }}</p>
     <div [ngClass]="isCollapsed ? 'arrow-btn is-collapsed' : 'arrow-btn'">
       <img src="/assets/icons/arrow-down.png" />

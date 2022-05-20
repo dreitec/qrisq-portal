@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class QrStormMapLegendCardComponent implements OnInit {
   @Input() title: string;
+  @Input() isMapLayer?: boolean;
 
   constructor() {}
 

@@ -67,7 +67,9 @@
 
   <div class="forecast-advisory" *ngIf="userDataAvailable">
     <ng-container *ngIf="isTrackAndConeChecked">
-      <div class="level-icon"></div>
+      <div class="level-icon">
+        <img src="/assets/icons/storm.png" />
+      </div>
       <div class="details-info">
         <ng-container
           *ngIf="
@@ -118,7 +120,9 @@
   <div class="split-border"></div>
 
   <div class="current-view-information">
-    <div class="eye-icon"></div>
+    <div class="eye-icon">
+      <img src="/assets/icons/eye.png" />
+    </div>
     <div class="information-content">
       <p class="sub-title">Current view information</p>
 

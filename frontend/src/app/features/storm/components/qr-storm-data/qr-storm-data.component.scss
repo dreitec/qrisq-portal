@@ -145,6 +145,8 @@ p.detail-item {
 
   .level-icon {
     width: 34px;
+    text-align: start;
+    padding-left: 5px;
   }
 
   .details-info {
@@ -207,6 +209,9 @@ p.detail-item {
 
   .eye-icon {
     width: 34px;
+    min-width: 34px;
+    text-align: start;
+    padding-left: 3px;
   }
 
   .information-content {
