@@ -1,16 +1,4 @@
 <div class="main-container">
-  <!-- banner -->
-
-  <qr-banner [imageUrl]="'/assets/images/main-background.jpg'">
-    <div class="banner-content">
-      <h1>Q-risq Hurricane Viewer</h1>
-      <p>
-        Use the map below to see the latest storm advisory<br />
-        for your service address.
-      </p>
-    </div>
-  </qr-banner>
-
   <div class="page-content full-width">
     <div class="storm-section">
       <ng-container *ngIf="isDataLoaded === false">
@@ -93,26 +81,8 @@
           >
           </qr-storm-map-no-data
         ></ng-template>
-        <ng-container *ngIf="stormData.userDataAvailable">
-          <div class="next-forecast-container">
-            <h4>Next Forecast Available</h4>
-            <p>{{ stormData.nextAdvisoryDate }}</p>
-          </div>
-        </ng-container>
       </ng-container>
     </div>
 
-    <nz-divider></nz-divider>
-
-    <!-- footer -->
-    <div nz-row class="section-footer">
-      <div nz-col nzSpan="16" class="section-footer-trackstorm">
-        <qr-track-storm-card> </qr-track-storm-card>
-      </div>
-
-      <div nz-col nzSpan="8" class="section-footer-messageform">
-        <qr-contact-us-form> </qr-contact-us-form>
-      </div>
-    </div>
   </div>
 </div>

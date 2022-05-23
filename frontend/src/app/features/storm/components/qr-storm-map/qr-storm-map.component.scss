@@ -5,7 +5,7 @@
 
 /* agm-map */
 agm-map {
-  height: 800px;
+  height: calc(100vh - 80px);
   width: 100%;
   // max-width: 920px;
   // @media (max-width: 920px) {

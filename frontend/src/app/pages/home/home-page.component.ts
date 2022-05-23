@@ -18,6 +18,8 @@ export class QrHomePageComponent implements OnInit {
       .subscribe((credentials: CredentialsState) => {
         if (!credentials) {
           this.router.navigate(['/identity/login']);
+        } else {
+          this.router.navigate(['/storm']);
         }
       });
   }

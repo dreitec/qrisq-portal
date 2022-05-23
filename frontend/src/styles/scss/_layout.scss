@@ -23,12 +23,11 @@
   padding-bottom: 5%;
 }
 .page-content, .navbar, qr-banner .ant-card-body, nz-footer, .form-section {
-  max-width: 1080px;
   margin: 0 auto;
-  @media only screen and (min-width: 1440px) {
-    width: 90%;
-    max-width: 1440px;
-  }
+  // @media only screen and (min-width: 1440px) {
+  //   width: 90%;
+  //   max-width: 1440px;
+  // }
 }
 /* bullet text */
 .bullet-paragraph-container {

@@ -12,14 +12,15 @@ nz-content {
 }
 
 qr-header {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0);
   position: fixed;
   width: 100vw;
   z-index: 999;
 }
 
 qr-content {
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 200px);
+  margin-top: 80px;
 }
 
 .footer-wrapper {

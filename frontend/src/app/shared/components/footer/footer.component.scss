@@ -23,6 +23,7 @@ nz-footer {
   }
   @media (max-width: 480px) {
     flex-direction: column;
+    height: auto;
     max-height: none;
     .menu-container,
     .logo-container,

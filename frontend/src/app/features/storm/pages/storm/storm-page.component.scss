@@ -2,7 +2,9 @@
 .full-width {
   width: 100%;
   max-width: none;
+  min-height: calc(100vh - 200px);
   margin: 0;
+  padding-bottom: 0;
 }
 
 .storm-section {
