@@ -338,9 +338,9 @@ export class QrStormMapComponent implements OnInit {
     this.mapLoaded.emit(true);
     this.map = map;
 
-    // const points = this.pointsGeoJSON.features;
-    // this.stormLattitude = points[0].geometry.coordinates[1];
-    // this.stormLongitude = points[0].geometry.coordinates[0];
+    const points = this.pointsGeoJSON.features;
+    this.stormLattitude = points[0].geometry.coordinates[1];
+    this.stormLongitude = points[0].geometry.coordinates[0];
 
     // const geojsonLayer = new GeoJsonLayer({
     //   id: 'geojsonLayer',
@@ -370,7 +370,7 @@ export class QrStormMapComponent implements OnInit {
     // });
     // overlay.setMap(map);
 
-    // this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+    this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
 
     this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
       document.getElementById('select-map-layer')
@@ -383,8 +383,6 @@ export class QrStormMapComponent implements OnInit {
     this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(
       document.getElementById('legend-water-depth')
     );
-
-    return;
 
     // this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(
     //   document.getElementById('user-data-not-available-message')
