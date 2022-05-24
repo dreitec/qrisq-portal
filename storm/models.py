@@ -8,6 +8,12 @@ class StormAdvisory(models.Model):
     year = models.CharField(max_length=4, validators=[NUMERIC_VALIDATOR], null=True)
     tcid = models.CharField(max_length=4, null=True)
     adv = models.CharField(max_length=2, null=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
+    direction = models.CharField(max_length=9, null=True)
+    speed = models.IntegerField(null=True)
+    wind = models.IntegerField(null=True)
+    pressure = models.IntegerField(null=True)
     issued_datetime = models.DateTimeField(null=True)
     last_processed_datetime = models.DateTimeField(null=True)
 
