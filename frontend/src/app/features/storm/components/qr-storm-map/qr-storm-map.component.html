@@ -2,6 +2,8 @@
   <ng-container *ngIf="userDataAvailable">
     <agm-map
       [restriction]="restriction"
+      [latitude]="userLattitude"
+      [longitude]="userLongitude"
       [zoom]="zoom"
       [disableDefaultUI]="true"
       (mapReady)="mapReady($event)"
@@ -112,7 +114,7 @@
           <agm-marker
             [latitude]="userLattitude"
             [longitude]="userLongitude"
-            [iconUrl]="levels[surgeRisk].iconUrl"
+            [iconUrl]="levels[surgeRisk].iconUrlx2"
           >
           </agm-marker>
         </ng-container>
@@ -121,7 +123,7 @@
           <agm-marker
             [latitude]="userLattitude"
             [longitude]="userLongitude"
-            [iconUrl]="categories[windRisk].iconUrl"
+            [iconUrl]="categories[windRisk].iconUrlx2"
           ></agm-marker>
         </ng-container>
       </ng-container>

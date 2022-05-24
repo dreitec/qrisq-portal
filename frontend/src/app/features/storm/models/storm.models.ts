@@ -64,6 +64,7 @@ export interface WindRiskLevel {
   speedDesc: string;
   colorHex: string;
   iconUrl: string;
+  iconUrlx2: string;
 }
 
 export enum SurgeRiskLevelId {
@@ -79,4 +80,5 @@ export interface SurgeRiskLevel {
   levelDesc: string;
   colorHex: string;
   iconUrl: string;
+  iconUrlx2: string;
 }
