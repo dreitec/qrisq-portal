@@ -84,6 +84,22 @@
 
           <li nz-menu-item nzMatchRouter>
             <a
+              [routerLink]="['/']"
+              (click)="isMenuCollapsed = true"
+              >Map View</a
+            >
+          </li>
+
+          <li nz-menu-item nzMatchRouter>
+            <a
+              [routerLink]="['/']"
+              (click)="isMenuCollapsed = true"
+              >FAQ and Tutorial</a
+            >
+          </li>
+
+          <li nz-menu-item nzMatchRouter>
+            <a
               [routerLink]="['identity/contact-information']"
               (click)="isMenuCollapsed = true"
               >Contact Information</a
