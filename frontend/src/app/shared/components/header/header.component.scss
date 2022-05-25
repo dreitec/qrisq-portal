@@ -6,6 +6,7 @@ nz-header.navbar {
   -webkit-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
   .navbar-toggler {
+    width: fit-content !important;
     border: none;
     .navbar-toggler-icon {
       width: 2rem;
@@ -22,11 +23,6 @@ nz-header.navbar {
     display: flex;
     height: 100%;
     margin: 0;
-    width: 25%;
-    min-width: 110px;
-    @media (min-width: 581px) {
-      min-width: 188px;
-    }
     a {
       display: flex;
       width: 100%;
@@ -147,6 +143,7 @@ button {
 
 .ant-menu-horizontal {
   width: fit-content;
+  min-width: 120px;
   background-color: #000000 !important;
   margin-left: auto;
   border: none;
@@ -157,6 +154,12 @@ button {
 
     a {
       color: white !important;
+    }
+
+    &-disabled {
+      a {
+        color: #ffffff88 !important;
+      }
     }
   }
 }

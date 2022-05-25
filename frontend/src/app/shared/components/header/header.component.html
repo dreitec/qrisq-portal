@@ -84,39 +84,25 @@
 
           <li nz-menu-item nzMatchRouter>
             <a
-              [routerLink]="['/']"
+              [routerLink]="['/storm']"
               (click)="isMenuCollapsed = true"
               >Map View</a
             >
           </li>
 
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter nzDisabled>
             <a
               [routerLink]="['/']"
               (click)="isMenuCollapsed = true"
-              >FAQ and Tutorial</a
+              >FAQ</a
             >
           </li>
 
-          <li nz-menu-item nzMatchRouter>
+          <li nz-menu-item nzMatchRouter nzDisabled>
             <a
-              [routerLink]="['identity/contact-information']"
+              [routerLink]="['/']"
               (click)="isMenuCollapsed = true"
-              >Contact Information</a
-            >
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="['contact-us']" (click)="isMenuCollapsed = true"
-              >Contact Us</a
-            >
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-            <a
-              [routerLink]="['identity/cancel-subscription']"
-              (click)="isMenuCollapsed = true"
-              >Cancel Subscription</a
+              >Tutorial</a
             >
           </li>
 
