@@ -426,53 +426,18 @@ export class QrStormMapComponent implements OnInit {
           const bounds = map.getBounds();
           const mapSizeX = map.getDiv().offsetWidth;
           const mapSizeY = map.getDiv().offsetHeight;
-          // const size = map.getSize();
-          // this.windy.start(
-          //   [
-          //     [0, 0],
-          //     [mapSizeX, mapSizeY],
-          //   ],
-          //   mapSizeX,
-          //   mapSizeY,
-          //   [
-          //     [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
-          //     [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
-          //   ]
-          // );
           this.windy.start(
-            // [
-            //   [0, 0],
-            //   [mapSizeX, mapSizeY],
-            // ],
             [
               [0, 0],
-              [800, 800],
+              [mapSizeX, mapSizeY],
             ],
-            800,
-            800,
+            mapSizeX,
+            mapSizeY,
             [
               [bounds.getSouthWest().lng(), bounds.getSouthWest().lat()],
               [bounds.getNorthEast().lng(), bounds.getNorthEast().lat()],
             ]
           );
-          // console.log('mapSizeX', mapSizeX);
-          // console.log('mapSizeY', mapSizeY);
-          // console.log(
-          //   'bounds.getSouthWest().lng()',
-          //   bounds.getSouthWest().lng()
-          // );
-          // console.log(
-          //   'bounds.getSouthWest().lat()',
-          //   bounds.getSouthWest().lat()
-          // );
-          // console.log(
-          //   'bounds.getNorthEast().lng()',
-          //   bounds.getNorthEast().lng()
-          // );
-          // console.log(
-          //   'bounds.getNorthEast().lat()',
-          //   bounds.getNorthEast().lat()
-          // );
         }, 750);
       },
     };

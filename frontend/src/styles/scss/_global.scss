@@ -37,3 +37,7 @@ h6 {
   font-weight: 600;
   color: #fff;
 }
+
+.ant-checkbox-disabled+span {
+  color: #ffffff88 !important;
+}
