@@ -53,7 +53,7 @@
 
             <!-- password -->
             <nz-form-item>
-              <nz-form-control nzErrorTip="Please input your password!">
+              <nz-form-control [nzErrorTip]="registerForm.controls['password'].errors ? registerForm.controls['password'].errors.required ? 'Please input your password!' : 'Password must be at least twelve characters including as minimum one letter, one number and one special character.' : ''">
                 <input
                   nz-input
                   type="password"

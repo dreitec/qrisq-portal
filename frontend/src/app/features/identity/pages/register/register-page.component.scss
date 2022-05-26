@@ -4,6 +4,7 @@
   justify-content: center;
   align-items: center;
   background-color: #fff;
+  min-height: calc(100vh - 200px);
 }
 
 nz-card.banner {
@@ -51,8 +52,7 @@ nz-card.banner p {
   justify-content: center;
   border: none;
   width: 100%;
-  margin-top: 160px;
-  margin-bottom: 32px;
+  margin: 2rem 0;
 }
 
 [nz-row] {

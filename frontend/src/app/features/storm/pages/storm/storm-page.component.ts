@@ -85,7 +85,6 @@ export class QrStormPageComponent implements OnInit {
 
     this.store.select(selectStormData).subscribe((stormData) => {
       if (stormData) {
-        console.log(stormData);
         this.stormData = stormData;
         this.isDataLoaded = true;
       }
@@ -97,7 +96,6 @@ export class QrStormPageComponent implements OnInit {
   }
 
   onMapModeChange(mode) {
-    console.log(mode);
     this.mapMode = mode;
   }
 

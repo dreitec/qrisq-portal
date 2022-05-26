@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { SubscriptionPlan } from '../../models/SubscriptionPlan.model';
@@ -19,17 +20,18 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
     private store: Store
   ) {}
 
-  subscriptionPlans = [];
   isFetching = false;
+  isLoading = false;
 
   signUp$ = this.store.select(selectSignUp);
+  subscriptionPlans$ = new Observable<SubscriptionPlan[]>();
 
   ngOnInit(): void {
-    const myThis = this;
+    this.isLoading = true;
     this.signUp$.subscribe({
       next: (signUpData) =>
         signUpData.addressCity && signUpData.addressState &&
-        !myThis.isFetching && myThis.fetchSubscriptionPlans(signUpData),
+        !this.isFetching && this.fetchSubscriptionPlans(signUpData),
       error: (err) => console.error(err),
     });
   }
@@ -40,10 +42,11 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
       .fetchSubscriptionPlansWithDiscount(state)
       .pipe(
         take(1),
-        map((subscriptionPlans: SubscriptionPlan[]) => subscriptionPlans)
+        map((plans: SubscriptionPlan[]) => plans)
       )
-      .subscribe((subscriptionPlans) => {
-        this.subscriptionPlans = subscriptionPlans;
+      .subscribe((plans) => {
+        this.subscriptionPlans$ = of(plans);
+        this.isLoading = false;
       });
   }
 

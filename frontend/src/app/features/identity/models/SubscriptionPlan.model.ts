@@ -4,4 +4,5 @@ export interface SubscriptionPlan {
   feature: string;
   price: number;
   duration: number;
+  discount: number;
 }
