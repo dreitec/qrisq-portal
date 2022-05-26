@@ -6,6 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./qr-storm-map-no-data.component.scss'],
 })
 export class QrStormMapNoDataComponent implements OnInit {
+  @Input() isStormDataHidden: boolean;
   @Input() zoom: number;
   @Input() restriction: google.maps.MapRestriction;
   @Output() mapHelpClick = new EventEmitter();

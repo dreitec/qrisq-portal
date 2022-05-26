@@ -1,9 +1,9 @@
 <div class="container">
-  <div class="storm-name">
+  <div class="storm-name" *ngIf="userDataAvailable">
     {{ stormName }} Impact
   </div>
 
-  <div class="split-border"></div>
+  <div class="split-border" *ngIf="userDataAvailable"></div>
 
   <div class="storm-detail" *ngIf="userDataAvailable">
     <div [ngClass]="mode === 'surge' ? 'level-icon surge-' + surgeRisk : 'level-icon wind-' + windRisk">
@@ -134,14 +134,105 @@
         "
       ></ng-container>
       <ng-template #informationHasData>
-        <p>
-          It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem lpsum is that it has a more-or-less normal distribution of letters, as opposed to using ‘Content here, content here’, making it look like readable
-        </p>
+        <div *ngIf="mode === 'surge'">
+          <p>
+            This map view shows your <span class="bold">surge</span> risk. If you want to view your wind risk, use the 
+            radio buttons at the bottom left corner of the map to select “Max Winds”.
+          </p>
+          <p>
+            Above, you can find your property specific surge forecast from our Qrisq model and 
+            the latest storm advisory information from the National Hurricane Center (NHC). The
+            following is visible on the map:
+          </p>
+          <ol>
+            <li>
+              A house icon at the location of your property color coded according to your 
+              property’s surge risk as shown in the “Property Surge Risk” Legend
+            </li>
+            <li>
+              A contoured layer showing the forecasted storm surge.  The contours are 
+              color filled according to the forecasted height of the surge above mean sea 
+              level as shown in the “Storm Surge” legend.
+            </li>
+            <li>
+              The NHC track and cone (if selected). It is a visual representation of the 
+              probable track of the center of the storm labeled according to the forecast 
+              strength at each location:
+              <p>D: Tropical Depression – wind speed less than 39 MPH</p>
+              <p>S: Tropical Storm – wind speed between 39 MPH and 73 MPH</p>
+              <p>H: Hurricane – wind speed between 74 MPH and 110 MPH</p>
+              <p>M: Major Hurricane – wind speed greater than 110 MPH</p>
+            </li>
+            <li>
+              A line labeled with the current distance (in miles) from the current location of 
+              the storm to your property (if Track & Cone is selected).
+            </li>
+          </ol>
+        </div>
+        <div *ngIf="mode === 'wind'">
+          <p>
+            This map view shows your <span class="bold">wind</span> risk. If you want to view your surge risk, use the 
+            radio buttons at the bottom left corner of the map to select “Storm Surge”
+          </p>
+          <p>
+            Above, you can find your property specific wind forecast from our Qrisq model and 
+            the latest storm advisory information from the National Hurricane Center (NHC). The
+            following is visible on the map:
+          </p>
+          <ol>
+            <li>
+              A house icon at the location of your property color coded according to your 
+              property’s wind risk as shown in the “Property Wind Risk” Legend
+            </li>
+            <li>
+              A contoured layer showing the forecasted maximum wind swath. The 
+              contours are color filled according to the forecasted maximum wind speed as 
+              shown in the “Max Wind Swath” Legend
+            </li>
+            <li>
+              The NHC track and cone (if selected). It is a visual representation of the 
+              probable track of the center of the storm labeled according to the forecast 
+              strength at each location:
+              <p>D: Tropical Depression – wind speed less than 39 MPH</p>
+              <p>S: Tropical Storm – wind speed between 39 MPH and 73 MPH</p>
+              <p>H: Hurricane – wind speed between 74 MPH and 110 MPH</p>
+              <p>M: Major Hurricane – wind speed greater than 110 MPH</p>
+            </li>
+            <li>
+              A line labeled with the current distance (in miles) from the current location of 
+              the storm to your property (if Track & Cone is selected).
+            </li>
+          </ol>
+        </div>
+        <div *ngIf="mode === 'vortex'">
+          <p>
+            This map view shows your <span class="bold">wind</span> risk. If you want to view your surge risk, use the 
+            radio buttons at the bottom left corner of the map to select “Storm Surge”
+          </p>
+          <p>
+            Above, you can find your property specific wind forecast from our Qrisq model and 
+            the latest storm advisory information from the National Hurricane Center (NHC). The
+            following is visible on the map:
+          </p>
+          <ol>
+            <li>
+              A house icon at the location of your property color coded according to your 
+              property’s wind risk as shown in the “Property Wind Risk” Legend
+            </li>
+            <li>
+              The wind vortex, which is a visual representation of the storm’s current wind 
+              field.
+            </li>
+          </ol>
+        </div>
       </ng-template>
       <ng-template #informationNoData>
-        <p>NHC storm Strength Desingation</p>
         <p>
-          Water Depth - Lorem Lpsum is that it has a more-or-less normal distribution of letters, as opposed to using ‘Content here, content here’, making it look like readable
+          Q-risq is not currently modeling any active landfalling tropical system. We begin 
+          forecast operations for an active storm approximately 5 days before a predicted 
+          landfall on the U.S. Gulf of Mexico or Atlantic coastlines. Q-risq has geolocated your 
+          property and determined the ground elevation. Please check back during an active 
+          storm threat for your property’s risk information.
         </p>
       </ng-template>
     </div>

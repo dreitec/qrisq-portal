@@ -220,11 +220,36 @@ p.detail-item {
     display: flex;
     flex-direction: column;
 
+    * {
+      text-align: start;
+    }
+
     p.sub-title {
       color: #2a5bb9;
       font-size: 0.9375rem;
       font-weight: bold;
       padding-bottom: 0.75rem;
+    }
+
+    & > p:not(:first-of-type) {
+      margin-bottom: 0.5rem;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    ol {
+      padding-left: 2rem;
+
+      li {
+        color: #000;
+        margin-bottom: 0.25rem;
+
+        p {
+          padding-left: 1rem;
+        }
+      }
     }
   }
 }
