@@ -31,7 +31,7 @@ export class QrStormService {
           })
         )
         .subscribe((result) => {
-          if (!result) {
+          if (!result || (Object.keys(result.storm).length < 1)) {
             const stormData: StormData = {
               lattitude: 0,
               longitude: 0,
