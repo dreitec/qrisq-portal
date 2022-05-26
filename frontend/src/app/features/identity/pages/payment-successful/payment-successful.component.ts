@@ -34,12 +34,15 @@ export class QrPaymentSuccessfulPageComponent implements OnInit, OnDestroy {
         verifySubscriptionPaymentRequest.paypalSubscriptionId = urlParams.get('subscription_id');
       }
     }
-
-    this.store.dispatch(actionVerifyPayment({ verifySubscriptionPaymentRequest }));
+    
     this.signedUserSubscription = this.store
       .select(selectSignedUser)
       .subscribe((signedUser) => {
           this.signedUser = signedUser;
+          console.log('signedUser = ', signedUser);
+          if (!signedUser.user.hasPaid) {
+            this.store.dispatch(actionVerifyPayment({ verifySubscriptionPaymentRequest }));
+          }
           this.loading = !this.signedUser.user.hasPaid;
       });
   }
