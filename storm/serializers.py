@@ -1,17 +1,22 @@
 import datetime
 
 from rest_framework import serializers
-from .models import StormData
+from .models import StormAdvisory, StormData
 
+class StormAdvisorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StormAdvisory
+        fields = "__all__"
 
 class StormDataSerializer(serializers.ModelSerializer):
+    storm_advisory = StormAdvisorySerializer()
     surgerisk = serializers.CharField(source='riskthreat')
     advisory_wind_date = serializers.CharField(source='maxwind_datetime_local_string')
     advisory_flood_date = serializers.CharField(source='maxflood_datetime_local_string')
 
     class Meta:
         model = StormData
-        fields = ('windrisk', 'surgerisk', 'maxflood', 'landfall_location', 'landfall_datetime',
+        fields = ('storm_advisory', 'windrisk', 'surgerisk', 'maxflood', 'landfall_location', 'landfall_datetime',
                   'storm_distance', 'maxflood_datetime', 'maxwind_datetime', 'advisory_wind_date',
                   'advisory_flood_date')
 

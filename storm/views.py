@@ -12,6 +12,8 @@ from rest_framework.views import APIView
 
 from core.db_connection import query_executor
 from core.storm_file_handler import get_latest_files, compressed_geojson_parser, wind_js_parser, surge_zip_creator
+from settings.models import GlobalConfig
+from settings.serializers import GlobalConfigSerializer
 from .models import StormData
 from .serializers import StormDataSerializer
 
@@ -19,7 +21,7 @@ from .serializers import StormDataSerializer
 class StormDataView(APIView):
     def get(self, request, *args, **kwargs):
         # check and download latest storm data files
-        get_latest_files()
+        # get_latest_files()
 
         storm = None
         user = request.user
@@ -30,6 +32,20 @@ class StormDataView(APIView):
             storm = StormData.objects.filter(qid=user.id).order_by('id').last()
 
         storm_data = StormDataSerializer(storm).data
+
+        global_config = GlobalConfig.objects.all().order_by('-id')
+        global_config_data = GlobalConfigSerializer(global_config[0]).data
+
+        if global_config_data.get('active_storm') is False:
+            return Response({})
+
+        advisory_data = storm_data.get('storm_advisory')
+        advisory_datetime = advisory_data.get('issued_datetime')
+        if advisory_data is None:
+            return Response({})
+        
+        if advisory_datetime < (datetime.datetime.now() - datetime.timedelta(hours=global_config_data.get('lookback_period'))).strftime("%Y-%m-%dT%H:%M:%S"):
+            return Response({})
 
         files = os.listdir('storm_files')
         storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])

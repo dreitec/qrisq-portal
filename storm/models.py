@@ -17,9 +17,11 @@ class StormAdvisory(models.Model):
     issued_datetime = models.DateTimeField(null=True)
     last_processed_datetime = models.DateTimeField(null=True)
 
+    objects = StormManager()
+
 class StormData(models.Model):
     qid = models.IntegerField()
-    storm_advisory = models.ForeignKey(StormAdvisory, on_delete=models.CASCADE, related_name="advisory")
+    storm_advisory = models.ForeignKey(StormAdvisory, on_delete=models.CASCADE, related_name="advisory", default=None)
     riskthreat = models.CharField(max_length=255, null=True)
     maxflood = models.DecimalField(max_digits=10, decimal_places=5, null=True)
     maxwind = models.DecimalField(max_digits=10, decimal_places=5, null=True)
