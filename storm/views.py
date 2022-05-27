@@ -37,7 +37,10 @@ class StormDataView(APIView):
         global_config_data = GlobalConfigSerializer(global_config[0]).data
 
         if global_config_data.get('active_storm') is False:
-            if int(global_config_data.get('lookback_period')) > 0:
+            if global_config_data.get('lookback_override') is True:
+                return Response({})
+
+            elif int(global_config_data.get('lookback_period')) > 0:
                 advisory_data = storm_data.get('storm_advisory')
                 advisory_datetime = advisory_data.get('last_processed_datetime')
                 if advisory_data is None:
