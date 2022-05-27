@@ -1,9 +1,11 @@
-import { HttpResponse } from '@angular/common/http';
 import moment from 'moment';
-import pako from 'pako';
 
 function toCDT(utc: string): string {
   return moment.utc(utc).utcOffset(-5).format('ddd MMM D YYYY, hA');
+}
+
+function toIssuedDate(utc: string): string {
+  return moment.utc(utc).format('MMM D, hh:mm a');
 }
 
 export function getESRISurgeLevelColor(depth: number) {
@@ -108,4 +110,4 @@ export function getESRISurgeLevelColor(depth: number) {
   }
 }
 
-export const TimeUtils = { toCDT };
+export const TimeUtils = { toCDT, toIssuedDate };

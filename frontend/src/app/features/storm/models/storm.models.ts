@@ -8,6 +8,7 @@ export interface StormData {
   surgeRisk: string;
   forecastAdvisory: number;
   advisoryDate: string;
+  issuedDate: string;
   floodAdvisoryDate: string;
   windAdvisoryDate: string;
   floodNextAdvisoryDate: string;

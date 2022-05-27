@@ -108,7 +108,7 @@
 
         <ng-template #landfallExpectedDataTpl>
           <p class="sub-title">Forecast Advisory: {{ forecastAdvisory }}</p>
-          <p class="issued-datetime">Issued: </p>
+          <p class="issued-datetime">Issued: {{ toIssuedDate(issuedDate) }}</p>
           <div class="landfall-expected">
             <p class="item-label">Landfall Expected</p>
             <p>{{ toCDT(landfallDate) }}</p>

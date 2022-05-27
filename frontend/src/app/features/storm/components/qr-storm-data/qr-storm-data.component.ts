@@ -15,6 +15,7 @@ export class QrStormDataComponent implements OnInit {
   @Input() surgeRisk: string;
   @Input() windRisk: string;
   @Input() advisoryDate: string;
+  @Input() issuedDate: string;
   @Input() windAdvisoryDate: string;
   @Input() floodAdvisoryDate: string;
   @Input() landfallDate: Date;
@@ -41,6 +42,10 @@ export class QrStormDataComponent implements OnInit {
 
   toCDT(date) {
     return TimeUtils.toCDT(date);
+  }
+
+  toIssuedDate(date) {
+    return TimeUtils.toIssuedDate(date);
   }
 
   toFeet(meters: number) {
