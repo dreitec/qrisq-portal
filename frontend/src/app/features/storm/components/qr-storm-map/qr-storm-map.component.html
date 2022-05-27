@@ -62,7 +62,7 @@
             <ng-template #propertySurgeRisk>
               <div class="level-item" *ngFor="let item of levelsList">
                 <div class="level-icon">
-                  <img [src]="item.iconUrl" />
+                  <img [src]="item.iconUrlx2" />
                 </div>
                 <div class="descs">
                   <p class="risk-desc">{{ item.riskDesc }} Risk</p>
@@ -74,11 +74,11 @@
             <ng-template #propertyWindRisk>
               <div class="level-item" *ngFor="let item of categoriesList">
                 <div class="level-icon">
-                  <img [src]="item.iconUrl" />
+                  <img [src]="item.iconUrlx2" />
                 </div>
                 <div class="descs">
-                  <p class="risk-desc">{{ item.shortDesc }} Speed</p>
-                  <p class="level-desc">{{ item.speedDesc }}</p>
+                  <p class="risk-desc">{{ item.shortDesc }}</p>
+                  <p class="level-desc" *ngIf="item.speedDesc">{{ item.speedDesc }}</p>
                 </div>
               </div>
             </ng-template>
