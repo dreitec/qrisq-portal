@@ -36,11 +36,8 @@ class StormDataView(APIView):
         global_config = GlobalConfig.objects.all().order_by('-id')
         global_config_data = GlobalConfigSerializer(global_config[0]).data
 
-        if global_config_data.get('active_storm') is False:
-            if global_config_data.get('lookback_override') is True:
-                return Response({})
-
-            elif int(global_config_data.get('lookback_period')) > 0:
+        if global_config_data.get('lookback_override') is False:
+            if int(global_config_data.get('lookback_period')) > 0:
                 advisory_data = storm_data.get('storm_advisory')
                 advisory_datetime = advisory_data.get('last_processed_datetime')
                 if advisory_data is None:
@@ -48,6 +45,8 @@ class StormDataView(APIView):
                 
                 if advisory_datetime < (datetime.datetime.now() - datetime.timedelta(hours=global_config_data.get('lookback_period'))).strftime("%Y-%m-%dT%H:%M:%S"):
                     return Response({})
+        elif global_config_data.get('active_storm') is False:
+            return Response({})
 
         files = os.listdir('storm_files')
         storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
