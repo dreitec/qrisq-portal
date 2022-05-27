@@ -40,7 +40,7 @@ class StormDataView(APIView):
             return Response({})
 
         advisory_data = storm_data.get('storm_advisory')
-        advisory_datetime = advisory_data.get('issued_datetime')
+        advisory_datetime = advisory_data.get('last_processed_datetime')
         if advisory_data is None:
             return Response({})
         
