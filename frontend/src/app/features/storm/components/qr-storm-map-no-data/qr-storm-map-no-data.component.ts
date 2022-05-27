@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SurgeRiskLevels } from '../../common/constants';
 
 @Component({
   selector: 'qr-storm-map-no-data',
@@ -6,7 +7,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./qr-storm-map-no-data.component.scss'],
 })
 export class QrStormMapNoDataComponent implements OnInit {
+  @Input() userLattitude: number;
+  @Input() userLongitude: number;
   @Input() isStormDataHidden: boolean;
+  @Input() noActiveStorm: boolean;
   @Input() zoom: number;
   @Input() restriction: google.maps.MapRestriction;
   @Output() mapHelpClick = new EventEmitter();
@@ -14,6 +18,15 @@ export class QrStormMapNoDataComponent implements OnInit {
   map: any;
 
   constructor() {}
+
+  get levelsList() {
+    return [
+      SurgeRiskLevels['N'],
+      SurgeRiskLevels['L'],
+      SurgeRiskLevels['M'],
+      SurgeRiskLevels['H'],
+    ];
+  }
 
   ngOnInit() {}
 
@@ -24,6 +37,10 @@ export class QrStormMapNoDataComponent implements OnInit {
 
     this.map.controls[google.maps.ControlPosition.LEFT_TOP].push(
       document.getElementById('user-data-not-available-message')
+    );
+
+    this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(
+      document.getElementById('property-risk')
     );
   }
   onMapHelpClick($event) {

@@ -24,6 +24,7 @@ export interface StormData {
   windGeoJSON: any;
   windGrib2JSON: any;
   userDataAvailable: boolean;
+  noActiveStorm: boolean;
 }
 
 export interface StormParameters {

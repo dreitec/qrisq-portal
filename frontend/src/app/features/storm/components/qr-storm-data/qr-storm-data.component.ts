@@ -24,6 +24,7 @@ export class QrStormDataComponent implements OnInit {
   @Input() nextAdvisoryDate: number;
   @Input() userDataAvailable: boolean;
   @Input() isTrackAndConeChecked: boolean;
+  @Input() noActiveStorm: boolean;
   @Input() maxFlood: number;
 
   public get windLevels() {

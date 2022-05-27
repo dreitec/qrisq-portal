@@ -35,7 +35,12 @@ p {
 
   .level-icon {
     display: flex;
-    margin-right: 0.5rem;
+    width: 34px;
+    min-width: 34px;
+
+    img {
+      width: 26px;
+    }
 
     svg {
       width: 26px;
@@ -105,6 +110,11 @@ p {
   .details-info {
     display: flex;
     flex-direction: column;
+
+    .no-property-risk {
+      font-weight: bold;
+      padding-top: 0 !important;
+    }
 
     p.user-address {
       width: 150px;

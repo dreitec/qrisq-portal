@@ -24,6 +24,7 @@
             [maxFlood]="stormData.maxFlood"
             [floodAdvisoryDate]="stormData.floodAdvisoryDate"
             [windAdvisoryDate]="stormData.windAdvisoryDate"
+            [noActiveStorm]="stormData.noActiveStorm"
           >
           </qr-storm-data>
           <div [ngClass]="isStormDataHidden ? 'storm-data-container-handler hidden' : 'storm-data-container-handler'" (click)="onStormDataHidden()">
@@ -75,6 +76,9 @@
         <ng-template #stormNoUserData>
           <qr-storm-map-no-data
             [isStormDataHidden]="isStormDataHidden"
+            [noActiveStorm]="stormData.noActiveStorm"
+            [userLattitude]="userGeolocation.lattitude"
+            [userLongitude]="userGeolocation.longitude"
             [restriction]="mapRestriction"
             [zoom]="mapZoom"
             (mapHelpClick)="onMapHelpClick()"

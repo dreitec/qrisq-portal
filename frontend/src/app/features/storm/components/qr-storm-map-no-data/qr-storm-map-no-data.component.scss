@@ -42,6 +42,59 @@ agm-map {
   }
 }
 
+#property-risk {
+  top: 80px !important;
+  right: 25px !important;
+
+  .levels-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .level-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+
+    p {
+      line-height: 1.4;
+      text-align: start;
+      margin: 0;
+    }
+  }
+
+  .level-icon {
+    display: flex;
+    margin-right: 0.75rem;
+
+    img {
+      width: 20px;
+      height: 17px;
+    }
+  }
+
+  .risk-desc {
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .level-desc {
+    color: #cacaca;
+    font-size: 0.625rem;
+  }
+
+  p {
+    color: #979797;
+    font-size: 0.5rem;
+    margin: 0.25rem 0 0 0;
+  }
+
+  @media (max-width: 580px) {
+    top: 10px !important;
+    right: 10px !important;
+  }
+}
+
 .map-help-wrapper {
   width: 100%;
   display: flex;

@@ -58,6 +58,7 @@ export class QrStormService {
               surgeGeoJSON: null,
               windGeoJSON: null,
               windGrib2JSON: null,
+              noActiveStorm: result && (Object.keys(result.storm).length < 1)
             };
             observer.next(stormData);
             observer.complete();
@@ -89,6 +90,7 @@ export class QrStormService {
             surgeGeoJSON: result.surge,
             windGeoJSON: result.wind.windGeoJSON,
             windGrib2JSON: result.wind.windGrib2JSON,
+            noActiveStorm: false,
           };
           console.log(result.wind.windGeoJSON);
           if (stormData.windGeoJSON === null) {
