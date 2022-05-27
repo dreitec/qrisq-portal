@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { WindDirectionAndDegrees } from './constants';
 
 function toCDT(utc: string): string {
   return moment.utc(utc).utcOffset(-5).format('ddd MMM D YYYY, hA');
@@ -111,3 +112,23 @@ export function getESRISurgeLevelColor(depth: number) {
 }
 
 export const TimeUtils = { toCDT, toIssuedDate };
+
+export function getWindDirection(degree: string) {
+  let direction = '';
+
+  WindDirectionAndDegrees.forEach(item => {
+    if (item.degreeFrom > item.degreeTo) {
+      if ((Number(degree) >= item.degreeFrom) || (Number(degree) <= item.degreeTo)) {
+        direction = item.direction;
+        return;
+      }
+    } else {
+      if ((Number(degree) >= item.degreeFrom) && (Number(degree) < item.degreeTo)) {
+        direction = item.direction;
+        return;
+      }
+    }
+  });
+  
+  return direction;
+}

@@ -111,3 +111,86 @@ export const StormMarkerIcons = {
   CH: '/assets/icons/storm-marker-icons/center-hurricane.png',
   CTS: '/assets/icons/storm-marker-icons/center-tropical-storm.png',
 };
+
+export const WindDirectionAndDegrees = [
+  {
+    direction: 'N',
+    degreeFrom: 348.75,
+    degreeTo: 11.25,
+  },
+  {
+    direction: 'NNE',
+    degreeFrom: 11.25,
+    degreeTo: 33.75,
+  },
+  {
+    direction: 'NE',
+    degreeFrom: 33.75,
+    degreeTo: 56.25,
+  },
+  {
+    direction: 'ENE',
+    degreeFrom: 56.25,
+    degreeTo: 78.75,
+  },
+  {
+    direction: 'E',
+    degreeFrom: 78.75,
+    degreeTo: 101.25,
+  },
+  {
+    direction: 'ESE',
+    degreeFrom: 101.25,
+    degreeTo: 123.75,
+  },
+  {
+    direction: 'SE',
+    degreeFrom: 123.75,
+    degreeTo: 146.25,
+  },
+  {
+    direction: 'SSE',
+    degreeFrom: 146.25,
+    degreeTo: 168.75,
+  },
+  {
+    direction: 'S',
+    degreeFrom: 168.75,
+    degreeTo: 191.25,
+  },
+  {
+    direction: 'SSW',
+    degreeFrom: 191.25,
+    degreeTo: 213.75,
+  },
+  {
+    direction: 'SW',
+    degreeFrom: 213.75,
+    degreeTo: 236.25,
+  },
+  {
+    direction: 'WSW',
+    degreeFrom: 236.25,
+    degreeTo: 258.75,
+  },
+  {
+    direction: 'W',
+    degreeFrom: 258.75,
+    degreeTo: 281.25,
+  },
+  {
+    direction: 'WNW',
+    degreeFrom: 281.25,
+    degreeTo: 303.75,
+  },
+  {
+    direction: 'NW',
+    degreeFrom: 303.75,
+    degreeTo: 326.25,
+  },
+  {
+    direction: 'NNW',
+    degreeFrom: 326.25,
+    degreeTo: 348.75,
+  },
+];

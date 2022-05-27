@@ -117,19 +117,19 @@
           <div class="properties">
             <div class="properties-item">
               <p class="item-label">Location:</p>
-              27.2 N, 88.0 W
+              {{ getAdvisoryLocation() }}
             </div>
             <div class="properties-item">
               <p class="item-label">Moving:</p>
-              NW at 16 mph
+              {{ getWindDirection(stormAdvisoryDirection) }} at {{ stormAdvisorySpeed }} mph
             </div>
             <div class="properties-item">
               <p class="item-label">Wind:</p>
-              105 mph
+              {{ stormAdvisoryWind }} mph
             </div>
             <div class="properties-item">
               <p class="item-label">Pressure:</p>
-              964 mb
+              {{ stormAdvisoryPressure }} mb
             </div>
           </div>
           <p class="next-forecast">

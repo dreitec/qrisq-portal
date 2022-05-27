@@ -9,6 +9,12 @@ export interface StormData {
   forecastAdvisory: number;
   advisoryDate: string;
   issuedDate: string;
+  stormAdvisoryLatitude: number;
+  stormAdvisoryLongitude: number;
+  stormAdvisoryDirection: string;
+  stormAdvisorySpeed: number;
+  stormAdvisoryWind: number;
+  stormAdvisoryPressure: number;
   floodAdvisoryDate: string;
   windAdvisoryDate: string;
   floodNextAdvisoryDate: string;

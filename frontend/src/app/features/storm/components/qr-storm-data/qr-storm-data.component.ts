@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WindRiskLevels, SurgeRiskLevels } from '../../common/constants';
-import { TimeUtils } from '../../common/utils';
+import { getWindDirection, TimeUtils } from '../../common/utils';
 import round from 'round';
 
 @Component({
@@ -16,6 +16,12 @@ export class QrStormDataComponent implements OnInit {
   @Input() windRisk: string;
   @Input() advisoryDate: string;
   @Input() issuedDate: string;
+  @Input() stormAdvisoryLatitude: number;
+  @Input() stormAdvisoryLongitude: number;
+  @Input() stormAdvisoryDirection: string;
+  @Input() stormAdvisorySpeed: number;
+  @Input() stormAdvisoryWind: number;
+  @Input() stormAdvisoryPressure: number;
   @Input() windAdvisoryDate: string;
   @Input() floodAdvisoryDate: string;
   @Input() landfallDate: Date;
@@ -46,6 +52,14 @@ export class QrStormDataComponent implements OnInit {
 
   toIssuedDate(date) {
     return TimeUtils.toIssuedDate(date);
+  }
+
+  getAdvisoryLocation() {
+    return `${this.stormAdvisoryLatitude.toFixed(1)} N, ${Math.abs(this.stormAdvisoryLongitude).toFixed(1)} W`;
+  }
+
+  getWindDirection(degree) {
+    return getWindDirection(degree);
   }
 
   toFeet(meters: number) {
