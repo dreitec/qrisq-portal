@@ -151,7 +151,7 @@
       <img src="/assets/icons/eye.png" />
     </div>
     <div class="information-content">
-      <p class="sub-title">Current view information</p>
+      <p class="sub-title">{{ !userDataAvailable && !noActiveStorm ? 'Number crunching in progress...' : 'Current view information' }}</p>
 
       <ng-container
         *ngIf="
@@ -254,13 +254,39 @@
         </div>
       </ng-template>
       <ng-template #informationNoData>
-        <p>
-          Q-risq is not currently modeling any active landfalling tropical system. We begin 
-          forecast operations for an active storm approximately 5 days before a predicted 
-          landfall on the U.S. Gulf of Mexico or Atlantic coastlines. Q-risq has geolocated your 
-          property and determined the ground elevation. Please check back during an active 
-          storm threat for your property’s risk information.
-        </p>
+        <ng-container
+          *ngIf="
+            noActiveStorm;
+            then noActiveStormData;
+            else inProgressNoActiveStormData
+          "
+        ></ng-container>
+        <ng-template #noActiveStormData>
+          <p>
+            Q-risq is not currently modeling any active landfalling tropical system. We begin 
+            forecast operations for an active storm approximately 5 days before a predicted 
+            landfall on the U.S. Gulf of Mexico or Atlantic coastlines. Q-risq has geolocated your 
+            property and determined the ground elevation. Please check back during an active 
+            storm threat for your property’s risk information.
+          </p>
+        </ng-template>
+        <ng-template #inProgressNoActiveStormData>
+          <p>
+            The information about your property including elevation and precise location is being processed by our system.
+          </p>
+          <p>
+            Once completed, you will see your house located on the map and information about any storm that may affect your property.
+          </p>
+          <p>
+            This is a one-time operation to get the information we need for your particular property and once we have it, it does not change.
+          </p>
+          <p>
+            Next time you log in, you won’t have to wait because we save this information for future use.
+          </p>
+          <p>
+            These calculations take up to five (5) minutes to complete, at which time this page will refresh.
+          </p>
+        </ng-template>
       </ng-template>
     </div>
   </div>
