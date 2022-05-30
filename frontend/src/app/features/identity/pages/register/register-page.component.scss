@@ -84,6 +84,11 @@ nz-card.form h3 {
   color: #595959;
   font-family: Rubik, Arial, Helvetica, sans-serif;
   font-size: 1.3rem;
+  margin-bottom: 0;
+}
+
+nz-card.form h3:not(:first-child) {
+  margin-top: 1rem;
 }
 
 nz-input-group {

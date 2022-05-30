@@ -17,7 +17,7 @@
               <nz-form-control nzErrorTip="Please enter your First Name!">
                 <input
                   nz-input
-                  type="text "
+                  type="text"
                   formControlName="firstName"
                   id="firstName"
                   placeholder="First Name"
@@ -30,7 +30,7 @@
               <nz-form-control nzErrorTip="Please enter your Last Name!">
                 <input
                   nz-input
-                  type="text "
+                  type="text"
                   formControlName="lastName"
                   id="lastName"
                   placeholder="Last Name"
@@ -43,7 +43,7 @@
               <nz-form-control nzErrorTip="The input is not valid Email!">
                 <input
                   nz-input
-                  type="email "
+                  type="email"
                   formControlName="email"
                   id="email"
                   placeholder="Email"
@@ -154,6 +154,18 @@
                     [value]="signUp.addressZip"
                     disabled
                   />
+                </nz-form-control>
+              </nz-form-item>
+
+              <!-- terms -->
+              <nz-form-item>
+                <nz-form-control>
+                  <label nz-checkbox formControlName="terms" id="terms">
+                    <span>
+                      I accept the
+                    </span>
+                  </label>
+                  <a href="https://www.qrisq.com/legal" target="_blank">Terms and Conditions</a>
                 </nz-form-control>
               </nz-form-item>
             </ng-container>

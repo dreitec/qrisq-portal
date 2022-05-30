@@ -48,6 +48,7 @@ export class QrRegisterPageComponent implements OnInit {
     const password = [null, [Validators.required, Validators.minLength(12)]];
     const checkPassword = [null, [Validators.required, passwordFieldValidator]];
     const phoneNumber = [null, [Validators.required]];
+    const terms = [null, [Validators.required]];
 
     return this.fb.group({
       firstName,
@@ -56,6 +57,7 @@ export class QrRegisterPageComponent implements OnInit {
       password,
       checkPassword,
       phoneNumber,
+      terms,
     });
   }
 

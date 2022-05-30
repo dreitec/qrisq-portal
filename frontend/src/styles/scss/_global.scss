@@ -41,3 +41,7 @@ h6 {
 .ant-checkbox-disabled+span {
   color: #ffffff88 !important;
 }
+
+.ng-invalid.ng-dirty .ant-checkbox + span {
+  color: #ff4d4f;
+}
