@@ -109,7 +109,7 @@
           <p class="issued-datetime">Issued: {{ toIssuedDate(issuedDate) }}</p>
           <div class="landfall-expected">
             <p class="item-label">Landfall Expected</p>
-            <p>{{ toCDT(landfallDate) }}</p>
+            <p>{{ toLocale(landfallDate) }}</p>
             <p>Near {{ landfallLocation }}</p>
           </div>
           <div class="properties">
@@ -119,11 +119,11 @@
             </div>
             <div class="properties-item">
               <p class="item-label">Moving:</p>
-              {{ getWindDirection(stormAdvisoryDirection) }} at {{ stormAdvisorySpeed }} mph
+              {{ getWindDirection(stormAdvisoryDirection) }} at {{ convertKnot2MPH(stormAdvisorySpeed) }} mph
             </div>
             <div class="properties-item">
               <p class="item-label">Wind:</p>
-              {{ stormAdvisoryWind }} mph
+              {{ convertKnot2MPH(stormAdvisoryWind) }} mph
             </div>
             <div class="properties-item">
               <p class="item-label">Pressure:</p>
@@ -131,7 +131,7 @@
             </div>
           </div>
           <p class="next-forecast">
-            Next Forecast Available {{ nextAdvisoryDate }}
+            Next Forecast Available {{ toLocaleDateFromString(nextAdvisoryDate) }}
           </p>
         </ng-template>
 

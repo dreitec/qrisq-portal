@@ -1,12 +1,26 @@
 import moment from 'moment';
 import { WindDirectionAndDegrees } from './constants';
 
-function toCDT(utc: string): string {
-  return moment.utc(utc).utcOffset(-5).format('ddd MMM D YYYY, hA');
+function toLocale(utc: string): string {
+  const date = new Date();
+  const offset = date.getTimezoneOffset() / 60;
+  const timezone = new Date().toString().match(/\(([A-Z\s].*)\)/)[1];
+  return `${moment.utc(utc).utcOffset(offset).format('ddd MMM D YYYY, hh:mm A')} ${timezone.replace(/[^A-Z]/g, '')}`;
+}
+
+function toLocaleDateFromString(value: string): string {
+  const timeUnits = value.split(' ');
+  const date = new Date();
+  const offset = date.getTimezoneOffset() / 60;
+  const timezone = new Date().toString().match(/\(([A-Z\s].*)\)/)[1];
+  return `${moment.utc(timeUnits.slice(3).concat(timeUnits.slice(0, 3)).join(' ')).utcOffset(offset).format('ddd MMM D YYYY, hh:mm A')} ${timezone.replace(/[^A-Z]/g, '')}`;
 }
 
 function toIssuedDate(utc: string): string {
-  return moment.utc(utc).format('MMM D, hh:mm a');
+  const date = new Date();
+  const offset = date.getTimezoneOffset() / 60;
+  const timezone = new Date().toString().match(/\(([A-Z\s].*)\)/)[1];
+  return `${moment.utc(utc).utcOffset(offset).format('MMM D, hh:mm A')} ${timezone.replace(/[^A-Z]/g, '')}`;
 }
 
 export function getESRISurgeLevelColor(depth: number) {
@@ -111,7 +125,7 @@ export function getESRISurgeLevelColor(depth: number) {
   }
 }
 
-export const TimeUtils = { toCDT, toIssuedDate };
+export const TimeUtils = { toLocale, toLocaleDateFromString, toIssuedDate };
 
 export function getWindDirection(degree: string) {
   let direction = '';

@@ -46,8 +46,12 @@ export class QrStormDataComponent implements OnInit {
 
   ngOnInit() {}
 
-  toCDT(date) {
-    return TimeUtils.toCDT(date);
+  toLocale(date) {
+    return TimeUtils.toLocale(date);
+  }
+
+  toLocaleDateFromString(value) {
+    return TimeUtils.toLocaleDateFromString(value);
   }
 
   toIssuedDate(date) {
@@ -60,6 +64,10 @@ export class QrStormDataComponent implements OnInit {
 
   getWindDirection(degree) {
     return getWindDirection(degree);
+  }
+
+  convertKnot2MPH(value) {
+    return (value * 1.151).toFixed(1);
   }
 
   toFeet(meters: number) {
