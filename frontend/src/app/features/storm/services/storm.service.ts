@@ -228,35 +228,6 @@ export class QrStormService {
           observer.next(stormData);
           observer.complete();
         });
-
-      // .pipe(
-      //   take(1),
-      //   map((result) => {
-      //     const stormData: StormData = {
-      //       lattitude: Number.parseFloat(result.storm.latitude),
-      //       longitude: Number.parseFloat(result.storm.latitude),
-      //       address: result.storm.address,
-      //       clientId: Number.parseInt(result.storm.client_id),
-      //       surgeRisk: result.storm.surgerisk,
-      //       maxFlood: Number.parseFloat(result.storm.maxflood),
-      //       advisoryDate: result.storm.advisory_date,
-      //       nextAdvisoryDate: result.storm.next_advisory_date,
-      //       landfallDate: moment(result.storm.landfall_datetime).toDate(),
-      //       landfallLocation: result.storm.landfall_location,
-      //       stormDistance: Number.parseFloat(result.storm.storm_distance),
-      //       stormName: result.storm.storm_name,
-      //       windRisk: result.storm.windrisk,
-      //       lineGeoJSON: JSON.parse(result.storm.line_data),
-      //       pointsGeoJSON: JSON.parse(result.storm.points_data),
-      //       polygonsGeoJSON: JSON.parse(result.storm.polygon_data),
-      //       surgeGeoJSON: result.surge,
-      //       windGeoJSON: result.wind.windGeoJSON,
-      //       windGrib2JSON: result.wind.windGrib2JSON,
-      //     };
-      //     observer.next(stormData);
-      //     observer.complete();
-      //   })
-      // );
     });
   }
 

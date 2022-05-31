@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 // ng-zorro
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -52,6 +53,7 @@ import { en_US } from 'ng-zorro-antd/i18n';
     // ng-zorro
     NzLayoutModule,
     NzButtonModule,
+    NzCollapseModule,
     NzImageModule,
     NzMenuModule,
     NzIconModule,

@@ -16,7 +16,7 @@ import { filter, map, take } from 'rxjs/operators';
 import { StormData } from '../../models/storm.models';
 import { actionSignInRequest } from '@app/features/identity/store/identity.actions';
 import { selectIdentityState } from '../../../identity/store/identity.selectors';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'qr-storm-page',
@@ -39,6 +39,7 @@ export class QrStormPageComponent implements OnInit {
   };
   isDataLoaded = false;
   isStormDataHidden = false;
+  isMapPage = true;
 
   stormData: any;
   userDataAvailable: boolean;
@@ -54,7 +55,17 @@ export class QrStormPageComponent implements OnInit {
     private router: Router,
     private identityService: QrIdentityService,
     private stormService: QrStormService
-  ) {}
+  ) {
+    router.events.subscribe((val) => {
+      if (val instanceof NavigationEnd) {
+        if (val.url.includes('/storm/')) {
+          this.isMapPage = false;
+        } else {
+          this.isMapPage = true;
+        }
+      }
+    });
+  }
 
   ngOnInit() {
     this.isDataLoaded = true;

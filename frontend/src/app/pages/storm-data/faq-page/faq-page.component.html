@@ -1,3 +1,229 @@
-<p>
-  faq-page works!
-</p>
+<div class="faq-page-container">
+  <div class="content">
+    <h1>Frequently Asked Questions</h1>
+  
+    <nz-collapse>
+      <nz-collapse-panel
+        nzHeader="How do I find my surge risk?"
+        [nzExtra]="activeList.includes('q18') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q18')"
+      >
+        <p style="margin:0;">
+          The default map view shows your property’s surge risk. If you have chosen another layer and want to return, use the radio buttons at the bottom left corner of the map to select “Storm Surge” and you will see your surge risk information appear on the upper left side of the map.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="What information is shown on the page and map when you choose the “Storm Surge” map view?"
+        [nzExtra]="activeList.includes('q19') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q19')"
+      >
+        <p style="margin:0;">
+          When the “Storm Surge” map view is active, the upper left side of the screen will display a house icon color coded accorded to your property’s surge risk, the forecasted peak surge height, the forecasted peak surge time, and the current distance between the storm center and your property. Below the property specific information, current storm advisory information from the National Hurricane Center (NHC) is displayed. The following is visible on the map: color-coded house icon at the location of your property, a contoured layer showing the forecasted storm surge, the NHC track and cone (if selected), and a line labeled with the current distance from the center of the storm to your property.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="Is the peak surge value and time specific to my property?"
+        [nzExtra]="activeList.includes('q20') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q20')"
+      >
+        <p style="margin:0;">
+          Yes.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="On the “Storm Surge” map layer, the house icon is colored yellow (or orange, or red)? What does this mean for my property?"
+        [nzExtra]="activeList.includes('q21') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q21')"
+      >
+        <p>
+          The color of the house icon corresponds to your property’s surge risk according to the “Property Surge Risk” Legend. If your property is not expected to experience surge and no surge is forecasted nearby, the house icon will appear white. If surge is forecasted in your area, but your property sits at an elevation above the forecasted surge height or is protected by levees, the house icon will appear yellow. If surge is predicted at your property, but the peak surge is forecast to be below 3 feet, the house icon will appear orange. If the surge is forecast to rise above 3 feet at your property, the house icon will appear red.
+        </p>
+        <p style="margin:0;">
+          <img src="/assets/images/property-surge-risk.png" alt="property-surge-risk" />
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="The peak surge level at my property does not match up exactly with the surge level shown on the map. Why?"
+        [nzExtra]="activeList.includes('q22') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q22')"
+      >
+        <p style="margin:0;">
+          The storm surge layer shown on the map is the expected water level above mean sea level, while your property surge risk is specific to your individual property. If your address is above mean sea level (most are), the surge experienced at the property will be lower than the surge above mean sea level. For example, if the surge above mean sea level is predicted to be 10 ft, but the ground elevation of the property is 6 ft, the peak surge predicted at your property will be 4 ft.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="I see my surge risk, but how do I find my wind risk?"
+        [nzExtra]="activeList.includes('q23') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q23')"
+      >
+        <p style="margin:0;">
+          Use the radio buttons at the bottom left corner of the map to select “Max Winds” and you will see your wind risk information appear on the upper left side of the map.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="What information is shown on the page and map when you choose the “Max Wind” map view?"
+        [nzExtra]="activeList.includes('q24') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q24')"
+      >
+        <p style="margin:0;">
+          When the “Max Wind” map view is active, the upper left side of the screen will display a house icon color coded accorded to your property’s wind risk, the forecasted maximum wind speed, the forecasted maximum wind speed time, and the current distance between the storm center and your property. Below the property specific information, current storm advisory information from the National Hurricane Center (NHC) is displayed. The following is visible on the map: color-coded house icon at the location of your property, a contoured layer showing the forecasted maximum wind swath, the NHC track and cone (if selected), and a line labeled with the current distance from the center of the storm to your property.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="Is the max wind value and time specific to my property?"
+        [nzExtra]="activeList.includes('q25') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q25')"
+      >
+        <p style="margin:0;">
+          Yes.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="On the “Max Wind” map layer, the house icon is colored blue (or green, yellow, orange, or red)? What does this mean for my property?"
+        [nzExtra]="activeList.includes('q26') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q26')"
+      >
+        <p>
+          The color of the house icon corresponds to your property’s wind risk according to the “Property Wind Risk” Legend. For wind, there are 7 different levels of risk. If maximum sustained winds are forecast to stay below tropical storm force at your property (<39 MPH), the house icon will appear white. If maximum sustained winds are forecast to reach tropical storm force or above, the house will be colored according to the NHC tropical cyclone category of the forecasted peak wind value (Tropical Storm to Category 5 Hurricane). For more information about the types of damage caused by each category of wind, please visit the NHC’s Saffir-Simpson Hurricane Wind Scale page at <a href="https://www.nhc.noaa.gov/aboutsshws.php" target="_blank">https://www.nhc.noaa.gov/aboutsshws.php</a>.
+        </p>
+        <p style="margin:0;">
+          <img src="/assets/images/property-wind-risk.png" alt="property-wind-risk" />
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="What is the “Wind Vortex” Layer on the Map?"
+        [nzExtra]="activeList.includes('q27') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q27')"
+      >
+        <p style="margin:0;">
+          The “Wind Vortex” Map view shows a visual representation of the current wind field of the storm, as well as your property’s wind risk.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="I heard that there is a tropical cyclone somewhere in the Atlantic/Caribbean/Gulf of Mexico. Why is the web app displaying ‘No Active Storm’?"
+        [nzExtra]="activeList.includes('q28') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q28')"
+      >
+        <p style="margin:0;">
+          Q-risq Analytics begins forecasting operations for an active storm approximately 5 days before a predicted landfall on the U.S. Gulf of Mexico or Atlantic coastlines. For information about a storm greater than 5 days out, or forecast to make landfall outside of our service area, please visit the <a href="https://www.nhc.noaa.gov" target="_blank">National Hurricane Center</a>.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="Why did my property risk change since the last time I checked?"
+        [nzExtra]="activeList.includes('q29') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q29')"
+      >
+        <p style="margin:0;">
+          The wind and surge risk is updated every 6 hours based on the forecasted storm track and intensity from the National Hurricane Center and Q-risq’s storm surge and wind model results. If the risk to your property has changed, there has likely been a change in the forecast. The farther from landfall, the more common it is for the forecasted path and intensity to change. Please check back frequently to get the most up-to-date information.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="The NHC just issued a new storm advisory. Why is the web app still showing information from a previous advisory?"
+        [nzExtra]="activeList.includes('q30') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q30')"
+      >
+        <p style="margin:0;">
+          Q-risq Analytic’s wind and storm surge models ingest information from the NHC as soon as it becomes available. The models take approximately 1.5 hours after the NHC advisory is issued to complete and become available on the web app.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="My property is raised. Does the app consider the bottom floor elevation when determining storm surge risk?"
+        [nzExtra]="activeList.includes('q31') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q31')"
+      >
+        <p style="margin:0;">
+          No, the storm surge risk is determined based on the ground elevation of the property.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="Does the peak surge level predicted include the effects of rainfall and/or river flooding?"
+        [nzExtra]="activeList.includes('q32') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q32')"
+      >
+        <p style="margin:0;">
+          No. The peak surge is calculated only from predicted hurricane storm surge and is most accurate in coastal areas that are not affected by river flooding. If your property of interest experiences river flooding, the total water level predicted at your property could be misrepresented by the web app. For information about expected river flooding, please visit your local River Forecast Center webpage.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="Can you help me with an insurance claim?"
+        [nzExtra]="activeList.includes('q33') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q33')"
+      >
+        <p style="margin:0;">
+          Yes, we can provide hindcast reports to support insurance claims for an additional fee. Please contact us at <a href="mailto:info@qrisq.com">info@qrisq.com</a> for more information.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="I want to know what my risk was for a previous storm or advisory. Why can’t I see it?"
+        [nzExtra]="activeList.includes('q34') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q34')"
+      >
+        <p style="margin:0;">
+          This feature is not currently available. You can only view your risk for an active storm.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="Can you explain how the hurricane forecast is determined?"
+        [nzExtra]="activeList.includes('q35') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q35')"
+      >
+        <p style="margin:0;">
+          The hurricane forecast is prepared by the National Hurricane Center. Please visit <a href="https://www.nhc.noaa.gov" target="_blank">www.nhc.noaa.gov</a> for more information.
+        </p>
+      </nz-collapse-panel>
+  
+      <nz-collapse-panel
+        nzHeader="The map is not rendering on my device. What should I do?"
+        [nzExtra]="activeList.includes('q36') ? extraTplForCollapse : extraTplForExpand"
+        nzShowArrow="false"
+        (nzActiveChange)="onActiveChange($event, 'q36')"
+      >
+        <p style="margin:0;">
+          Ensure that you have selected ‘Map view’ on the left-hand menu. Please refresh your screen or try another internet browser. If these measures fail, contact <a href="mailto:info@qrisq.com">info@qrisq.com</a> for support.
+        </p>
+      </nz-collapse-panel>
+    </nz-collapse>
+  
+    <ng-template #extraTplForCollapse>
+      <img src="/assets/icons/arrow-up_black.png" alt="arrow-up" />
+    </ng-template>
+    <ng-template #extraTplForExpand>
+      <img src="/assets/icons/arrow-down_black.png" alt="arrow-down" />
+    </ng-template>
+  </div>
+</div>

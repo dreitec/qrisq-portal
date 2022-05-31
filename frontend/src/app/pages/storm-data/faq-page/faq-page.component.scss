@@ -1,0 +1,15 @@
+.faq-page-container {
+  width: calc(100% + 20px);
+  height: calc(100vh - 80px);
+  background-color: #fff;
+  margin-left: -21px;
+  border-left: 1px solid #cacaca;
+  padding: 40px 60px;
+  overflow: auto;
+
+  .content {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+}

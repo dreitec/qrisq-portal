@@ -154,6 +154,11 @@ const routes: Routes = [
         path: 'storm',
         component: QrStormPageComponent,
         canActivate: [QrAuthGuard, QrPaymentGuard, QrGeolocationGuard],
+        children: [
+          /* ---------------------------------- storm-faq ---------------------------------- */
+
+          { path: 'faq', component: QrFaqPageComponent },
+        ]
       },
 
       {

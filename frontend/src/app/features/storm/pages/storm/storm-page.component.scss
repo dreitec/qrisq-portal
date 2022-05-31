@@ -191,3 +191,34 @@ qr-storm-map,
 qr-storm-map-no-data {
   width: 100%;
 }
+
+// faq page
+.faq-section {
+  position: absolute;
+  top: 0;
+  left: 420px;
+  right: 0;
+  height: calc(100vh - 80px);
+  z-index: 1;
+
+  &.main-page {
+    visibility: hidden;
+  }
+
+  @media (max-width: 1680px) {
+    left: 25vw;
+  }
+
+  @media (max-width: 1280px) {
+    left: 320px;
+  }
+
+  @media (max-width: 580px) {
+    left: 10px !important;
+    bottom: 25px !important;
+
+    label {
+      font-size: 0.6rem;
+    }
+  }
+}

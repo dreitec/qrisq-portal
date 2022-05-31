@@ -45,3 +45,30 @@ h6 {
 .ng-invalid.ng-dirty .ant-checkbox + span {
   color: #ff4d4f;
 }
+
+// Collapse
+.ant-collapse {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.ant-collapse-item {
+  background-color: transparent !important;
+  border: none;
+}
+
+.ant-collapse-header {
+  background-color: transparent;
+  color: #2a5bb9 !important;
+  font-size: 18px !important;
+  padding: 12px 0 !important;
+}
+
+.ant-collapse-content {
+  border-top: none !important;
+}
+
+.ant-collapse-content-box {
+  font-size: 12px !important;
+  padding: 16px 0 !important;
+}

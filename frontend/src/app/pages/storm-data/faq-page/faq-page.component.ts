@@ -8,5 +8,15 @@ import { Component, OnInit } from '@angular/core';
 export class QrFaqPageComponent implements OnInit {
   constructor() {}
 
+  activeList = [];
+
   ngOnInit(): void {}
+
+  onActiveChange(active, name) {
+    if (active) {
+      this.activeList.push(name);
+    } else {
+      this.activeList = this.activeList.filter(v => v !== name);
+    }
+  }
 }
