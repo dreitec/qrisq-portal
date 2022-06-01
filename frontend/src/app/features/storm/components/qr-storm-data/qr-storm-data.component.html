@@ -161,92 +161,80 @@
       <ng-template #informationHasData>
         <div *ngIf="mode === 'surge'">
           <p>
-            This map view shows your <span class="bold">surge</span> risk. If you want to view your wind risk, use the 
-            radio buttons at the bottom left corner of the map to select “Max Winds”.
+            This map view shows your <span class="bold">surge</span> risk.
           </p>
           <p>
-            Above, you can find your property specific surge forecast from our Qrisq model and 
-            the latest storm advisory information from the National Hurricane Center (NHC). The
-            following is visible on the map:
+            If you want to view your wind risk, use the radio buttons at the bottom left corner of the map to select “Max Winds”.
+          </p>
+          <p>
+            The following is visible on the map:
           </p>
           <ol>
             <li>
-              A house icon at the location of your property color coded according to your 
-              property’s surge risk as shown in the “Property Surge Risk” Legend
+              A house icon, color coded according to your property’s surge risk.
             </li>
             <li>
-              A contoured layer showing the forecasted storm surge.  The contours are 
-              color filled according to the forecasted height of the surge above mean sea 
-              level as shown in the “Storm Surge” legend.
+              A contoured layer showing the forecast storm surge above mean sea level.
             </li>
             <li>
-              The NHC track and cone (if selected). It is a visual representation of the 
-              probable track of the center of the storm labeled according to the forecast 
-              strength at each location:
-              <p>D: Tropical Depression – wind speed less than 39 MPH</p>
-              <p>S: Tropical Storm – wind speed between 39 MPH and 73 MPH</p>
-              <p>H: Hurricane – wind speed between 74 MPH and 110 MPH</p>
-              <p>M: Major Hurricane – wind speed greater than 110 MPH</p>
+              The NHC track and cone, showing the probable storm track & strength at each forecast location:
+              <p>L: Tropical Low</p>
+              <p>D: Tropical Depression</p>
+              <p>S: Tropical Storm</p>
+              <p>H: Hurricane</p>
+              <p>M: Major Hurricane</p>
             </li>
             <li>
-              A line labeled with the current distance (in miles) from the current location of 
-              the storm to your property (if Track & Cone is selected).
+              A line labeled with the current distance (in miles) from the storm’s current location to your property.
             </li>
           </ol>
         </div>
         <div *ngIf="mode === 'wind'">
           <p>
-            This map view shows your <span class="bold">wind</span> risk. If you want to view your surge risk, use the 
-            radio buttons at the bottom left corner of the map to select “Storm Surge”
+            This map view shows your <span class="bold">wind</span> risk.
           </p>
           <p>
-            Above, you can find your property specific wind forecast from our Qrisq model and 
-            the latest storm advisory information from the National Hurricane Center (NHC). The
-            following is visible on the map:
+            If you want to view your surge risk, use the radio buttons at the bottom left corner of the map to select “Storm Surge”.
+          </p>
+          <p>
+            The following is visible on the map:
           </p>
           <ol>
             <li>
-              A house icon at the location of your property color coded according to your 
-              property’s wind risk as shown in the “Property Wind Risk” Legend
+              A house icon, color coded according to your property’s wind risk.
             </li>
             <li>
-              A contoured layer showing the forecasted maximum wind swath. The 
-              contours are color filled according to the forecasted maximum wind speed as 
-              shown in the “Max Wind Swath” Legend
+              A contoured layer showing the forecasted maximum wind.
             </li>
             <li>
-              The NHC track and cone (if selected). It is a visual representation of the 
-              probable track of the center of the storm labeled according to the forecast 
-              strength at each location:
-              <p>D: Tropical Depression – wind speed less than 39 MPH</p>
-              <p>S: Tropical Storm – wind speed between 39 MPH and 73 MPH</p>
-              <p>H: Hurricane – wind speed between 74 MPH and 110 MPH</p>
-              <p>M: Major Hurricane – wind speed greater than 110 MPH</p>
+              The NHC track and cone, showing the probable storm track & strength at each forecast location:
+              <p>L: Tropical Low</p>
+              <p>D: Tropical Depression</p>
+              <p>S: Tropical Storm</p>
+              <p>H: Hurricane</p>
+              <p>M: Major Hurricane</p>
             </li>
             <li>
-              A line labeled with the current distance (in miles) from the current location of 
-              the storm to your property (if Track & Cone is selected).
+              A line labeled with the current distance (in miles) from the storm’s current location to your property.
             </li>
           </ol>
         </div>
         <div *ngIf="mode === 'vortex'">
           <p>
-            This map view shows your <span class="bold">wind</span> risk. If you want to view your surge risk, use the 
-            radio buttons at the bottom left corner of the map to select “Storm Surge”
+            This map view shows your <span class="bold">wind</span> risk.
           </p>
           <p>
-            Above, you can find your property specific wind forecast from our Qrisq model and 
-            the latest storm advisory information from the National Hurricane Center (NHC). The
-            following is visible on the map:
+            If you want to view your surge risk, use the radio buttons at the bottom left corner of the map to select “Storm Surge”.
+          </p>
+          <p>
+            The following is visible on the map:
           </p>
           <ol>
             <li>
-              A house icon at the location of your property color coded according to your 
-              property’s wind risk as shown in the “Property Wind Risk” Legend
+              A house icon, color coded according to your property’s wind risk.
             </li>
             <li>
-              The wind vortex, which is a visual representation of the storm’s current wind 
-              field.
+              The wind vortex, which is a visual representation of the storm’s current wind field.
             </li>
           </ol>
         </div>
