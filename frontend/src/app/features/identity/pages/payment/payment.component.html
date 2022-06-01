@@ -7,9 +7,7 @@
   </qr-banner>
 
   <div class="form-section">
-    <h3>Select payment method</h3>
-
-    
+    <!-- <h3>Select payment method</h3> -->
 
     <div *ngIf="payment$ | async as payment" class="alert-container">
       <nz-alert
@@ -21,15 +19,15 @@
       ></nz-alert>
     </div>
 
-    <nz-alert
+    <!-- <nz-alert
       *ngIf="paypalPaymentFailed"
       nzType="error"
       nzMessage="Payment Failed"
       nzDescription="We aren't able to process your payment using your Paypal account at this time. Please check your information and try again."
       nzShowIcon
-    ></nz-alert>
+    ></nz-alert> -->
 
-    <div nz-row class="payment-options" nzJustify="center">
+    <!-- <div nz-row class="payment-options" nzJustify="center">
       <div nz-col>
         <nz-radio-group
           [(ngModel)]="paymentMethod"
@@ -139,9 +137,7 @@
           </label>
         </nz-radio-group>
       </div>
-    </div>
-
-    <!-- <div id="subscription-payment"></div> -->
+    </div> -->
 
     <div nz-row nzJustify="center">
       <div nz-col>
