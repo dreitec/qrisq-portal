@@ -109,7 +109,7 @@
           <p class="issued-datetime">Issued: {{ toIssuedDate(issuedDate) }}</p>
           <div class="landfall-expected">
             <p class="item-label">Landfall Expected</p>
-            <p>{{ toLocale(landfallDate) }}</p>
+            <p>{{ toCDT(landfallDate) }}</p>
             <p>Near {{ landfallLocation }}</p>
           </div>
           <div class="properties">
@@ -131,7 +131,7 @@
             </div>
           </div>
           <p class="next-forecast">
-            Next Forecast Available {{ toLocaleDateFromString(nextAdvisoryDate) }}
+            Next Forecast Available {{ nextAdvisoryDate }}
           </p>
         </ng-template>
 

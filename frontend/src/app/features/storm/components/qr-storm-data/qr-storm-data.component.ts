@@ -46,12 +46,8 @@ export class QrStormDataComponent implements OnInit {
 
   ngOnInit() {}
 
-  toLocale(date) {
-    return TimeUtils.toLocale(date);
-  }
-
-  toLocaleDateFromString(value) {
-    return TimeUtils.toLocaleDateFromString(value);
+  toCDT(date) {
+    return TimeUtils.toCDT(date);
   }
 
   toIssuedDate(date) {
