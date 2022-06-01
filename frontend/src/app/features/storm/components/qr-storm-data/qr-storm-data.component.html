@@ -70,7 +70,7 @@
             <span class="detail-item-label">Peak surge risk:</span>
             {{ surgeLevels[surgeRisk].riskDesc }} {{ toFeet(maxFlood) }}ft
           </p>
-          <p class="expected-date">Expected: {{ floodAdvisoryDate }}</p>
+          <p class="expected-date" *ngIf="floodAdvisoryDate">Expected: {{ floodAdvisoryDate }}</p>
         </ng-template>
         <ng-template #windRiskHeader>
           <p class="detail-item">
