@@ -33,6 +33,9 @@ class StormDataView(APIView):
 
         storm_data = StormDataSerializer(storm).data
 
+        if storm is None or storm_data is None:
+            return Response({})
+
         global_config = GlobalConfig.objects.all().order_by('-id')
         global_config_data = GlobalConfigSerializer(global_config[0]).data
 
@@ -40,6 +43,9 @@ class StormDataView(APIView):
             if int(global_config_data.get('lookback_period')) > 0:
                 advisory_data = storm_data.get('storm_advisory')
                 advisory_datetime = advisory_data.get('last_processed_datetime')
+                if advisory_datetime is None:
+                    return Response({})
+
                 if advisory_data is None:
                     return Response({})
                 
