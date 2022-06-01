@@ -66,6 +66,10 @@ export class QrStormDataComponent implements OnInit {
     return (value * 1.151).toFixed(1);
   }
 
+  getWindSpeedWholeNumber(value) {
+    return parseInt(`${value * 1.151}`);
+  }
+
   toFeet(meters: number) {
     return round(meters * 3.281, 0.5);
   }
