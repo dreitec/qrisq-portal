@@ -21,6 +21,7 @@ export interface StormData {
   windNextAdvisoryDate: string;
   nextAdvisoryDate: string;
   maxFlood: number;
+  maxWind: number;
   landfallLocation: string;
   landfallDate: Date;
   stormDistance: number;

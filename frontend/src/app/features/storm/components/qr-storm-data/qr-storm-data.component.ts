@@ -33,6 +33,7 @@ export class QrStormDataComponent implements OnInit {
   @Input() isTrackAndConeChecked: boolean;
   @Input() noActiveStorm: boolean;
   @Input() maxFlood: number;
+  @Input() maxWind: number;
 
   public get windLevels() {
     return WindRiskLevels;
@@ -67,7 +68,7 @@ export class QrStormDataComponent implements OnInit {
   }
 
   getWindSpeedWholeNumber(value) {
-    return parseInt(`${value * 1.151}`);
+    return parseInt(`${value}`);
   }
 
   toFeet(meters: number) {
