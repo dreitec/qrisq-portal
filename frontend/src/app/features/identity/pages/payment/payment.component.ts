@@ -47,7 +47,7 @@ export class QrPaymentPageComponent implements OnInit {
   ngOnInit(): void {
     this.tokenizer = new Tokenizer({
       url: environment.production ? environment.FLUID_PAY_PRODUCTION_URL : environment.FLUID_PAY_SANDBOX_URL,
-      apikey: environment.FLUID_PAY_API_KEY,
+      apikey: environment.FLUID_PAY_PUBLIC_KEY,
       container: document.querySelector('#subscription-payment'),
       submission: (resp) => {
         const { status, token = '' } = resp;

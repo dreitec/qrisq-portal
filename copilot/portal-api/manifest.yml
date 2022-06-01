@@ -64,6 +64,7 @@ environments:
       EMAIL_PORT: /copilot/apps/staging/secrets/email_port
       FLUIDPAY_TEST: /copilot/apps/staging/secrets/fluidpay_test
       FLUID_PAY_API_KEY: /copilot/apps/staging/secrets/fluid_pay_api_key
+      FLUID_PAY_PUBLIC_KEY: /copilot/apps/staging/secrets/fluid_pay_public_key
       FLUID_PAY_PROCESSOR_ID: /copilot/apps/staging/secrets/fluid_pay_processor_id
       FLUID_PAY_PRODUCTION_URL: /copilot/apps/staging/secrets/fluid_pay_production_url
       FLUID_PAY_SANDBOX_URL: /copilot/apps/staging/secrets/fluid_pay_sandbox_url
@@ -110,6 +111,7 @@ environments:
       EMAIL_PORT: /copilot/apps/prod/secrets/email_port
       FLUIDPAY_TEST: /copilot/apps/prod/secrets/fluidpay_test
       FLUID_PAY_API_KEY: /copilot/apps/prod/secrets/fluid_pay_api_key
+      FLUID_PAY_PUBLIC_KEY: /copilot/apps/staging/secrets/fluid_pay_public_key
       FLUID_PAY_PROCESSOR_ID: /copilot/apps/prod/secrets/fluid_pay_processor_id
       FLUID_PAY_PRODUCTION_URL: /copilot/apps/prod/secrets/fluid_pay_production_url
       FLUID_PAY_SANDBOX_URL: /copilot/apps/prod/secrets/fluid_pay_sandbox_url
