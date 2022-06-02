@@ -39,7 +39,7 @@ class FluidPay(object):
                 r = requests.post(url, headers=self.headers, data=body)
             else:
                 r = requests.post(url, headers=self.headers, json=body)
-            # r.raise_for_status()
+            r.raise_for_status()
         except:
             if attempt <= retries:
                 logging.info("Retry request to {}".format(url))
