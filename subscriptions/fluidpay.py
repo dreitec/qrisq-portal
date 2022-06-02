@@ -21,7 +21,7 @@ class FluidPay(object):
         self.customer_id_prefix = "f"
         self.api_key = settings.FLUID_PAY_API_KEY
         self.webhook_signature = settings.FLUID_PAY_WEBHOOK_SIGNATURE
-        if settings.FLUIDPAY_TEST:
+        if settings.FLUIDPAY_TEST is True or settings.FLUIDPAY_TEST == 'True':
             self.base_url = settings.FLUID_PAY_SANDBOX_URL
         else:
             self.base_url = settings.FLUID_PAY_PRODUCTION_URL
