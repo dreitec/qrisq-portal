@@ -202,10 +202,12 @@ class FluidPay(object):
                 "email": user_email
             }
         }
+        debug_info = {}
         response = self.__post("/transaction", transaction_data)
         payment_id = response["data"]["id"]
         payment_gateway = "fluidpay"
         response_code = response["data"]["response_code"]
+        debug_info['payment_response'] = response['data']
 
         if response_code != self.APPROVAL_RESPONSE_CODE:
             raise Exception("Response code of {} was received from the server, but expected {}".format(response_code, self.APPROVAL_RESPONSE_CODE))
@@ -224,6 +226,7 @@ class FluidPay(object):
             "next_bill_date": next_billing_date.strftime('%Y-%m-%d')
         }
         response = self.__post("/recurring/subscription", body)
+        debug_info['subscription_response'] = response['data']
         subscription_id = response["data"]["id"]
         amount_paid = transaction_data["amount"] * .01
         user_payment = UserPayment(
@@ -235,7 +238,7 @@ class FluidPay(object):
             user_subscription=user_subscription,
             expires_at=next_billing_date.isoformat() + "T11:59:59Z"
         )
-        return user_payment
+        return user_payment, debug_info
 
     def get_subscription(self, subscription_id):
         return self.__get("/recurring/subscription/{}".format(subscription_id))

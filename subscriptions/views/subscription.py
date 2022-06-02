@@ -140,10 +140,11 @@ class CreateSubscriptionView(APIView):
             serializer = FluidPayTransactionSerializer(data=request.data, context={'request': request})
             serializer.is_valid(raise_exception=True)
             fluidpay_handler = subscriptions.fluidpay.FluidPay()
-            user_subscription = fluidpay_handler.create_subscription(user, request.data, subscription_plan)
+            user_subscription, debug_info = fluidpay_handler.create_subscription(user, request.data, subscription_plan)
             user_subscription.save()
             return Response({
-                "message": "approved!"
+                "message": "approved!",
+                **debug_info,
             })
 
 
