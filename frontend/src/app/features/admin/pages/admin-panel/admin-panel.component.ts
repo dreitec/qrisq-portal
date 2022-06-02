@@ -100,12 +100,14 @@ export class QrAdminPanelPageComponent implements OnInit {
     name: ['', [Validators.required]],
     price: ['', [Validators.required]],
     duration: ['', [Validators.required]],
+    fluidpay_plan_id: ['', [Validators.required]],
   });
 
   subscriptionPlanUpdateForm: FormGroup = this.formBuilder.group({
     name: ['', [Validators.required]],
     price: ['', [Validators.required]],
     duration: ['', [Validators.required]],
+    fluidpay_plan_id: ['', [Validators.required]],
   });
 
   loading: boolean;
@@ -201,12 +203,13 @@ export class QrAdminPanelPageComponent implements OnInit {
       take(1),
       map((response) => {
         const subscriptionPlanTableData: SubscriptionPlanTableData = {
-          data: response.results.map((item) => {
+          data: response.results.map((item: any) => {
             const subscriptionPlanTableItem: SubscriptionPlanTableDataItem = {
               id: item.id,
               name: item.name,
               duration: item.duration,
               price: item.price,
+              fluidpay_plan_id: item.fluidpay_plan_id,
             };
             return subscriptionPlanTableItem;
           }),
@@ -317,6 +320,7 @@ export class QrAdminPanelPageComponent implements OnInit {
           name: response.name,
           price: response.price,
           duration: response.duration,
+          fluidpay_plan_id: response.fluidpay_plan_id,
         };
         this.subscriptionPlanUpdateForm.setValue(formValue);
         this.isActionLoading = false;

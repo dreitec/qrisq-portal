@@ -17,6 +17,7 @@ export interface SubscriptionPlanHttpGetResponseModel {
   feature: string;
   price: number;
   duration: number;
+  fluidpay_plan_id: string;
 }
 
 export interface SubscriptionPlanTableData {
@@ -30,4 +31,5 @@ export interface SubscriptionPlanTableDataItem {
   name: string;
   price: number;
   duration: number;
+  fluidpay_plan_id: string;
 }
