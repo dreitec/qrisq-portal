@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from billing.models import Billing
 from core.service_area import check_billing_city_shape
 from qrisq_api.pagination import CustomPagination
+from subscriptions.serializers.user_subscription import UserPaymentSerializer
 from user_app.permissions import IsAdminUser
 from user_app.models import User
 from user_app.utils import mail_sender
@@ -142,7 +143,9 @@ class CreateSubscriptionView(APIView):
             fluidpay_handler = subscriptions.fluidpay.FluidPay()
             user_subscription, debug_info = fluidpay_handler.create_subscription(user, request.data, subscription_plan)
             user_subscription.save()
+            user_payment_serializer = UserPaymentSerializer(user_subscription)
             return Response({
+                "user_payment": user_payment_serializer.data,
                 "message": "approved!",
                 **debug_info,
             })
