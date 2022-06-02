@@ -206,7 +206,7 @@ class FluidPay(object):
         response = self.__post("/transaction", transaction_data)
 
         if "data" not in response:
-            raise Exception(f"Invalid Fluidpay response: {response}")
+            raise Exception(f"Invalid Fluidpay transaction response: {response}")
 
         debug_info["payment_response"] = response
         payment_id = response["data"]["id"]
@@ -230,7 +230,9 @@ class FluidPay(object):
             "next_bill_date": next_billing_date.strftime('%Y-%m-%d')
         }
         response = self.__post("/recurring/subscription", body)
-        debug_info['subscription_response'] = response['data']
+        debug_info['subscription_response'] = response
+        if "data" not in response:
+            raise Exception(f"Invalid Fluidpay subscription response: {response}")
         subscription_id = response["data"]["id"]
         amount_paid = transaction_data["amount"] * .01
         user_payment = UserPayment(

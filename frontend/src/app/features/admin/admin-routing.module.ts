@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { QrAdminLayoutComponent } from './pages/layout/layout.component';
 import { QrAdminDashboardComponent } from './pages/dashboard/dashboard.component';
+import { QrAdminPanelPageComponent } from './pages/admin-panel/admin-panel.component';
 import { QrAdminAdministratorsComponent } from './pages/administrators/administrators.component';
 import { QrAdminUsersComponent } from './pages/users/users.component';
 import { QrAdminBillingComponent } from './pages/billing/billing.component';
@@ -27,6 +28,10 @@ const routes: Routes = [
       {
         path: 'billing',
         component: QrAdminBillingComponent,
+      },
+      {
+        path: 'subscriptions',
+        component: QrAdminPanelPageComponent,
       },
       {
         path: 'settings',
