@@ -204,10 +204,12 @@ class FluidPay(object):
         }
         debug_info = {}
         response = self.__post("/transaction", transaction_data)
+        if "data" not in response:
+            raise Exception(f"Invalid Fluidpay response: {response}")
+        debug_info["payment_response"] = response
         payment_id = response["data"]["id"]
         payment_gateway = "fluidpay"
         response_code = response["data"]["response_code"]
-        debug_info['payment_response'] = response['data']
 
         if response_code != self.APPROVAL_RESPONSE_CODE:
             raise Exception("Response code of {} was received from the server, but expected {}".format(response_code, self.APPROVAL_RESPONSE_CODE))
