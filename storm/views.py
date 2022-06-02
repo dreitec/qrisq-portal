@@ -39,7 +39,7 @@ class StormDataView(APIView):
             return Response({ 'is_preprocessed': False })
 
         if storm is None or storm_data is None:
-            return Response({ 'is_preprocessed': False })
+            return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
 
         global_config = GlobalConfig.objects.all().order_by('-id')
         global_config_data = GlobalConfigSerializer(global_config[0]).data
