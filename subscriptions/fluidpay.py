@@ -138,9 +138,9 @@ class FluidPay(object):
         user_user = User.objects.get(id=user.id)
         user_profile = UserProfile.objects.get(user_id=user.id)
 
+        debug_info = {"customer_id": customer_id}
         response = self.__get("/vault/{}".format(customer_id), errorOn400=False, return_raw_response=True)
         if response.status_code == 400:
-
             # Customer doesn't exist? Need to create it
             body = {
                 "id": customer_id,
@@ -159,9 +159,11 @@ class FluidPay(object):
                 }
             }
             response = self.__post("/vault/customer", body, retries=3)
+            debug_info["customer_response"] = response
         else:
             response.raise_for_status()
             response = response.json()
+            debug_info["customer_response"] = response
 
         payment_method_id = response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
         billing_address_id = response["data"]["data"]["customer"]["addresses"][0]["id"]
@@ -202,7 +204,6 @@ class FluidPay(object):
                 "email": user_email
             }
         }
-        debug_info = {}
         response = self.__post("/transaction", transaction_data)
 
         if "data" not in response:
