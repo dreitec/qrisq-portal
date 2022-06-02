@@ -1,14 +1,16 @@
 <div class="container">
-  <div class="storm-name" *ngIf="userDataAvailable">
-    {{ stormName }} Impact
-  </div>
-  <div class="storm-name" *ngIf="noActiveStorm">
-    No Active Storm
-  </div>
+  <ng-container *ngIf="isPreprocessed">
+    <div class="storm-name" *ngIf="!noActiveStorm">
+      {{ stormName }} Impact
+    </div>
+    <div class="storm-name" *ngIf="noActiveStorm">
+      No Active Storm
+    </div>
+  </ng-container>
 
-  <div class="split-border" *ngIf="userDataAvailable || noActiveStorm"></div>
+  <div class="split-border" *ngIf="isPreprocessed || noActiveStorm"></div>
 
-  <div class="storm-detail" *ngIf="noActiveStorm">
+  <div class="storm-detail" *ngIf="isPreprocessed && noActiveStorm">
     <div class="level-icon">
       <svg width="20px" height="17px" viewBox="0 0 20 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="Icons" stroke="#1D1D1D" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -31,7 +33,7 @@
     </div>
   </div>
 
-  <div class="storm-detail" *ngIf="userDataAvailable">
+  <div class="storm-detail" *ngIf="isPreprocessed && !noActiveStorm">
     <div [ngClass]="mode === 'surge' ? 'level-icon surge-' + surgeRisk : 'level-icon wind-' + windRisk">
       <svg width="20px" height="17px" viewBox="0 0 20 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -88,9 +90,9 @@
     </div>
   </div>
 
-  <div class="split-border" *ngIf="userDataAvailable"></div>
+  <div class="split-border" *ngIf="isPreprocessed && !noActiveStorm"></div>
 
-  <div class="forecast-advisory" *ngIf="userDataAvailable">
+  <div class="forecast-advisory" *ngIf="isPreprocessed && !noActiveStorm">
     <ng-container>
       <div class="level-icon">
         <img src="/assets/icons/storm.png" />
@@ -149,11 +151,11 @@
       <img src="/assets/icons/eye.png" />
     </div>
     <div class="information-content">
-      <p class="sub-title">{{ !userDataAvailable && !noActiveStorm ? 'Number crunching in progress...' : 'Current view information' }}</p>
+      <p class="sub-title">{{ isPreprocessed ? 'Current view information' : 'Number crunching in progress...' }}</p>
 
       <ng-container
         *ngIf="
-          userDataAvailable;
+          !noActiveStorm;
           then informationHasData;
           else informationNoData
         "
@@ -242,7 +244,7 @@
       <ng-template #informationNoData>
         <ng-container
           *ngIf="
-            noActiveStorm;
+            !isPreprocessed;
             then noActiveStormData;
             else inProgressNoActiveStormData
           "

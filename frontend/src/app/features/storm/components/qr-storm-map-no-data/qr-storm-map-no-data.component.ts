@@ -11,6 +11,7 @@ export class QrStormMapNoDataComponent implements OnInit {
   @Input() userLongitude: number;
   @Input() isStormDataHidden: boolean;
   @Input() noActiveStorm: boolean;
+  @Input() isPreprocessed: boolean;
   @Input() zoom: number;
   @Input() restriction: google.maps.MapRestriction;
   @Output() mapHelpClick = new EventEmitter();

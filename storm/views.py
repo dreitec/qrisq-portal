@@ -23,18 +23,23 @@ class StormDataView(APIView):
         # check and download latest storm data files
         # get_latest_files()
 
+        is_preprocessed = False
         storm = None
         user = request.user
 
         if user:
             user_profile = getattr(user, 'profile', None)
+            is_preprocessed = getattr(user_profile, 'is_preprocessed', False)
             user_address = getattr(user_profile, 'address', {})
             storm = StormData.objects.filter(qid=user.id).order_by('id').last()
 
         storm_data = StormDataSerializer(storm).data
 
+        if is_preprocessed is False:
+            return Response({ 'is_preprocessed': False })
+
         if storm is None or storm_data is None:
-            return Response({})
+            return Response({ 'is_preprocessed': False })
 
         global_config = GlobalConfig.objects.all().order_by('-id')
         global_config_data = GlobalConfigSerializer(global_config[0]).data
@@ -44,15 +49,15 @@ class StormDataView(APIView):
                 advisory_data = storm_data.get('storm_advisory')
                 advisory_datetime = advisory_data.get('last_processed_datetime')
                 if advisory_datetime is None:
-                    return Response({})
+                    return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
 
                 if advisory_data is None:
-                    return Response({})
+                    return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
                 
                 if advisory_datetime < (datetime.datetime.now() - datetime.timedelta(hours=global_config_data.get('lookback_period'))).strftime("%Y-%m-%dT%H:%M:%S"):
-                    return Response({})
+                    return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
         elif global_config_data.get('active_storm') is False:
-            return Response({})
+            return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
 
         files = os.listdir('storm_files')
         storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
@@ -86,6 +91,8 @@ class StormDataView(APIView):
             'line_data': json.dumps(line_data),
             'points_data': json.dumps(points_data),
             'polygon_data': json.dumps(polygon_data),
+            'is_preprocessed': is_preprocessed,
+            'no_active_storm': False,
             **storm_data
         }
         return Response(response)

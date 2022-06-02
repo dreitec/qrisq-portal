@@ -33,6 +33,7 @@ export interface StormData {
   windGrib2JSON: any;
   userDataAvailable: boolean;
   noActiveStorm: boolean;
+  isPreprocessed: boolean;
 }
 
 export interface StormParameters {

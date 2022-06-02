@@ -5,7 +5,7 @@
     </ng-container>
 
     <ng-container *ngIf="isDataLoaded">
-      <div class="storm-section">
+      <div class="storm-section" *ngIf="userDataAvailable">
         <div [ngClass]="isStormDataHidden ? 'storm-data-container hidden' : 'storm-data-container'">
           <qr-storm-data
             [userAddress]="userGeolocation.address"
@@ -33,6 +33,7 @@
             [floodAdvisoryDate]="stormData.floodAdvisoryDate"
             [windAdvisoryDate]="stormData.windAdvisoryDate"
             [noActiveStorm]="stormData.noActiveStorm"
+            [isPreprocessed]="stormData.isPreprocessed"
           >
           </qr-storm-data>
           <div [ngClass]="isStormDataHidden ? 'storm-data-container-handler hidden' : 'storm-data-container-handler'" (click)="onStormDataHidden()">
@@ -54,7 +55,7 @@
         </div>
 
         <div
-          *ngIf="userDataAvailable; then stormUserData; else stormNoUserData"
+          *ngIf="!stormData.noActiveStorm; then stormUserData; else stormNoUserData"
         ></div>
         <ng-template #stormUserData>
           <qr-storm-map
@@ -83,6 +84,7 @@
         </ng-template>
         <ng-template #stormNoUserData>
           <qr-storm-map-no-data
+            [isPreprocessed]="stormData.isPreprocessed"
             [isStormDataHidden]="isStormDataHidden"
             [noActiveStorm]="stormData.noActiveStorm"
             [userLattitude]="userGeolocation.lattitude"

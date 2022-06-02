@@ -32,6 +32,7 @@ export class QrStormDataComponent implements OnInit {
   @Input() userDataAvailable: boolean;
   @Input() isTrackAndConeChecked: boolean;
   @Input() noActiveStorm: boolean;
+  @Input() isPreprocessed: boolean;
   @Input() maxFlood: number;
   @Input() maxWind: number;
 

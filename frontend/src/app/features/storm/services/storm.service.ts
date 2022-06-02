@@ -31,7 +31,7 @@ export class QrStormService {
           })
         )
         .subscribe((result) => {
-          if (!result || (Object.keys(result.storm).length < 1)) {
+          if (!result || !result?.storm?.is_preprocessed || result?.storm?.no_active_storm) {
             const stormData: StormData = {
               lattitude: 0,
               longitude: 0,
@@ -59,14 +59,15 @@ export class QrStormService {
               stormDistance: 0,
               stormName: '',
               windRisk: '',
-              userDataAvailable: false,
+              userDataAvailable: Boolean(result),
               lineGeoJSON: null,
               pointsGeoJSON: null,
               polygonsGeoJSON: null,
               surgeGeoJSON: null,
               windGeoJSON: null,
               windGrib2JSON: null,
-              noActiveStorm: result && (Object.keys(result.storm).length < 1)
+              noActiveStorm: !result?.storm?.is_preprocessed || result?.storm?.no_active_storm,
+              isPreprocessed: Boolean(result?.storm?.is_preprocessed),
             };
             observer.next(stormData);
             observer.complete();
@@ -107,6 +108,7 @@ export class QrStormService {
             windGeoJSON: result.wind.windGeoJSON,
             windGrib2JSON: result.wind.windGrib2JSON,
             noActiveStorm: false,
+            isPreprocessed: true,
           };
           console.log(result.wind.windGeoJSON);
           if (stormData.windGeoJSON === null) {
