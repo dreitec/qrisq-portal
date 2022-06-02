@@ -396,13 +396,14 @@ export class QrAdminPanelPageComponent implements OnInit {
     const subscriptionPlanId = this.selectedTableItemId;
     const subscriptionPlanData = this.selectedTableItemData;
 
-    const { name, price, duration } = this.subscriptionPlanUpdateForm.value;
+    const { name, price, duration, fluidpay_plan_id } = this.subscriptionPlanUpdateForm.value;
 
     const params = {
       name,
       price,
       duration,
       feature: subscriptionPlanData.feature,
+      fluidpay_plan_id,
     };
 
     this.adminService
