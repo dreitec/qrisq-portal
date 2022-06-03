@@ -14,7 +14,7 @@ from core.db_connection import query_executor
 from core.storm_file_handler import get_latest_files, compressed_geojson_parser, wind_js_parser, surge_zip_creator
 from settings.models import GlobalConfig
 from settings.serializers import GlobalConfigSerializer
-from .models import StormData
+from .models import StormAdvisory, StormData
 from .serializers import StormAdvisorySerializer, StormDataSerializer
 
 
