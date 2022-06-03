@@ -21,43 +21,45 @@ from .serializers import StormDataSerializer
 class StormDataView(APIView):
     def get(self, request, *args, **kwargs):
         # check and download latest storm data files
-        # get_latest_files()
+        get_latest_files()
 
         is_preprocessed = False
         storm = None
         user = request.user
 
-        if user:
-            user_profile = getattr(user, 'profile', None)
-            is_preprocessed = getattr(user_profile, 'is_preprocessed', False)
-            user_address = getattr(user_profile, 'address', {})
-            storm = StormData.objects.filter(qid=user.id).order_by('id').last()
-
-        storm_data = StormDataSerializer(storm).data
-
-        if is_preprocessed is False:
+        if not user:
             return Response({ 'is_preprocessed': False })
 
-        if storm is None or storm_data is None:
-            return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
+        user_profile = getattr(user, 'profile', None)
+        is_preprocessed = getattr(user_profile, 'is_preprocessed', False)
+
+        if not is_preprocessed:
+            return Response({ 'is_preprocessed': False })
+        
+        user_address = getattr(user_profile, 'address', {})
+
+        advisory = StormAdvisory.objects.order_by('last_processed_datetime').last()
+        advisory_data = StormAdvisorySerializer(advisory).data
 
         global_config = GlobalConfig.objects.all().order_by('-id')
         global_config_data = GlobalConfigSerializer(global_config[0]).data
 
         if global_config_data.get('lookback_override') is False:
             if int(global_config_data.get('lookback_period')) > 0:
-                advisory_data = storm_data.get('storm_advisory')
+                if advisory_data is None:
+                    return Response({ 'is_preprocessed': True, 'no_active_storm': True })
                 advisory_datetime = advisory_data.get('last_processed_datetime')
                 if advisory_datetime is None:
-                    return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
-
-                if advisory_data is None:
-                    return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
-                
+                    return Response({ 'is_preprocessed': True, 'no_active_storm': True })   
                 if advisory_datetime < (datetime.datetime.now() - datetime.timedelta(hours=global_config_data.get('lookback_period'))).strftime("%Y-%m-%dT%H:%M:%S"):
-                    return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
+                    return Response({ 'is_preprocessed': True, 'no_active_storm': True })
         elif global_config_data.get('active_storm') is False:
-            return Response({ 'is_preprocessed': is_preprocessed, 'no_active_storm': True })
+            return Response({ 'is_preprocessed': True, 'no_active_storm': True })
+
+        storm = StormData.objects.filter(qid=user.id).order_by('id').last()
+        storm_data = StormDataSerializer(storm).data
+        if storm is None or storm_data is None:
+            return Response({ 'is_preprocessed': False, 'no_active_storm': True })
 
         files = os.listdir('storm_files')
         storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
