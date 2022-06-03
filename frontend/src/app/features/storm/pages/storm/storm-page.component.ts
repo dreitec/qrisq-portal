@@ -95,8 +95,10 @@ export class QrStormPageComponent implements OnInit {
     });
   }
 
-  loadStormData() {
-    this.isDataLoaded = false;
+  loadStormData(refresh?: boolean) {
+    if (!refresh) {
+      this.isDataLoaded = false;
+    }
     this.stormService
       .getStormData(false)
       .pipe(take(1))
@@ -106,7 +108,7 @@ export class QrStormPageComponent implements OnInit {
         this.isDataLoaded = true;
 
         if (!stormData?.isPreprocessed || stormData?.noActiveStorm) {
-          setTimeout(() => this.loadStormData(), 15000);
+          setTimeout(() => this.loadStormData(true), 15000);
         }
       });
   }
