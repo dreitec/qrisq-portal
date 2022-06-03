@@ -47,19 +47,19 @@ class StormDataView(APIView):
         if global_config_data.get('lookback_override') is False:
             if int(global_config_data.get('lookback_period')) > 0:
                 if advisory_data is None:
-                    return Response({ 'is_preprocessed': True, 'no_active_storm': True })
+                    return Response({ 'is_preprocessed': True, 'no_active_storm': True, 'advisory': advisory_data, 'global_config': global_config_data })
                 advisory_datetime = advisory_data.get('last_processed_datetime')
                 if advisory_datetime is None:
-                    return Response({ 'is_preprocessed': True, 'no_active_storm': True })   
+                    return Response({ 'is_preprocessed': True, 'no_active_storm': True, 'advisory': advisory_data, 'global_config': global_config_data })   
                 if advisory_datetime < (datetime.datetime.now() - datetime.timedelta(hours=global_config_data.get('lookback_period'))).strftime("%Y-%m-%dT%H:%M:%S"):
-                    return Response({ 'is_preprocessed': True, 'no_active_storm': True })
+                    return Response({ 'is_preprocessed': True, 'no_active_storm': True, 'advisory': advisory_data, 'global_config': global_config_data })
         elif global_config_data.get('active_storm') is False:
-            return Response({ 'is_preprocessed': True, 'no_active_storm': True })
+            return Response({ 'is_preprocessed': True, 'no_active_storm': True, 'advisory': advisory_data, 'global_config': global_config_data })
 
         storm = StormData.objects.filter(qid=user.id).order_by('id').last()
         storm_data = StormDataSerializer(storm).data
         if storm is None or storm_data is None:
-            return Response({ 'is_preprocessed': False, 'no_active_storm': True })
+            return Response({ 'is_preprocessed': False })
 
         files = os.listdir('storm_files')
         storm_files = sorted([f"storm_files/{f}" for f in files if f.startswith('line') or f.startswith('points') or f.startswith('polygon')])
