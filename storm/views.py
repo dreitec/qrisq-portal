@@ -15,7 +15,7 @@ from core.storm_file_handler import get_latest_files, compressed_geojson_parser,
 from settings.models import GlobalConfig
 from settings.serializers import GlobalConfigSerializer
 from .models import StormData
-from .serializers import StormDataSerializer
+from .serializers import StormAdvisorySerializer, StormDataSerializer
 
 
 class StormDataView(APIView):
