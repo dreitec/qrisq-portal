@@ -84,14 +84,7 @@ export class QrStormPageComponent implements OnInit {
       )
       .subscribe((userGeolocation) => {
         this.userGeolocation = userGeolocation;
-        this.stormService
-          .getStormData(false)
-          .pipe(take(1))
-          .subscribe((stormData) => {
-            this.userDataAvailable = stormData.userDataAvailable;
-            this.stormData = stormData;
-            this.isDataLoaded = true;
-          });
+        this.loadStormData();
       });
 
     this.store.select(selectStormData).subscribe((stormData) => {
@@ -100,6 +93,22 @@ export class QrStormPageComponent implements OnInit {
         this.isDataLoaded = true;
       }
     });
+  }
+
+  loadStormData() {
+    this.isDataLoaded = false;
+    this.stormService
+      .getStormData(false)
+      .pipe(take(1))
+      .subscribe((stormData) => {
+        this.userDataAvailable = stormData.userDataAvailable;
+        this.stormData = stormData;
+        this.isDataLoaded = true;
+
+        if (!stormData?.isPreprocessed || stormData?.noActiveStorm) {
+          setTimeout(() => this.loadStormData(), 15000);
+        }
+      });
   }
 
   onMapHelpClick() {
