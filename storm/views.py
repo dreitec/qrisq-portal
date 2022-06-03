@@ -4,6 +4,7 @@ import os
 import concurrent.futures as c_futures
 
 from django.conf import settings
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
@@ -38,7 +39,7 @@ class StormDataView(APIView):
         
         user_address = getattr(user_profile, 'address', {})
 
-        advisory = StormAdvisory.objects.order_by('last_processed_datetime').last()
+        advisory = StormAdvisory.objects.filter(~Q(last_processed_datetime=None)).order_by('last_processed_datetime').last()
         advisory_data = StormAdvisorySerializer(advisory).data
 
         global_config = GlobalConfig.objects.all().order_by('-id')
