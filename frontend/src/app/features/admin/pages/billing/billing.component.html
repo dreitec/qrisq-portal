@@ -100,9 +100,9 @@
     <tr *ngFor="let item of items; let i = index">
       <td>{{ i + 1 }}</td>
       <td>{{ getType(item) }}</td>
-      <td>{{ item.type === 'C' ? item.city : '' }}</td>
-      <td>{{ item.type === 'P' ? item.county : '' }}</td>
-      <td>{{ item.type === 'S' ? item.state : '' }}</td>
+      <td>{{ item.city || '' }}</td>
+      <td>{{ item.county || '' }}</td>
+      <td>{{ item.state || '' }}</td>
       <td>{{ dateToString(item.startDate) }}</td>
       <td>{{ dateToString(item.endDate) }}</td>
       <td>{{ getState(item) }}</td>

@@ -55,6 +55,8 @@ export interface AdminBillingItem {
   state: string;
   startDate: string;
   endDate: string;
+  start_date: string;
+  end_date: string;
   status: number;
   discount: number;
   users: number;

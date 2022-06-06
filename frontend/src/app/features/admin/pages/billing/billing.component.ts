@@ -38,7 +38,11 @@ export class QrAdminBillingComponent implements OnInit {
         map((response) => response)
       )
       .subscribe((data) => {
-        this.data = data.results;
+        this.data = data.results.map(item => ({
+          ...item,
+          startDate: item.start_date,
+          endDate: item.end_date,
+        }));
         this.filterData();
       });
   }
@@ -99,6 +103,23 @@ export class QrAdminBillingComponent implements OnInit {
     return discount ? `${discount}%` : '';
   }
 
+  getBillingStatus(start, end) {
+    const nowDate = new Date().toISOString().split('T')[0];
+    const startDate = new Date(start).toISOString().split('T')[0];
+    const endDate = end ? new Date(end).toISOString().split('T')[0] : '';
+
+    if (nowDate < startDate) {
+      return '0'
+    } else {
+      if (endDate) {
+        if (nowDate > endDate) {
+          return '-1';
+        }
+      }
+      return '1';
+    }
+  }
+
   showEdit(item?: AdminBillingItem): void {
     const modal = this.modal.create({
       nzMaskClosable: false,
@@ -124,7 +145,7 @@ export class QrAdminBillingComponent implements OnInit {
       formData.append('state', result.data.state || '');
       formData.append('startDate', result.data.startDate);
       formData.append('endDate', result.data.endDate);
-      formData.append('status', result.data.status || 0);
+      formData.append('status', this.getBillingStatus(result.data.startDate, result.data.endDate));
       formData.append('discount', result.data.discount || 0);
       formData.append('users', result.data.users || 0);
       if (result.data.file) {
