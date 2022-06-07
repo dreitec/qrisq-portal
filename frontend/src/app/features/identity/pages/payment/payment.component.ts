@@ -1,14 +1,12 @@
 // angular
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { take } from 'rxjs/operators';
-import Tokenizer from 'fluidpay-tokenizer';
-import {
-  PaypalPaymentInformation,
-} from '../../models/Payment.models';
 import { environment } from '@env';
 import { Store } from '@ngrx/store';
+import Tokenizer from 'fluidpay-tokenizer';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { PaypalPaymentInformation } from '../../models/Payment.models';
 import { SignedUserState } from '../../store/identity.models';
 import {
   actionProcessPaymentRequest,
@@ -37,8 +35,7 @@ export class QrPaymentPageComponent implements OnInit {
   payment$ = this.store.select(selectPayment);
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
+    private notification: NzNotificationService,
     private store: Store
   ) {}
 
@@ -52,13 +49,17 @@ export class QrPaymentPageComponent implements OnInit {
       submission: (resp) => {
         const { status, token = '' } = resp;
         if (status === 'success' && token) {
-          this.store.dispatch(actionProcessPaymentRequest({
-            paymentInformation: {
-              token,
-              amount: 10,
-              subscriptionPlanId: 1,
-            }
-          }));
+          if (this.signedUser.user.subscription) {
+            this.store.dispatch(actionProcessPaymentRequest({
+              paymentInformation: {
+                token,
+                amount: this.signedUser.user.subscription.price || 0,
+                subscriptionPlanId: this.signedUser.user.subscription.id,
+              }
+            }));
+          } else {
+            this.notification.create('error', 'Error', 'Not found user subscription.');
+          }
         }
       },
       settings: {
