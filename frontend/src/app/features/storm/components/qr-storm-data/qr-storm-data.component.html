@@ -251,15 +251,6 @@
         ></ng-container>
         <ng-template #noActiveStormData>
           <p>
-            Q-risq is not currently modeling any active landfalling tropical system. We begin 
-            forecast operations for an active storm approximately 5 days before a predicted 
-            landfall on the U.S. Gulf of Mexico or Atlantic coastlines. Q-risq has geolocated your 
-            property and determined the ground elevation. Please check back during an active 
-            storm threat for your property’s risk information.
-          </p>
-        </ng-template>
-        <ng-template #inProgressNoActiveStormData>
-          <p>
             The information about your property including elevation and precise location is being processed by our system.
           </p>
           <p>
@@ -273,6 +264,15 @@
           </p>
           <p>
             These calculations take up to five (5) minutes to complete, at which time this page will refresh.
+          </p>
+        </ng-template>
+        <ng-template #inProgressNoActiveStormData>
+          <p>
+            Q-risq is not currently modeling any active landfalling tropical system. We begin 
+            forecast operations for an active storm approximately 5 days before a predicted 
+            landfall on the U.S. Gulf of Mexico or Atlantic coastlines. Q-risq has geolocated your 
+            property and determined the ground elevation. Please check back during an active 
+            storm threat for your property’s risk information.
           </p>
         </ng-template>
       </ng-template>

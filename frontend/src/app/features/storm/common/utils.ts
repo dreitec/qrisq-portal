@@ -158,4 +158,4 @@ export const getBillingStatus = (start, end) => {
     }
     return 1;
   }
-}
+};
