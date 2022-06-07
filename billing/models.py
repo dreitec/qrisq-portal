@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 
 class Billing(models.Model):
@@ -15,7 +16,7 @@ class Billing(models.Model):
     county = models.CharField(max_length=60, default=None, null=True)
     state = models.CharField(max_length=60, default=None, null=True)
     status = models.IntegerField(choices=STATUS, default=0)
-    start_date = models.DateField(auto_now_add=True)
+    start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(default=None, null=True)
     discount = models.FloatField(default=0)
     users = models.IntegerField(default=0)
