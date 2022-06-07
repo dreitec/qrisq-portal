@@ -103,9 +103,9 @@
       <td>{{ item.city || '' }}</td>
       <td>{{ item.county || '' }}</td>
       <td>{{ item.state || '' }}</td>
-      <td>{{ dateToString(item.startDate) }}</td>
-      <td>{{ dateToString(item.endDate) }}</td>
-      <td>{{ getState(item) }}</td>
+      <td>{{ dateToString(item.start_date) }}</td>
+      <td>{{ dateToString(item.end_date) }}</td>
+      <td>{{ getStatus(item) }}</td>
       <td>{{ discountToString(item.discount) }}</td>
       <td>{{ item.users }}</td>
       <td nzAlign="center" class="actions">

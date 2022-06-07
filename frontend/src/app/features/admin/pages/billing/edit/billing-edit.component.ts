@@ -24,7 +24,6 @@ export class QrAdminBillingEditComponent implements OnInit {
     const city = this.item?.city;
     const county = this.item?.county;
     const state = this.item?.state;
-    console.log('type = ', type);
     this.form = this.fb.group({
       id: this.item?.id,
       type: [type || '', [Validators.required]],
@@ -40,8 +39,8 @@ export class QrAdminBillingEditComponent implements OnInit {
         value: type === 'S' ? state : '',
         disabled: type !== 'S',
       },
-      startDate: this.item?.startDate || new Date(),
-      endDate: this.item?.endDate,
+      start_date: this.item?.start_date || new Date(),
+      end_date: this.item?.end_date,
       discount: {
         value: this.item?.discount || 100,
         disabled: true,

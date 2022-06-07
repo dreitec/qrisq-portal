@@ -12,6 +12,13 @@ function toIssuedDate(utc: string): string {
   return `${moment.utc(utc).utcOffset(-offset).format('MMM D, hh:mm A')} ${timezone.replace(/[^A-Z]/g, '')}`;
 }
 
+function toDefaultDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}-${month > 9 ? month : '0' + month.toString()}-${day > 9 ? day : '0' + day.toString()}`;
+}
+
 export function getESRISurgeLevelColor(depth: number) {
   if (depth < 1) {
     return '#004343';
@@ -114,7 +121,7 @@ export function getESRISurgeLevelColor(depth: number) {
   }
 }
 
-export const TimeUtils = { toCDT, toIssuedDate };
+export const TimeUtils = { toCDT, toDefaultDate, toIssuedDate };
 
 export function getWindDirection(degree: string) {
   let direction = '';
@@ -134,4 +141,21 @@ export function getWindDirection(degree: string) {
   });
   
   return direction;
+}
+
+export const getBillingStatus = (start, end) => {
+  const nowDate = new Date().toISOString().split('T')[0];
+  const startDate = new Date(start).toISOString().split('T')[0];
+  const endDate = end ? new Date(end).toISOString().split('T')[0] : '';
+
+  if (nowDate < startDate) {
+    return 0;
+  } else {
+    if (endDate) {
+      if (nowDate > endDate) {
+        return -1;
+      }
+    }
+    return 1;
+  }
 }

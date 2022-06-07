@@ -53,8 +53,6 @@ export interface AdminBillingItem {
   city: string;
   county: string;
   state: string;
-  startDate: string;
-  endDate: string;
   start_date: string;
   end_date: string;
   status: number;

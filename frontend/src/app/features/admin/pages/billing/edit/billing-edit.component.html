@@ -86,7 +86,7 @@
           <nz-form-control [nzSpan]="14" [nzXs]="24">
             <nz-date-picker
               nzFormat="MM/dd/yyyy"
-              formControlName="startDate"
+              formControlName="start_date"
               [nzDisabledDate]="disabledStartDate"
               [nzDisabled]="form.controls.type.value === ''"
             ></nz-date-picker>
@@ -98,7 +98,7 @@
           <nz-form-control [nzSpan]="14">
             <nz-date-picker
               nzFormat="MM/dd/yyyy"
-              formControlName="endDate"
+              formControlName="end_date"
               [nzDisabledDate]="disabledEndDate"
               nzPlaceHolder="End (optional)"
               [nzDisabled]="form.controls.type.value !== 'C'"
