@@ -27,6 +27,7 @@ class UserSubscription(models.Model):
     is_cancelled = models.BooleanField(default=False)
     cancelled_at = models.DateTimeField(default=None, null=True)
     expires_at = models.DateTimeField(default=None, null=True)
+    is_free = models.BooleanField(default=False)
 
     def cancel_subscription(self):
         self.is_cancelled = True

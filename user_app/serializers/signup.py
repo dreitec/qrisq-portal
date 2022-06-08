@@ -1,4 +1,5 @@
 from email.policy import default
+import datetime
 import logging
 
 from django.conf import settings
@@ -9,6 +10,8 @@ from rest_framework import serializers
 from subscriptions.models import UserSubscription, SubscriptionPlan, UserPayment
 from user_app.models import User, UserProfile, NUMERIC_VALIDATOR
 from user_app.utils import mail_sender
+
+import subscriptions.subscription_date_utils as subscription_date_utils
 
 from .auth import LoginTokenSerializer
 
@@ -30,6 +33,7 @@ class SignupSerializer(serializers.Serializer):
     state = serializers.CharField(max_length=30)
     zip_code = serializers.CharField(max_length=5, validators=[NUMERIC_VALIDATOR])
     subscription_plan_id = serializers.IntegerField()
+    is_free = serializers.BooleanField(required=False, default=False)
 
     def to_representation(self, instance=None):
         serializer = LoginTokenSerializer(data=self.validated_data, context=self.context)
@@ -64,13 +68,22 @@ class SignupSerializer(serializers.Serializer):
         last_name = validated_data.pop('last_name')
         password = validated_data.pop('password')
         subscription_plan_id = validated_data.pop('subscription_plan_id')
+        is_free = validated_data.pop('is_free')
+
+        expires_at = None
+        if is_free:
+            subscription_plan = SubscriptionPlan.objects.get(id=subscription_plan_id)
+            today = datetime.date.today()
+            plan_type = subscription_plan.name.upper()
+            next_billing_date, initial_charge_multiplier = subscription_date_utils.get_initial_subscription_billing_date(plan_type, today)
+            expires_at = next_billing_date
         
         try:
             logger.info("Creating User Instance for email " + email)
             user = User.objects.create_user(email=email, password=password,
                                             first_name=first_name, last_name=last_name)
             user_profile = UserProfile.objects.create(user=user, **validated_data)
-            UserSubscription.objects.create(user=user, plan_id=subscription_plan_id)
+            UserSubscription.objects.create(user=user, plan_id=subscription_plan_id, expires_at=expires_at, is_free=is_free)
 
         except Exception as err:
             logger.warning(f"FailNo Environmented User instance; Error: {str(err)}")
