@@ -103,6 +103,7 @@ export class QrIdentityService {
       zip_code: signUp.addressZip,
       subscription_plan_id: signUp.subscriptionPlanId,
       payment_id: Guid.create().toString().substr(0, 6),
+      is_free: parseInt(`${signUp.subscriptionPlanPrice || 0}`) === 0,
     };
 
     return this.httpClient.post(environment.API_URL + '/auth/signup', data, {

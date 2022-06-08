@@ -89,9 +89,9 @@ const reducer = createReducer(
       addressZip: '',
     },
   })),
-  on(actionRegisterStart, (state, { subscriptionPlanId }) => ({
+  on(actionRegisterStart, (state, { subscriptionPlanId, subscriptionPlanPrice }) => ({
     ...state,
-    signUp: { ...state.signUp, subscriptionPlanId },
+    signUp: { ...state.signUp, subscriptionPlanId, subscriptionPlanPrice },
   })),
   on(
     actionRegisterFormSubmit,

@@ -50,7 +50,10 @@ export class QrServiceAreaAvailablePageComponent implements OnInit {
       });
   }
 
-  public onRegister(planId: number): void {
-    this.store.dispatch(actionRegisterStart({ subscriptionPlanId: planId }));
+  public onRegister(planId: number, price: number, discount: number): void {
+    this.store.dispatch(actionRegisterStart({
+      subscriptionPlanId: planId,
+      subscriptionPlanPrice: (price * (100 - discount)) / 100,
+    }));
   }
 }

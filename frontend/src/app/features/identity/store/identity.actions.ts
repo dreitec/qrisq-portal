@@ -94,6 +94,7 @@ export const actionRegisterStart = createAction(
   '[Identity] Register Start',
   props<{
     subscriptionPlanId: number;
+    subscriptionPlanPrice: number;
   }>()
 );
 

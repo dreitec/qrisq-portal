@@ -19,7 +19,7 @@
               nzType="primary"
               nzDanger
               nzSize="large"
-              (click)="onRegister(subscriptionPlan.id)"
+              (click)="onRegister(subscriptionPlan.id, subscriptionPlan.price, subscriptionPlan.discount)"
             >
               Register {{ subscriptionPlan.name === 'Monthly' ? '**' : '' }}
             </button>
