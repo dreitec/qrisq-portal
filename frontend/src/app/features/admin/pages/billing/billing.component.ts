@@ -118,6 +118,9 @@ export class QrAdminBillingComponent implements OnInit {
     modal.afterClose.subscribe((result) => {
       if (!result) { return; }
 
+      const startDate = TimeUtils.toDefaultDate(result.data.start_date);
+      const endDate = result.data.end_date ? TimeUtils.toDefaultDate(result.data.end_date) : '';
+
       const formData: FormData = new FormData();
       if (result.data.id) {
         formData.append('id', result.data.id);
@@ -126,9 +129,9 @@ export class QrAdminBillingComponent implements OnInit {
       formData.append('city', result.data.city || '');
       formData.append('county', result.data.county || '');
       formData.append('state', result.data.state || '');
-      formData.append('start_date', TimeUtils.toDefaultDate(result.data.start_date));
-      formData.append('end_date', result.data.end_date ? TimeUtils.toDefaultDate(result.data.end_date) : '');
-      formData.append('status', getBillingStatus(result.data.start_date, result.data.end_date).toString());
+      formData.append('start_date', startDate);
+      formData.append('end_date', endDate);
+      formData.append('status', getBillingStatus(startDate, endDate).toString());
       formData.append('discount', result.data.discount || 100);
       formData.append('users', result.data.users || 0);
       if (result.data.file) {

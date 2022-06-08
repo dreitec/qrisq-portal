@@ -143,10 +143,8 @@ export function getWindDirection(degree: string) {
   return direction;
 }
 
-export const getBillingStatus = (start, end) => {
-  const nowDate = new Date().toISOString().split('T')[0];
-  const startDate = new Date(start).toISOString().split('T')[0];
-  const endDate = end ? new Date(end).toISOString().split('T')[0] : '';
+export const getBillingStatus = (startDate, endDate) => {
+  const nowDate = toDefaultDate(new Date());
 
   if (nowDate < startDate) {
     return 0;
