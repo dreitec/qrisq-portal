@@ -48,7 +48,7 @@ class PingDragAddressView(CreateAPIView):
         if user.profile.address_updated >= 1:
             return Response({'message': "Your address has already been changed earlier."}, status=HTTP_403_FORBIDDEN)
 
-        if not user_payment.exists() or subscribed_plan.is_cancelled:
+        if (not user_payment.exists() or subscribed_plan.is_cancelled) and (not subscribed_plan.is_free):
             return Response({'message': "Please subscribe for a plan and make the payment."},
                             status=HTTP_403_FORBIDDEN)
 
