@@ -1,4 +1,5 @@
 import json
+import requests
 
 from django.conf import settings
 
@@ -7,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView, CreateAPIView, ListCreateAPIView, ListAPIView
-from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -140,6 +141,36 @@ def request_address_change(request):
         return Response({'error': "Error sending email."})
 
     return Response({'message': "Request has been sent to change your address."})
+
+
+class VerifyRecaptchaV3(CreateAPIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        recaptcha_v3_token = request.data.get("token")
+        if not recaptcha_v3_token:
+            return Response({
+                'error': {
+                    'token': "This field is required."
+                }
+            }, status=HTTP_400_BAD_REQUEST)
+
+        response_data = {
+            'secret': settings.RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_v3_token
+        }
+        response = requests.post("https://www.google.com/recaptcha/api/siteverify", data=response_data)
+        if response.status_code == requests.codes.ok:
+            success = response.json().get("success")
+            if not success:
+                message = response.json().get("error-codes")[0]
+                return Response({
+                'error': {
+                    'message': message
+                }
+            }, status=HTTP_403_FORBIDDEN)
+
+        return Response({ 'success': True })
 
 
 class VerifyEmail(CreateAPIView):

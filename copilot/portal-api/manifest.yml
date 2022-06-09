@@ -83,6 +83,7 @@ environments:
       STORM_DB_PORT: /copilot/apps/staging/secrets/storm_db_port
       STORM_DB_SCHEMA: /copilot/apps/staging/secrets/storm_db_schema
       STORM_DB_USER: /copilot/apps/staging/secrets/storm_db_user
+      RECAPTCHA_SECRET_KEY: /copilot/apps/staging/secrets/recaptcha_secret_key
  prod:
   secrets: 
       ADMIN_EMAIL: /copilot/apps/prod/secrets/admin_email
@@ -130,5 +131,6 @@ environments:
       STORM_DB_PORT: /copilot/apps/prod/secrets/storm_db_port
       STORM_DB_SCHEMA: /copilot/apps/prod/secrets/storm_db_schema
       STORM_DB_USER: /copilot/apps/prod/secrets/storm_db_user
+      RECAPTCHA_SECRET_KEY: /copilot/apps/prod/secrets/recaptcha_secret_key
   
 

@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from user_app.views import LoginView, LogoutView, RefreshTokenView, check_token, \
     ResetPasswordView, ForgotPasswordView, SignupView, AccountProfileView, \
     UserViewSet, AdminUserListView, ClientUserListView, \
-    request_address_change, VerifyEmail, PingDragAddressView, SendMessageView, \
+    request_address_change, VerifyRecaptchaV3, VerifyEmail, PingDragAddressView, SendMessageView, \
     PinDragAttemptCounterView
 
 
@@ -31,6 +31,7 @@ urlpatterns += [
     path('pin-drag-address', PingDragAddressView.as_view(), name="pin-drag-address"),
     path('pin-drag-attempt', PinDragAttemptCounterView.as_view(), name="pin-drag-counter"),
     path('request-address-change', request_address_change, name="request-address-change"),
+    path('verify-recaptcha_v3', VerifyRecaptchaV3.as_view(), name="verify-recaptcha_v3"),
     path('verify-email', VerifyEmail.as_view(), name="verify-email"),
 
     path('send-message', SendMessageView.as_view(), name="send-message"),

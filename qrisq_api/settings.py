@@ -353,6 +353,7 @@ LOGIN_EXEMPT_PATHS = (
     r'api/subscription-plans',
     r'api/subscription-plans-discount',
     r'api/swagger$',
+    r'api/verify-recaptcha_v3',
     r'api/verify-email',
     r'api/health-check',
     r'api/zip/*',
@@ -414,6 +415,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "zip")
 # Remove appending slash on urls
 APPEND_SLASH = False
 
+# Google Recaptcha V3
+RECAPTCHA_SECRET_KEY = config("RECAPTCHA_SECRET_KEY", "")
 
 # Paypal
 PAYPAL_TEST = config("PAYPAL_TEST", True)
