@@ -12,6 +12,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // google maps
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 
+// reCaptcha
+import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+
 // routing
 import { AppRoutingModule } from './app-routing.module';
 
@@ -89,6 +92,9 @@ registerLocaleData(en);
     // Google
     GooglePlaceModule,
 
+    // reCaptcha
+    RecaptchaV3Module,
+
     // routing
     AppRoutingModule,
 
@@ -103,6 +109,11 @@ registerLocaleData(en);
     QrContactUsModule,
   ],
   bootstrap: [AppComponent],
-  providers: [],
+  providers: [
+    {
+      provide: RECAPTCHA_V3_SITE_KEY,
+      useValue: environment.RECAPTCHA_SITE_KEY,
+    },
+  ],
 })
 export class AppModule {}

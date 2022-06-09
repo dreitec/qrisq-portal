@@ -6,4 +6,5 @@ export const environment = {
   FLUID_PAY_SANDBOX_URL: 'https://sandbox.convenupay.com',
   FLUID_PAY_PRODUCTION_URL: 'https://app.convenupay.com',
   FLUID_PAY_PUBLIC_KEY: window['env']['QRISQ_ENV'] === 'prod' ? 'pub_29yl8SuwSG3xXne7mezGgj6h6Du' : 'pub_28IpFFyqkBUo05gAQFKFVNquxcD',
+  RECAPTCHA_SITE_KEY: window['env']['RECAPTCHA_SITE_KEY'],
 };

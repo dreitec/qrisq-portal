@@ -124,6 +124,18 @@ export class QrIdentityService {
     );
   }
 
+  verifyRecaptchaV3(token: string) {
+    return this.httpClient.post(
+      environment.API_URL + '/verify-recaptcha_v3',
+      {
+        token: token,
+      },
+      {
+        headers: { 'Content-type': 'application/json; charset=utf-8' },
+      }
+    );
+  }
+
   verifyEmail(email: string) {
     return this.httpClient.post(
       environment.API_URL + '/verify-email',

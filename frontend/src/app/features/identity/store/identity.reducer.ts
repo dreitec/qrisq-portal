@@ -95,7 +95,7 @@ const reducer = createReducer(
   })),
   on(
     actionRegisterFormSubmit,
-    (state, { firstName, lastName, email, password, phoneNumber }) => ({
+    (state, { firstName, lastName, email, password, phoneNumber, recaptchav3Token }) => ({
       ...state,
       signUp: {
         ...state.signUp,
@@ -104,6 +104,7 @@ const reducer = createReducer(
         email,
         password,
         phoneNumber,
+        recaptchav3Token,
       },
     })
   ),

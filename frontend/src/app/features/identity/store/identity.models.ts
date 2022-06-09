@@ -41,6 +41,7 @@ export interface SignUpState {
   addressCity?: string;
   addressState?: string;
   addressZip?: string;
+  recaptchav3Token?: string;
 }
 
 export interface CredentialsState {

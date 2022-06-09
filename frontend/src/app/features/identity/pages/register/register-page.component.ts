@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { selectSignUp } from '../../store/identity.selectors';
 import { actionRegisterFormSubmit } from '../../store/identity.actions';
 import { SignUpState } from '../../store/identity.models';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Component({
   selector: 'qr-register-page',
@@ -23,7 +24,11 @@ export class QrRegisterPageComponent implements OnInit {
   registerForm: FormGroup;
   signUp$: Observable<SignUpState>;
 
-  constructor(private fb: FormBuilder, private store: Store) {}
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private recaptchaV3Service: ReCaptchaV3Service
+  ) {}
 
   ngOnInit(): void {
     this.signUp$ = this.store.pipe(select(selectSignUp));
@@ -66,16 +71,20 @@ export class QrRegisterPageComponent implements OnInit {
       this.registerForm.controls[i].markAsDirty();
       this.registerForm.controls[i].updateValueAndValidity();
     }
-    if (this.registerForm.status === 'VALID') {
-      const data = {
-        firstName: this.registerForm.get('firstName').value,
-        lastName: this.registerForm.get('lastName').value,
-        email: this.registerForm.get('email').value,
-        password: this.registerForm.get('password').value,
-        phoneNumber: this.registerForm.get('phoneNumber').value,
-      };
-      this.store.dispatch(actionRegisterFormSubmit(data));
-    }
+    this.recaptchaV3Service.execute('signup')
+    .subscribe((token: string) => {
+      if (this.registerForm.status === 'VALID') {
+        const data = {
+          firstName: this.registerForm.get('firstName').value,
+          lastName: this.registerForm.get('lastName').value,
+          email: this.registerForm.get('email').value,
+          password: this.registerForm.get('password').value,
+          phoneNumber: this.registerForm.get('phoneNumber').value,
+          recaptchav3Token: token,
+        };
+        this.store.dispatch(actionRegisterFormSubmit(data));
+      }
+    });
   }
 
   updateConfirmValidator(): void {

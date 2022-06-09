@@ -107,7 +107,31 @@ export const actionRegisterFormSubmit = createAction(
     email: string;
     password: string;
     phoneNumber: string;
+    recaptchav3Token: string;
   }>()
+);
+
+/* -------------------------------------------------------------------------- */
+/*                             Verify Recaptcha V3                            */
+/* -------------------------------------------------------------------------- */
+
+// request
+export const actionVerifyRecaptchaV3Request = createAction(
+  '[Identity] Verify Recaptcha V3 Request',
+  props<{
+    signUp: SignUpState;
+  }>()
+);
+
+// success
+export const actionVerifyRecaptchaV3RequestSuccess = createAction(
+  '[Identity] Verify Recaptcha V3 Request Success'
+);
+
+// failed
+export const actionVerifyRecaptchaV3RequestFailed = createAction(
+  '[Identity] Verify Recaptcha V3 Request Failed',
+  props<{ error: HttpErrorResponse }>()
 );
 
 /* -------------------------------------------------------------------------- */

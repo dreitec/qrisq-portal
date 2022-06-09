@@ -38,7 +38,7 @@ import {
   actionUpdateGeolocationRequestSuccess,
   actionVerifyEmailRequest,
   actionVerifyEmailRequestFailed,
-  actionVerifyEmailRequestSuccess, actionVerifyPayment,
+  actionVerifyPayment, actionVerifyRecaptchaV3Request, actionVerifyRecaptchaV3RequestFailed, actionVerifyRecaptchaV3RequestSuccess,
 } from './identity.actions';
 import { Store } from '@ngrx/store';
 import { selectCredentials, selectSignUp } from './identity.selectors';
@@ -250,7 +250,52 @@ export class IdentityEffects {
     this.actions$.pipe(
       ofType(actionRegisterFormSubmit),
       withLatestFrom(this.store.select(selectSignUp)),
-      map(([action, signUp]) => actionVerifyEmailRequest({ signUp }))
+      map(([action, signUp]) => actionVerifyRecaptchaV3Request({ signUp }))
+    )
+  );
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Verify Recaptcha V3                          */
+  /* -------------------------------------------------------------------------- */
+
+  // request
+  effectVerifyRecaptchaV3Request = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actionVerifyRecaptchaV3Request),
+      switchMap((action) =>
+        this.identityService.verifyRecaptchaV3(action.signUp.recaptchav3Token).pipe(
+          take(1),
+          map((response: any) => {
+            if (response.success) {
+              return actionVerifyEmailRequest({ signUp: action.signUp });
+            }
+
+            this.notification.create(
+              'error',
+              'Error',
+              'Error verifying reCAPTCHA. Please try again.',
+              { nzPlacement: 'bottomRight' }
+            );
+            return actionVerifyRecaptchaV3RequestSuccess();
+          }
+          ),
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 403) {
+              this.notification.create(
+                'error',
+                'Error',
+                'Error verifying reCAPTCHA. Please try again.',
+                { nzPlacement: 'bottomRight' }
+              );
+            } else {
+              this.notification.create('error', 'Error', error.message, {
+                nzPlacement: 'bottomRight',
+              });
+            }
+            return of(actionVerifyRecaptchaV3RequestFailed(error));
+          })
+        )
+      )
     )
   );
 
