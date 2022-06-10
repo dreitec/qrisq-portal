@@ -14,6 +14,8 @@ import boto3
 
 
 if "QRISQ_ENV" in os.environ and os.environ["QRISQ_ENV"].lower() in ["dev", "staging", "prod"]:
+    QRISQ_ENV = os.environ["QRISQ_ENV"].lower()
+
     def get_resources_from(ssm_details):
         results = ssm_details['Parameters']
         resources = [result for result in results]

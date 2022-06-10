@@ -131,7 +131,7 @@ class FluidPay(object):
 
     def create_subscription(self, user, validated_data, subscription_plan):
         update_payment_method = False
-        customer_id = self.customer_id_prefix + str(user.id)
+        customer_id = settings.QRISQ_ENV + str(user.id)
         user_email = user.email
         tokenizer_token = validated_data.get("token")
         user_subscription = UserSubscription.objects.get(user_id=user.id)
