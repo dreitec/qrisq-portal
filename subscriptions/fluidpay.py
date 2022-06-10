@@ -56,11 +56,20 @@ class FluidPay(object):
         r.raise_for_status()
         return r.json()
 
-    def __get(self, endpoint, errorOn400=True, return_raw_response=False):
+    def __get(self, endpoint, errorOn400=True, return_raw_response=False, attempt=1, retries=0):
         url = self.base_url + endpoint
-        r = requests.get(url, headers=self.headers)
-        if r.status_code != 400 or errorOn400:
-            r.raise_for_status()
+        try:
+            r = requests.get(url, headers=self.headers)
+            if r.status_code != 400 or errorOn400:
+                r.raise_for_status()
+        except:
+            if attempt <= retries:
+                logging.info("Retry request to {}".format(url))
+                time.sleep(attempt)
+                return self.__get(endpoint, errorOn400=errorOn400, return_raw_response=return_raw_response, attempt=attempt + 1, retries=retries)
+            else:
+                raise
+
         if return_raw_response:
             return r
         return r.json()
@@ -194,7 +203,7 @@ class FluidPay(object):
         if transaction_response_code != self.APPROVAL_RESPONSE_CODE:
             raise Exception(f"Response code of {transaction_response_code} was received from the server, but expected {self.APPROVAL_RESPONSE_CODE}")
 
-        user_response = self.__get(f"/vault/{customer_id}", errorOn400=False)
+        user_response = self.__get(f"/vault/{customer_id}", retries=6)
         debug_info["user_response"] = user_response
         payment_method_id = user_response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
         billing_address_id = user_response["data"]["data"]["customer"]["addresses"][0]["id"]
