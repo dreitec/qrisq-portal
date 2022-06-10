@@ -13,6 +13,10 @@ p {
   color: #000;
   text-align: start;
   margin-bottom: 0;
+
+  &.no-risk {
+    font-weight: bold;
+  }
 }
 
 .storm-name {

@@ -54,34 +54,35 @@
       <p class="user-address">{{ userAddress }}</p>
 
       <ng-container
-        *ngIf="
-          surgeLevels[surgeRisk].riskDesc === 'No';
-          then surgeRiskHeaderNo;
-          else surgeRiskHeaderOtherThanNo
-        "
+        *ngIf="mode === 'surge'; then surgeRiskHeader; else windRiskHeader"
       ></ng-container>
-      <ng-template #surgeRiskHeaderNo>
-        <p class="no-risk">No Risk</p>
-      </ng-template>
-      <ng-template #surgeRiskHeaderOtherThanNo>
+      <ng-template #surgeRiskHeader>
         <ng-container
-          *ngIf="mode === 'surge'; then surgeRiskHeader; else windRiskHeader"
+          *ngIf="
+            surgeLevels[surgeRisk].riskDesc === 'No';
+            then surgeRiskHeaderNo;
+            else surgeRiskHeaderOtherThanNo
+          "
         ></ng-container>
-        <ng-template #surgeRiskHeader>
+        <ng-template #surgeRiskHeaderNo>
+          <p class="no-risk">No Risk</p>
+        </ng-template>
+        <ng-template #surgeRiskHeaderOtherThanNo>
           <p class="detail-item">
             <span class="detail-item-label">Peak surge risk:</span>
             {{ surgeLevels[surgeRisk].riskDesc }} {{ toFeet(maxFlood) }}ft
           </p>
           <p class="expected-date" *ngIf="floodAdvisoryDate">Expected: {{ floodAdvisoryDate }}</p>
         </ng-template>
-        <ng-template #windRiskHeader>
-          <p class="detail-item">
-            <span class="detail-item-label">Wind speed:</span>
-            {{ getWindSpeedWholeNumber(maxWind) }} MPH
-          </p>
-          <p class="expected-date">Expected: {{ windAdvisoryDate }}</p>
-        </ng-template>
       </ng-template>
+      <ng-template #windRiskHeader>
+        <p class="detail-item">
+          <span class="detail-item-label">Wind speed:</span>
+          {{ getWindSpeedWholeNumber(maxWind) }} MPH
+        </p>
+        <p class="expected-date">Expected: {{ windAdvisoryDate }}</p>
+      </ng-template>
+      <!-- </ng-template> -->
 
       <p class="detail-item">
         <span class="detail-item-label">Distance between storm and property:</span>
