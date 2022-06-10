@@ -194,7 +194,7 @@ class FluidPay(object):
         if transaction_response_code != self.APPROVAL_RESPONSE_CODE:
             raise Exception(f"Response code of {transaction_response_code} was received from the server, but expected {self.APPROVAL_RESPONSE_CODE}")
 
-        user_response = self.__get(f"/vault/{customer_id}", errorOn400=False, return_raw_response=True)
+        user_response = self.__get(f"/vault/{customer_id}", errorOn400=False)
         debug_info["user_response"] = user_response
         payment_method_id = user_response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
         billing_address_id = user_response["data"]["data"]["customer"]["addresses"][0]["id"]
