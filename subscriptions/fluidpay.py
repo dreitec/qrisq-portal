@@ -139,34 +139,7 @@ class FluidPay(object):
         user_profile = UserProfile.objects.get(user_id=user.id)
 
         debug_info = {"customer_id": customer_id}
-        response = self.__get("/vault/{}".format(customer_id), errorOn400=False, return_raw_response=True)
-        if response.status_code == 400:
-            # Customer doesn't exist? Need to create it
-            body = {
-                "id": customer_id,
-                "default_payment": {
-                    "token": tokenizer_token
-                },
-                "default_billing_address": {
-                    "first_name": user_user.first_name,
-                    "last_name": user_user.last_name,
-                    "address_line_1": user_profile.address_line_1,
-                    "city": user_profile.city,
-                    "state": user_profile.state,
-                    "country": "US",
-                    "postal_code": user_profile.zip_code,
-                    "email": user_email
-                }
-            }
-            response = self.__post("/vault/customer", body, retries=3)
-            debug_info["customer_response"] = response
-        else:
-            response.raise_for_status()
-            response = response.json()
-            debug_info["customer_response"] = response
 
-        payment_method_id = response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
-        billing_address_id = response["data"]["data"]["customer"]["addresses"][0]["id"]
         today = datetime.date.today()
         plan_type = subscription_plan.name.upper()
         plan_cost = int(subscription_plan.price * 100)
@@ -202,25 +175,29 @@ class FluidPay(object):
                 "country": "US",
                 "postal_code": user_profile.zip_code,
                 "email": user_email
-            }
+            },
+
         }
-        response = self.__post("/transaction", transaction_data)
+        user_response = self.__get(f"/vault/{customer_id}", errorOn400=False, return_raw_response=True)
+        if user_response.status_code == 400:
+            transaction_data["create_vault_record"] = True
+        transaction_response = self.__post("/transaction", transaction_data)
 
-        if "data" not in response:
-            raise Exception(f"Invalid Fluidpay transaction response: {response}")
+        if "data" not in transaction_response:
+            raise Exception(f"Invalid Fluidpay transaction response: {transaction_response}")
 
-        debug_info["payment_response"] = response
-        payment_id = response["data"]["id"]
+        debug_info["payment_transaction_response"] = transaction_response
+        payment_id = transaction_response["data"]["id"]
         payment_gateway = "fluidpay"
-        response_code = response["data"]["response_code"]
+        transaction_response_code = transaction_response["data"]["response_code"]
 
-        if response_code != self.APPROVAL_RESPONSE_CODE:
-            response_error = {
-                "response_code": response_code,
-                "payment_method_id": payment_method_id,
-                "billing_address_id": billing_address_id,
-            }
-            raise Exception("Response code of {} was received from the server, but expected {}".format(response_error, self.APPROVAL_RESPONSE_CODE))
+        if transaction_response_code != self.APPROVAL_RESPONSE_CODE:
+            raise Exception(f"Response code of {transaction_response_code} was received from the server, but expected {self.APPROVAL_RESPONSE_CODE}")
+
+        user_response = self.__get(f"/vault/{customer_id}", errorOn400=False, return_raw_response=True)
+        debug_info["user_response"] = user_response
+        payment_method_id = user_response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
+        billing_address_id = user_response["data"]["data"]["customer"]["addresses"][0]["id"]
 
         # Create the subscription record
         body = {
