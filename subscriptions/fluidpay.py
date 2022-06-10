@@ -185,13 +185,13 @@ class FluidPay(object):
             "email_address": user_email,
             "create_vault_record": False,
             "payment_method": {
-                "token": tokenizer_token
-                # "customer": {
-                #     "id": customer_id,
-                #     "payment_method_type": "card",
-                #     "payment_method_id": payment_method_id,
-                #     "billing_address_id": billing_address_id
-                # }
+                # "token": tokenizer_token
+                "customer": {
+                    "id": customer_id,
+                    "payment_method_type": "card",
+                    "payment_method_id": payment_method_id,
+                    "billing_address_id": billing_address_id
+                }
             },
             "billing_address": {
                 "first_name": user_user.first_name,
@@ -215,7 +215,12 @@ class FluidPay(object):
         response_code = response["data"]["response_code"]
 
         if response_code != self.APPROVAL_RESPONSE_CODE:
-            raise Exception("Response code of {} was received from the server, but expected {}".format(response_code, self.APPROVAL_RESPONSE_CODE))
+            response_error = {
+                "response_code": response_code,
+                "payment_method_id": payment_method_id,
+                "billing_address_id": billing_address_id,
+            }
+            raise Exception("Response code of {} was received from the server, but expected {}".format(response_error, self.APPROVAL_RESPONSE_CODE))
 
         # Create the subscription record
         body = {
