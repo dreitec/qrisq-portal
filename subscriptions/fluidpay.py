@@ -139,15 +139,11 @@ class FluidPay(object):
         self.__post("recurring/subscription/{}".format(subscription_id), updated_subscription)
 
     def create_subscription(self, user, validated_data, subscription_plan):
-        update_payment_method = False
-        customer_id = settings.QRISQ_ENV + str(user.id)
         user_email = user.email
         tokenizer_token = validated_data.get("token")
         user_subscription = UserSubscription.objects.get(user_id=user.id)
         user_user = User.objects.get(id=user.id)
         user_profile = UserProfile.objects.get(user_id=user.id)
-
-        debug_info = {"customer_id": customer_id}
 
         today = datetime.date.today()
         plan_type = subscription_plan.name.upper()
@@ -165,7 +161,7 @@ class FluidPay(object):
             "description": "Prorated subscription charge for subscription",
             "email_receipt": True,
             "email_address": user_email,
-            "create_vault_record": False,
+            "create_vault_record": True,
             "payment_method": {
                 "token": tokenizer_token
                 # "customer": {
@@ -195,7 +191,7 @@ class FluidPay(object):
         if "data" not in transaction_response:
             raise Exception(f"Invalid Fluidpay transaction response: {transaction_response}")
 
-        debug_info["payment_transaction_response"] = transaction_response
+        debug_info = {"payment_transaction_response": transaction_response}
         payment_id = transaction_response["data"]["id"]
         payment_gateway = "fluidpay"
         transaction_response_code = transaction_response["data"]["response_code"]
@@ -207,6 +203,39 @@ class FluidPay(object):
         debug_info["user_response"] = user_response
         payment_method_id = user_response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
         billing_address_id = user_response["data"]["data"]["customer"]["addresses"][0]["id"]
+
+        # customer_id = settings.QRISQ_ENV + response["data"]["customer_id"]
+        customer_id = response["data"]["customer_id"]
+        debug_info["customer_id"] = customer_id
+        response = self.__get("/vault/{}".format(customer_id), errorOn400=False, return_raw_response=True)
+        if response.status_code == 400:
+            # Customer doesn't exist? Need to create it
+            # body = {
+            #     "id": customer_id,
+            #     "default_payment": {
+            #         "token": tokenizer_token
+            #     },
+            #     "default_billing_address": {
+            #         "first_name": user_user.first_name,
+            #         "last_name": user_user.last_name,
+            #         "address_line_1": user_profile.address_line_1,
+            #         "city": user_profile.city,
+            #         "state": user_profile.state,
+            #         "country": "US",
+            #         "postal_code": user_profile.zip_code,
+            #         "email": user_email
+            #     }
+            # }
+            # response = self.__post("/vault/customer", body, retries=3)
+            # debug_info["customer_response"] = response
+            raise Exception("customer does not exist: {response}")
+        else:
+            response.raise_for_status()
+            response = response.json()
+            debug_info["customer_response"] = response
+
+        payment_method_id = response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
+        billing_address_id = response["data"]["data"]["customer"]["addresses"][0]["id"]
 
         # Create the subscription record
         body = {
@@ -231,6 +260,7 @@ class FluidPay(object):
             user=user,
             payment_id=payment_id,
             payment_gateway=payment_gateway,
+            gateway_customer_id=settings.QRISQ_ENV + '_' + customer_id,
             price=amount_paid,
             subscription_id=subscription_id,
             user_subscription=user_subscription,

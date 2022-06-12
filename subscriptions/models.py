@@ -44,6 +44,7 @@ class UserPayment(models.Model):
             
     payment_id = models.CharField(max_length=60, null=True, default=None)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="payment")
+    gateway_customer_id = models.CharField(max_length=90, default="")
     payment_gateway = models.CharField(max_length=30, choices=PAYMENT_CHOICES)
     subscription_id = models.CharField(max_length=60)
     user_subscription = models.ForeignKey(UserSubscription, on_delete=models.CASCADE, related_name="user_payments", null=True, default=None)
