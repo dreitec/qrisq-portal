@@ -181,11 +181,7 @@ class FluidPay(object):
                 "postal_code": user_profile.zip_code,
                 "email": user_email
             },
-
         }
-        user_response = self.__get(f"/vault/{customer_id}", errorOn400=False, return_raw_response=True)
-        if user_response.status_code == 400:
-            transaction_data["create_vault_record"] = True
         transaction_response = self.__post("/transaction", transaction_data)
 
         if "data" not in transaction_response:
@@ -199,13 +195,8 @@ class FluidPay(object):
         if transaction_response_code != self.APPROVAL_RESPONSE_CODE:
             raise Exception(f"Response code of {transaction_response_code} was received from the server, but expected {self.APPROVAL_RESPONSE_CODE}")
 
-        user_response = self.__get(f"/vault/{customer_id}", retries=6)
-        debug_info["user_response"] = user_response
-        payment_method_id = user_response["data"]["data"]["customer"]["payments"]["cards"][0]["id"]
-        billing_address_id = user_response["data"]["data"]["customer"]["addresses"][0]["id"]
-
         # customer_id = settings.QRISQ_ENV + response["data"]["customer_id"]
-        customer_id = response["data"]["customer_id"]
+        customer_id = transaction_response["data"]["customer_id"]
         debug_info["customer_id"] = customer_id
         response = self.__get("/vault/{}".format(customer_id), errorOn400=False, return_raw_response=True)
         if response.status_code == 400:
