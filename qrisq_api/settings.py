@@ -12,6 +12,7 @@ import os
 
 import boto3
 
+QRISQ_ENV = "dev"
 
 if "QRISQ_ENV" in os.environ and os.environ["QRISQ_ENV"].lower() in ["dev", "staging", "prod"]:
     QRISQ_ENV = os.environ["QRISQ_ENV"].lower()
