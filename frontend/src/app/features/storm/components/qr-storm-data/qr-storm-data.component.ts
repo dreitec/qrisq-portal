@@ -65,7 +65,13 @@ export class QrStormDataComponent implements OnInit {
   }
 
   convertKnot2MPH(value) {
-    return (value * 1.151).toFixed(1);
+    const convertedValue = (value * 1.151).toFixed(1);
+    const integerValue = parseInt(convertedValue, 10);
+    const decimalValue = Number(convertedValue) * 10 % 10;
+    if (decimalValue > 5) {
+      return integerValue + 1;
+    }
+    return integerValue;
   }
 
   getWindSpeedWholeNumber(value) {

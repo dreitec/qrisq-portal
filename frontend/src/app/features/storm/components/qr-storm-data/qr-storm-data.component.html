@@ -76,11 +76,23 @@
         </ng-template>
       </ng-template>
       <ng-template #windRiskHeader>
-        <p class="detail-item">
-          <span class="detail-item-label">Wind speed:</span>
-          {{ getWindSpeedWholeNumber(maxWind) }} MPH
-        </p>
-        <p class="expected-date">Expected: {{ windAdvisoryDate }}</p>
+        <ng-container
+          *ngIf="
+            maxWind;
+            then showWindSpeed;
+            else noWindSpeed
+          "
+        ></ng-container>
+        <ng-template #showWindSpeed>
+          <p class="detail-item">
+            <span class="detail-item-label">Wind speed:</span>
+            {{ getWindSpeedWholeNumber(maxWind) }} MPH
+          </p>
+        </ng-template>
+        <ng-template #noWindSpeed>
+          <p class="no-risk">No Wind Risk</p>
+        </ng-template>
+        <p class="expected-date" *ngIf="windAdvisoryDate">Expected: {{ windAdvisoryDate }}</p>
       </ng-template>
       <!-- </ng-template> -->
 
@@ -134,7 +146,7 @@
             </div>
           </div>
           <p class="next-forecast">
-            Next Forecast Available {{ nextAdvisoryDate }}
+            Next Forecast Available: {{ nextAdvisoryDate }}
           </p>
         </ng-template>
 
