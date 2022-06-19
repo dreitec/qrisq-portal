@@ -5,6 +5,8 @@ from django.db import transaction
 
 from rest_framework import serializers
 
+import dateutil.parser
+
 from user_app.models import User, UserProfile
 from subscriptions.serializers import UserSubscriptionSerializer
 
@@ -70,7 +72,7 @@ class ClientUserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         expiration_date = response.get('subscription_plan', {}).get('expires_at', None)
-        response['has_paid'] = expiration_date is not None and expiration_date.timestamp() > datetime.now().timestamp()
+        response['has_paid'] = expiration_date is not None and dateutil.parser.isoparse(expiration_date).timestamp() <= datetime.now().timestamp()
         response['payment_expired'] = not response['has_paid']
         return response
 
