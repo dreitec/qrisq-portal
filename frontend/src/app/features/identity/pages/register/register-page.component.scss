@@ -185,3 +185,19 @@ h5 {
 [nzDanger] {
   margin-top: 10px;
 }
+
+@media (max-width: 980px) {
+  [nz-col] > p {
+    text-align: center;
+  }
+  
+  nz-card.form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  [nz-row] {
+    width: 100%;
+  }
+}

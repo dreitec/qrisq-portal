@@ -21,7 +21,7 @@ h6 {
   }
   .ant-col {
     flex: 0 0 100%;
-    margin-bottom: 30px;
+    // margin-bottom: 30px;
     max-width: 100%;
     &-offset-8 {
       max-width: 94%;
@@ -42,8 +42,10 @@ h6 {
   color: #ffffff88 !important;
 }
 
-.ng-invalid.ng-dirty .ant-checkbox + span {
-  color: #ff4d4f;
+.ant-form-item-has-error .ng-invalid.ng-dirty .ant-checkbox {
+  &-inner {
+    border-color: #ff4d4f;
+  }
 }
 
 // Collapse
@@ -71,4 +73,10 @@ h6 {
 .ant-collapse-content-box {
   font-size: 16px !important;
   padding: 16px 0 !important;
+}
+
+@media (max-width: 575px) {
+  .ant-form .ant-form-item .ant-form-item-control {
+    margin-bottom: 10px;
+  }
 }
